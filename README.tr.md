@@ -1,5 +1,7 @@
 # Rakkase
 
+<p align="center"><img src="docs/gorsel/banner.jpg" alt="Rakkase" width="100%"></p>
+
 [English](README.md) · Türkçe
 
 Çeviri İngilizce README'yi izler; fark olursa İngilizce metin esastır, özellikle lisans metni. [`docs/`](docs/) altındaki ayrıntılı belgeler şimdilik Türkçedir.

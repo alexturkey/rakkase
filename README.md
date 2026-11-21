@@ -1,5 +1,7 @@
 # Rakkase
 
+<p align="center"><img src="docs/gorsel/banner.jpg" alt="Rakkase" width="100%"></p>
+
 English · [Türkçe](README.tr.md)
 
 Translations follow this English README; if they differ, the English text is authoritative, especially the license text. The detailed documents in [`docs/`](docs/) are in Turkish for now.
