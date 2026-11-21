@@ -46,6 +46,13 @@ A plan is JSON: `caption` (English style description, 256-token limit), `lyrics`
 ## Seeds (try three)
 A seed (`tohum` in the plan) is the starting number of the randomness. The same plan with the same seed gives the same track; the same recipe with a different seed gives a different performance of it, so one idea can become several songs. Nearby numbers (41 and 42) do not give similar results: pick numbers far apart. Try three seeds with `ornekler/tohum_denemesi.json`, listen and keep the one you like. Every seed takes the full generation time (about 0.6-0.8 x the track length) and the seed is a creative choice, not a quality setting. Details: [`docs/KULLANIM.md`](docs/KULLANIM.md) ("Tohum denemesi"). AI agents are told to explain this to you before the first track.
 
+## A panel video you can share
+X, Instagram and WhatsApp do not accept a plain audio file. So after every `uret`, Rakkase also makes `<name>_panel.mp4` next to the track: a 1080x1080 video of an old-radio style LED spectrum that moves with the music, with the lossless-source audio inside (AAC 320k). On a 100 s track it took 49 s and 8.5 MB on the CPU [measured by the maintainers, one run; not on other machines]. The panel shows the real spectrum of the track; it does not change the music. It needs ffmpeg (the same one the mp3 uses; numpy, soundfile and Pillow are already in the ACE-Step environment). Without ffmpeg the track and the mp3 are still made and the panel is skipped with a warning; if the panel fails during `uret` you only get a warning and the exit code does not change. Turn it off with `--panel-yok`, make it later with `python rakkase.py panel <wav or folder>`. More: [`docs/KULLANIM.md`](docs/KULLANIM.md) ("Paylaşmaya hazır panel"). The same copyright note applies to what you share: no artist names, no other people's lyrics.
+
+[![Rakkase LED panel frame: click to play the 20 second example](docs/gorsel/ornek_panel.png)](docs/gorsel/ornek_panel.mp4)
+
+Click the picture to play a 20 second example (a Turkish folk-style excerpt made with Rakkase itself; sung by the model, no voice cloning).
+
 ## When something goes wrong
 Start with [`docs/SORUN_GIDERME.md`](docs/SORUN_GIDERME.md) (what you see, what to do) and [`docs/HATALAR.md`](docs/HATALAR.md) (15 common mistakes, 7 common wrong beliefs). `rakkase.py uret` exit codes: 0 done, 2 plan check error or engine did not start, 3 a track failed, 4 RAM guard stopped it, 5 done but archive failed, 6 `ayarlar.json` missing or wrong.
 

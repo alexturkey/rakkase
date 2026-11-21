@@ -7,6 +7,7 @@
 #  - `permissions: contents: read`; no secrets, no GPU, no model download, no network step beyond checkout/setup-python.
 #  - Actions are pinned to full commit SHAs (version in the comment); Dependabot updates them.
 #  - PR title/body never enter a shell through `${{ }}`.
+#  - The panel test installs numpy/soundfile/pillow from PyPI at pinned versions and ffmpeg from the distro (Ubuntu job only); cost: a network step; loosen: add hashes (--require-hashes) when a requirements file exists.
 #  - Not run here: testler/denetle_test.py (needs the ACE-Step tokenizer = model files). It runs on the maintainer's machine.
 #    Cost: the planner gate is not covered by CI. Loosen: add it when a CI-sized tokenizer fixture exists.
 name: denetim
@@ -64,6 +65,15 @@ jobs:
         continue-on-error: true # REPORT-ONLY
         run: python -B -m unittest testler/test_indirici_guvenlik.py testler/test_kur_kuru.py testler/test_tani_sizdirmaz.py 2>&1 | tee "$RUNNER_TEMP/betikler.txt"; test "${PIPESTATUS[0]}" -eq 0
 
+      - name: Panel tests (Ubuntu only, ffmpeg from the distro and pinned wheels)
+        id: panel
+        if: runner.os == 'Linux'
+        continue-on-error: true # REPORT-ONLY
+        run: |
+          sudo apt-get install -y --no-install-recommends ffmpeg
+          python -m pip install --disable-pip-version-check numpy==2.3.5 soundfile==0.13.1 pillow==12.1.0
+          python -B -m unittest testler/test_panel.py 2>&1 | tee "$RUNNER_TEMP/panel.txt"; test "${PIPESTATUS[0]}" -eq 0
+
       - name: Summary
         if: always()
         run: |
@@ -72,6 +82,7 @@ jobs:
             echo "- repo audit: \`${{ steps.denetim.outcome }}\`"
             echo "- audit tests: \`${{ steps.testler.outcome }}\`"
             echo "- installer script tests (Windows): \`${{ steps.betikler.outcome }}\`"
+            echo "- panel tests (Ubuntu): \`${{ steps.panel.outcome }}\`"
             echo '```'
             head -c 6000 "$RUNNER_TEMP/denetim.txt" 2>/dev/null || true
             echo '```'

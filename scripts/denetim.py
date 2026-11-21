@@ -4,7 +4,7 @@ Kapilar (her biri: neden / bedel / gevseme):
   G1 gizli Unicode ve ham kontrol karakteri: gorunmez metin ajana/okura talimat tasir. Bedel: yok. Gevseme: yok.
   G2 kisisel iz: kullanici-yolu, surucu-yolu, kisisel kullanici adi, e-posta, token kaliplari. Bedel: yer tutucu (<RAKKASE>) kullanilir.
      Gevseme: yalniz scripts/denetim_izinli.txt'e yazili, gerekceli tam satir.
-  G3 ikili dosya: yalniz testler/referans/*.wav (<= 8 MB) ve docs/gorsel/*.jpg|png (<= 2 MB); baska wav/mp3/pt/safetensors/zip repoya girmez. Gevseme: gerekceyle liste.
+  G3 ikili dosya: yalniz testler/referans/*.wav (<= 8 MB) ve docs/gorsel/*.jpg|png (<= 2 MB) ve docs/gorsel/*.mp4 (<= 3 MB); baska wav/mp3/pt/safetensors/zip repoya girmez. Gevseme: gerekceyle liste.
   G4 JSON: ornekler/, testler/ ve ayarlar.ornek.json gecerli UTF-8 JSON olmali.
   G5 Python: her .py derlenir (sozdizimi), import yapilmaz (model yuklenmez).
   G6 yerel dosya: ayarlar.json, .env, uretimler/, cikti/ izlenmez.
@@ -42,11 +42,15 @@ YEREL = ("ayarlar.json", ".env")
 YEREL_KLASOR = ("uretimler/", "cikti/", ".ajan/")
 WAV_ENFAZLA = 8 * 1024 * 1024
 GORSEL_ENFAZLA = 2 * 1024 * 1024
+MP4_ENFAZLA = 3 * 1024 * 1024
 
 
 def gorsel_izinli(r, ek, yol):
-    """docs/gorsel/ altindaki jpg/png (<= 2 MB) tanitim gorseli: ikili ama izinli."""
-    return r.startswith("docs/gorsel/") and ek in (".jpg", ".jpeg", ".png") and os.path.getsize(yol) <= GORSEL_ENFAZLA
+    """docs/gorsel/ altinda tanitim gorseli: jpg/png <= 2 MB, mp4 <= 3 MB (ornek panel videosu): ikili ama izinli."""
+    if not r.startswith("docs/gorsel/"):
+        return False
+    boyut = os.path.getsize(yol)
+    return (ek in (".jpg", ".jpeg", ".png") and boyut <= GORSEL_ENFAZLA) or (ek == ".mp4" and boyut <= MP4_ENFAZLA)
 
 
 def dosyalar(kok):
@@ -81,12 +85,16 @@ def denetle(kok):
         if r in YEREL or any(r.startswith(k) for k in YEREL_KLASOR):
             bulgu.append(("G6", r, 0, "yerel dosya izleniyor/ekleniyor"))
             continue
-        if ek in YASAK_UZANTI:
+        if ek in YASAK_UZANTI and not gorsel_izinli(r, ek, yol):
             if not bulundu_kontrol(r, ek, yol):
                 bulgu.append(("G3", r, 0, "izinsiz ikili/agirlik/ses dosyasi ya da referans wav > 8 MB"))
             continue
         ham = open(yol, "rb").read()
         if gorsel_izinli(r, ek, yol):
+            govde = ham.decode("latin-1")
+            for ad, d in KISISEL:
+                if ad in ("kullanici-yolu", "kisisel-ad", "ic-iz", "token") and d.search(govde):
+                    bulgu.append(("G2", r, 0, ad + " (ikili dosya icinde)"))
             continue
         if b"\0" in ham[:4096]:
             bulgu.append(("G3", r, 0, "bilinmeyen ikili dosya"))

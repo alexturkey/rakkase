@@ -684,6 +684,49 @@
    "ilk_adim_en": "Use a shorter folder such as <SURUCU>:\\rk.",
    "ilk_adim_tr": "Daha kisa bir klasor (ornek <SURUCU>:\\rk) kullanin.",
    "capa": "docs/SIK_HATALAR.md#rk-w-yol-uzun"
+  },
+  {
+   "kod": "RK-E-PANEL",
+   "tur": "hata",
+   "cikis": 5,
+   "sik_hatalar": "33",
+   "yayinlayan": [
+    "rakkase.py",
+    "araclar/panel.py"
+   ],
+   "baslik_en": "The panel video could not be made (rakkase.py panel)",
+   "baslik_tr": "Panel videosu yapilamadi (rakkase.py panel)",
+   "imza": [
+    "[RK-E-PANEL]",
+    "panel yazilamadi",
+    "wav okunamadi"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-PANEL] ffmpeg PATH'te yok (kurun: winget install --id Gyan.FFmpeg -e) / ffmpeg not found"
+   ],
+   "ilk_adim_en": "Install ffmpeg (winget install --id Gyan.FFmpeg -e) if it is missing, check that the wav is a real track, then run python rakkase.py panel <folder> again. The music is not affected.",
+   "ilk_adim_tr": "ffmpeg yoksa kurun (winget install --id Gyan.FFmpeg -e), wav'in gercek bir parca oldugunu kontrol edin, sonra python rakkase.py panel <klasor> komutunu yeniden calistirin. Muzik etkilenmez.",
+   "capa": "docs/SIK_HATALAR.md#rk-e-panel"
+  },
+  {
+   "kod": "RK-W-PANEL",
+   "tur": "uyari",
+   "cikis": 0,
+   "sik_hatalar": "34",
+   "yayinlayan": [
+    "rakkase.py"
+   ],
+   "baslik_en": "The panel video failed during uret; the track is delivered",
+   "baslik_tr": "uret sirasinda panel videosu dustu; parca teslim edildi",
+   "imza": [
+    "[RK-W-PANEL]"
+   ],
+   "ornek_log": [
+    "UYARI: [RK-W-PANEL] panel yapilamadi; wav ve mp3 yerinde / panel failed, wav and mp3 are in place"
+   ],
+   "ilk_adim_en": "Nothing is lost: wav and mp3 are in place and the exit code does not change. Run python rakkase.py panel <folder> to try again (ffmpeg is needed: winget install --id Gyan.FFmpeg -e).",
+   "ilk_adim_tr": "Bir sey kaybolmadi: wav ve mp3 yerinde, cikis kodu degismez. Yeniden denemek icin python rakkase.py panel <klasor> calistirin (ffmpeg gerekir: winget install --id Gyan.FFmpeg -e).",
+   "capa": "docs/SIK_HATALAR.md#rk-w-panel"
   }
  ]
 }

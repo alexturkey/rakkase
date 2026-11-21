@@ -8,9 +8,11 @@
   python rakkase.py bol   --plan plan.json            -> on plan siniri (ayarlar.json) icin kosu gruplari (--yalniz satirlari)
   python rakkase.py test                              -> 15 sn kiyas parcasi uretir, testler/referans ile karsilastirir
   python rakkase.py mp3   <klasor>                    -> klasordeki wav'lari 192k mp3 yapar
+  python rakkase.py panel <wav|klasor>                -> LED spektrum paneli: <ad>_panel.mp4 (1080x1080, ses + panel; paylasima hazir).
+      uret bunu her parca icin otomatik yapar; kapatmak: uret --panel-yok. Panel dusse de muzik teslim edilir (uyari RK-W-PANEL).
 
 Cikis kodlari (uret): 0 tamam, 2 plan denetimi HATA / motor baslamadi ya da yuklenemedi, 3 bir parca basarisiz (bitenler yine
-arsivlenir), 4 RAM bekcisi durdurdu, 5 uretim tamam ama mp3/arsiv basarisiz, 6 ayarlar.json eksik/yanlis. test: 0 GECTI, 1 KALDI.
+arsivlenir), 4 RAM bekcisi durdurdu, 5 uretim tamam ama mp3/arsiv basarisiz, 6 ayarlar.json eksik/yanlis. test: 0 GECTI, 1 KALDI. panel: 0 tamam, 5 [RK-E-PANEL] panel uretilemedi.
 Kalite sabit (kod icinde): turbo 8 adim, int8 decoder + fp32 hesap, LM kapali, akisli yukleme, decoder yerlesik.
 Her cagri modeli yukler, isi bitirir, kapanir (surekli servis yok). On planda calistir: Claude Code arka plan
 kabugunu bellek sikisinca kapatiyor. Ayrinti: docs/KULLANIM.md, docs/KURULUM_DEFTERI.md.
@@ -28,7 +30,7 @@ KOK = os.path.dirname(os.path.abspath(__file__))
 GIZLI = 0x08000000 if os.name == "nt" else 0  # CREATE_NO_WINDOW (yalniz Windows)
 
 
-# Kodlar (hata() 'HATA: [KOD] ...' basar; cikis kodu docs/hata_imzalari.json): [RK-E-AYAR-YOK] [RK-E-ACE-KOK] [RK-E-KILIT] [RK-E-VENV] [RK-E-MODEL] [RK-E-PLAN] [RK-E-PARCA] [RK-E-RAM-BEKCI] [RK-E-ARSIV] [RK-W-FFMPEG]
+# Kodlar (hata() 'HATA: [KOD] ...' basar; cikis kodu docs/hata_imzalari.json): [RK-E-AYAR-YOK] [RK-E-ACE-KOK] [RK-E-KILIT] [RK-E-VENV] [RK-E-MODEL] [RK-E-PLAN] [RK-E-PARCA] [RK-E-RAM-BEKCI] [RK-E-ARSIV] [RK-W-FFMPEG] [RK-E-PANEL] [RK-W-PANEL]
 def hata(kod, mesaj, cikis):
     """Tek bicim: 'HATA: [RK-E-XXX] mesaj'. Kod -> cikis haritasi: docs/hata_imzalari.json, cozumler: docs/SIK_HATALAR.md."""
     print(f"HATA: [{kod}] {mesaj}", flush=True)
@@ -103,6 +105,35 @@ def mp3(klasor):
             print("MP3", m, flush=True)
 
 
+def panel(yol):
+    """LED paneli: <ad>_panel.mp4 (wav'in yaninda). Varsa atlar. Donus: basarisiz sayisi. ACE venv python'u kullanir (numpy, soundfile, Pillow orada)."""
+    if not shutil.which("ffmpeg"):
+        print("UYARI: [RK-W-FFMPEG] ffmpeg PATH'te yok: panel yapilmadi (ffmpeg kurunca: python rakkase.py panel <klasor>) / ffmpeg not found, no panel", flush=True)
+        return 0
+    wavlar = [yol] if os.path.isfile(yol) else sorted(glob.glob(os.path.join(yol, "**", "*.wav"), recursive=True))
+    return sum(panel_yap(w) for w in wavlar)
+
+
+def panel_yap(wav):
+    """Tek wav icin <ad>_panel.mp4 (zaten varsa atlar). Donus: 0 tamam/atlandi, 1 basarisiz (RK-E-PANEL satiri basilir)."""
+    cikti = wav[:-4] + "_panel.mp4"
+    if os.path.exists(cikti):
+        return 0
+    r = subprocess.run([venv_python(), "-B", os.path.join(KOK, "araclar", "panel.py"), wav, cikti], creationflags=GIZLI,
+                       capture_output=True, text=True, encoding="utf-8", errors="replace")
+    satir = (r.stdout.strip().splitlines() or [""])[-1] or (r.stderr.strip().splitlines() or [""])[-1]
+    if r.returncode == 0 and os.path.exists(cikti):
+        print("PANEL", cikti, flush=True)
+        return 0
+    print(satir if "RK-E-PANEL" in satir else f"HATA: [RK-E-PANEL] panel uretilemedi ({os.path.basename(wav)}): {satir[:200]}", flush=True)
+    if os.path.exists(cikti):
+        try:
+            os.remove(cikti)  # yarim dosya kalmasin
+        except OSError:
+            pass
+    return 1
+
+
 def bol(plan):
     parcalar = json.load(open(plan, encoding="utf-8"))["parcalar"]
     sinir, gruplar, g, top = AYAR.get("on_plan_ses_siniri_sn", 300), [], [], 0
@@ -138,10 +169,12 @@ def main():
     u = alt.add_parser("uret"); u.add_argument("--plan", required=True); u.add_argument("--cikti", default="")
     u.add_argument("--ad", default=time.strftime("kosu_%Y%m%d_%H%M%S")); u.add_argument("--yalniz", default="")
     u.add_argument("--denetimsiz", action="store_true", help="plan denetimini atla (onerilmez)")
+    u.add_argument("--panel-yok", action="store_true", help="<ad>_panel.mp4 uretme (LED paneli)")
     d = alt.add_parser("denetle"); d.add_argument("--plan", required=True); d.add_argument("--yalniz", default="")
     b = alt.add_parser("bol"); b.add_argument("--plan", required=True)
     alt.add_parser("test")
     m = alt.add_parser("mp3"); m.add_argument("klasor")
+    pn = alt.add_parser("panel"); pn.add_argument("yol", help="wav dosyasi ya da klasor")
     a = ap.parse_args()
 
     if a.komut == "denetle":
@@ -161,6 +194,12 @@ def main():
         if glob.glob(os.path.join(kosu, "*.wav")):  # kod 3'te de biten parcalar arsivlenir (yarida kalan kosu kaybolmaz)
             try:
                 mp3(kosu)
+                if not a.panel_yok:
+                    try:  # panel yan cikti: dusse muzik teslim, cikis kodu degismez
+                        if panel(kosu):
+                            print(f"UYARI: [RK-W-PANEL] panel uretilemedi, muzik ve mp3 yerinde (elle: python rakkase.py panel {kosu})", flush=True)
+                    except Exception as e:
+                        print(f"UYARI: [RK-W-PANEL] panel uretilemedi ({e!r}), muzik ve mp3 yerinde", flush=True)
                 sys.path.insert(0, os.path.join(KOK, "araclar"))
                 import recete
                 recete.yaz(a.plan, kosu, tasi=not a.cikti)  # her parca kendi klasorunde: wav, mp3, sozler, recete.json, RECETE.md
@@ -178,6 +217,13 @@ def main():
         return
     if a.komut == "mp3":
         mp3(a.klasor); return
+    if a.komut == "panel":
+        kurulum_kontrol(model=False)
+        if not os.path.exists(a.yol):
+            hata("RK-E-PANEL", f"yol yok: {a.yol} / path not found", 5)
+        if not (os.path.isfile(a.yol) or glob.glob(os.path.join(a.yol, "**", "*.wav"), recursive=True)):
+            hata("RK-E-PANEL", f"wav bulunamadi: {a.yol} / no wav found", 5)
+        sys.exit(5 if panel(a.yol) else 0)
     if a.komut == "test":
         cikti = os.path.join(KOK, "cikti", "test")
         ad = time.strftime("test_%Y%m%d_%H%M%S")

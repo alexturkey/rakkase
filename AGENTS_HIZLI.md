@@ -15,6 +15,7 @@ English first, Türkçe below. Full rules and evidence: [`AGENTS.md`](AGENTS.md)
 5. Installing is the human's step (git and uv must be installed first; `RK-E-GIT` and `RK-E-UV` say how): tell the user what `kur.cmd` will download (ACE-Step source from github.com, about 6.4 GB of models from huggingface.co/ACE-Step and /Qwen), and let the user start it. Never accept anything on the user's behalf, never type a confirmation for the human, never run a remote script piped into a shell.
 6. Install: `kur.cmd` (double click, or `scripts\kur.ps1`). Safe to re-run: complete files are skipped, an interrupted download continues.
 7. First success: `uret.cmd` or `python rakkase.py uret --plan ornekler/sozsuz_fon_ninni.json` (about 2 minutes of model loading plus about 0.6-0.8 x the song length on a GTX 1050 Ti [measured by the authors]). Long runs: start hidden in the background and poll; do not block.
+7b. To share a track on X, Instagram or WhatsApp (they do not take audio files), tell the user to use `<name>_panel.mp4` next to the track, not the wav or mp3 (if it is missing: `python rakkase.py panel <folder>`; `--panel-yok` turns it off). Do not post it anywhere yourself.
 8. Exit 0 means the run finished, nothing more: `denetle` checks plan limits (tokens, durations); it does NOT judge the music. Do not claim the music is good; the human listens.
 9. `rakkase.py test` failed or did not run means the install or engine is NOT accepted. Never report success.
 10. A line with a code: look it up in `docs/SIK_HATALAR.md`, give the user its first step, quote the code. Same error twice: stop, do not try a third time.
@@ -38,6 +39,7 @@ English first, Türkçe below. Full rules and evidence: [`AGENTS.md`](AGENTS.md)
 | `rakkase.py uret` | 2 | plan check ERROR or engine did not start | Fix the plan (read the message) or the install; do not use `--denetimsiz` to skip | `RK-E-PLAN` |
 | `rakkase.py uret` | 3 | a track failed (finished ones are archived) | Re-run only the failed track with `--yalniz` | `RK-E-PARCA` |
 | `rakkase.py uret` | 4 | RAM guard stopped the run | **Take it to the user**: close other programs; do not start a second copy | `RK-E-RAM-BEKCI` |
+| `rakkase.py panel` | 5 | the panel video could not be made | Install ffmpeg if missing, then run `rakkase.py panel <folder>` again; the music is fine | `RK-E-PANEL` |
 | `rakkase.py uret` | 5 | done, but mp3 or archive failed | Report; the wav files are in place; run `rakkase.py mp3 <folder>` after the user fixes ffmpeg | `RK-E-ARSIV` |
 | `rakkase.py uret` | 6 | `ayarlar.json` missing or wrong | **Take it to the user**: the user's ACE-Step folder goes into `ace_kok` | `RK-E-AYAR-YOK` `RK-E-ACE-KOK` `RK-E-KILIT` `RK-E-VENV` `RK-E-MODEL` |
 | `rakkase.py denetle` | 2 | plan check found errors | Fix the plan; read the `HATA` lines | `RK-E-PLAN` |
@@ -55,6 +57,7 @@ English first, Türkçe below. Full rules and evidence: [`AGENTS.md`](AGENTS.md)
 5. Kurulum insanın adımıdır (önce git ve uv kurulu olmalı; `RK-E-GIT` ve `RK-E-UV` nasıl olduğunu söyler): `kur.cmd`'nin neyi indireceğini (github.com'dan ACE-Step kaynağı, huggingface.co/ACE-Step ve /Qwen'den yaklaşık 6,4 GB model) kullanıcıya söyle, başlatmayı kullanıcıya bırak. Kullanıcı adına hiçbir şeyi kabul etme, insan yerine onay yazma, uzak bir betiği kabuğa borulayıp çalıştırma.
 6. Kurulum: `kur.cmd` (çift tık ya da `scripts\kur.ps1`). Tekrar çalıştırmak güvenli: tam dosya atlanır, yarım indirme sürer.
 7. İlk başarı: `uret.cmd` ya da `python rakkase.py uret --plan ornekler/sozsuz_fon_ninni.json` (GTX 1050 Ti'de yaklaşık 2 dk model yükleme ve parça süresinin yaklaşık 0,6-0,8 katı [yazarlar ölçtü]). Uzun işleri gizli arka planda başlat, yoklayarak izle; bekleyerek kilitlenme.
+7b. Kullanıcı X, Instagram ya da WhatsApp'ta paylaşmak isterse (ses dosyası kabul etmezler) parçanın yanındaki `<ad>_panel.mp4`'ü kullanmasını söyle; wav ya da mp3 değil (yoksa `python rakkase.py panel <klasör>`; `--panel-yok` kapatır). Kendin hiçbir yere paylaşma.
 8. Çıkış 0 yalnız koşunun bittiği demektir: `denetle` plan sınırlarını (token, süre) denetler; müziği YARGILAMAZ. "Müzik güzel" deme; dinlemek insanın işi.
 9. `rakkase.py test` kaldı ya da koşmadı: kurulum ya da motor KABUL EDİLMEZ. Asla başarı bildirme.
 10. Kodlu satır: `docs/SIK_HATALAR.md`'de ara, ilk adımı kullanıcıya ver, kodu yaz. Aynı hata iki kez: dur, üçüncü kez deneme.
@@ -78,6 +81,7 @@ English first, Türkçe below. Full rules and evidence: [`AGENTS.md`](AGENTS.md)
 | `rakkase.py uret` | 2 | plan denetimi HATA ya da motor başlamadı | Planı (mesajı oku) ya da kurulumu düzelt; `--denetimsiz` ile atlama | `RK-E-PLAN` |
 | `rakkase.py uret` | 3 | bir parça başarısız (biten arşivlenir) | Yalnız başarısız parçayı `--yalniz` ile yeniden çalıştır | `RK-E-PARCA` |
 | `rakkase.py uret` | 4 | RAM bekçisi durdurdu | **Kullanıcıya götür**: başka programları kapat; ikinci kopya başlatma | `RK-E-RAM-BEKCI` |
+| `rakkase.py panel` | 5 | panel videosu yapılamadı | ffmpeg yoksa kur, sonra `rakkase.py panel <klasör>` yeniden; müzik sağlam | `RK-E-PANEL` |
 | `rakkase.py uret` | 5 | tamam ama mp3 ya da arşiv başarısız | Bildir; wav'lar yerinde; kullanıcı ffmpeg'i düzeltince `rakkase.py mp3 <klasör>` | `RK-E-ARSIV` |
 | `rakkase.py uret` | 6 | `ayarlar.json` eksik ya da yanlış | **Kullanıcıya götür**: `ace_kok`'a kullanıcının ACE-Step klasörü yazılır | `RK-E-AYAR-YOK` `RK-E-ACE-KOK` `RK-E-KILIT` `RK-E-VENV` `RK-E-MODEL` |
 | `rakkase.py denetle` | 2 | plan denetimi hata buldu | Planı düzelt; `HATA` satırlarını oku | `RK-E-PLAN` |

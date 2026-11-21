@@ -125,3 +125,10 @@ Labels / Etiketler: [measured/ölçtüm] we ran it, [read/okudum] taken from a d
 
 32. <a id="rk-w-yol-uzun"></a>**`RK-W-YOL-UZUN`**: a path is long / yol uzun
    - Step / Adım: Use a shorter folder such as `<SURUCU>\rk`. / Daha kısa bir klasör (örnek `<SURUCU>\rk`) kullanın.
+
+33. <a id="rk-e-panel"></a>**`RK-E-PANEL`** (exit/çıkış 5): the panel video could not be made (`rakkase.py panel`) / panel videosu yapılamadı (`rakkase.py panel`)
+   - Cause / Neden: ffmpeg is missing, the wav is missing, broken or too short, or the process stopped [read: `araclar/panel.py`]. / ffmpeg yok, wav yok, bozuk ya da çok kısa, ya da süreç düştü [okudum: `araclar/panel.py`].
+   - First step / İlk adım: Install ffmpeg (`winget install --id Gyan.FFmpeg -e`) if it is missing, check that the wav is a real track, then run `python rakkase.py panel <folder>` again. The music is not affected. / ffmpeg yoksa kurun (`winget install --id Gyan.FFmpeg -e`), wav'in gerçek bir parça olduğunu kontrol edin, sonra `python rakkase.py panel <klasör>` komutunu yeniden çalıştırın. Müzik etkilenmez.
+
+34. <a id="rk-w-panel"></a>**`RK-W-PANEL`**: the panel video failed during `uret`; the track is delivered / `uret` sırasında panel videosu düştü; parça teslim edildi
+   - Step / Adım: Nothing is lost: wav and mp3 are in place and the exit code does not change. Run `python rakkase.py panel <folder>` to try again. If ffmpeg is simply missing you see `RK-W-FFMPEG` instead and the panel is skipped. / Bir şey kaybolmadı: wav ve mp3 yerinde, çıkış kodu değişmez. Yeniden denemek için `python rakkase.py panel <klasör>`. ffmpeg yoksa bunun yerine `RK-W-FFMPEG` görürsünüz ve panel atlanır.

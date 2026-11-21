@@ -63,6 +63,15 @@ class Denetim(unittest.TestCase):
         self.kirmizi({"baska/b.jpg": b"\xff\xd8\xff" + b"x" * 100}, "G")
         self.kirmizi({"docs/gorsel/b.exe": b"MZ"}, "G3")
 
+    def test_g3_mp4(self):
+        mp4 = b"\x00\x00\x00\x18ftypisom"
+        kod, cikti = kos({"docs/gorsel/p.mp4": mp4 + b"x" * 100})
+        self.assertEqual(kod, 0, cikti)
+        self.kirmizi({"docs/gorsel/p.mp4": mp4 + b"x" * (4 * 1024 * 1024)}, "G3")
+        self.kirmizi({"baska/p.mp4": mp4 + b"x" * 100}, "G3")
+        gizli = "C:" + chr(92) + "Us" + "ers" + chr(92) + "biri"
+        self.kirmizi({"docs/gorsel/p.mp4": mp4 + gizli.encode() + b"x"}, "G2")
+
     def test_g4_json(self):
         self.kirmizi({"ornekler/p.json": "{bozuk"}, "G4")
 

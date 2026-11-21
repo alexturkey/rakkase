@@ -87,6 +87,10 @@ Her koşu kendi `dokum.json`'unu yazar (her parçadan sonra güncellenir); parç
 
 Aynı parçadan başka aday: yalnız `tohum`u değiştir (`ad`a tohumu ekle). Caption değişince başka parça olur.
 
+## Paylaşmaya hazır panel
+
+X, Instagram ve WhatsApp ses dosyası kabul etmediği için `uret` her parçanın yanına `<ad>_panel.mp4` de yazar: 1080x1080, 30 kare/sn, 20 bantlı LED spektrum (eski radyo görünümü), ses kayıpsız kaynaktan AAC 320k. Video süslü değildir, parçanın gerçek spektrumudur. Ölçüm: 100 sn'lik parça için 49 sn, 8,5 MB, CPU'da [bakımcılar ölçtü, tek koşu]. Konum: `uretimler/<tarih>_<ad>/<ad>_panel.mp4` (wav ve mp3'ün yanında). Gereken: ffmpeg (PATH'te; mp3 ile aynısı), numpy, soundfile, Pillow; üçü de ACE-Step ortamında vardır [bakımcılar canlı kurulumda ölçtü], ek kurulum adımı yok. Panel CPU'da koşar, GPU istemez, pencere açmaz. Varsayılan AÇIK; kapatmak için `python rakkase.py uret --plan P.json --panel-yok` (ayar anahtarı yok, yalnız bayrak). Sonradan ya da başka bir wav için: `python rakkase.py panel <wav ya da klasör>` (klasörde panel zaten varsa atlanır). `test` panel üretmez. ffmpeg yoksa mevcut `RK-W-FFMPEG` uyarısı çıkar ve panel atlanır; `uret` sırasında panel düşerse `RK-W-PANEL` uyarısıdır ve çıkış kodu DEĞİŞMEZ (müzik ve mp3 yerinde); yalnız `rakkase.py panel` komutu başarısız olursa `RK-E-PANEL` (çıkış 5). Ayrıntı: `docs/SIK_HATALAR.md`.
+
 ## Tohum denemesi
 
 **Tohum nedir:** plandaki `tohum`, rastgeleliğin başlangıç sayısıdır. Aynı plan + aynı tohum = aynı parça (GPU'da bit düzeyi değil; SNR > 40 dB, korelasyon > 0,999). Aynı caption ve söz farklı tohumla aynı şarkının başka bir yorumunu verir: farklı ezgi, hava, düzenleme. Yakın sayılar (41, 42) benzer parça vermez; birbirinden uzak sayılar seç (yeni tohum çekmek için `secrets.randbelow(2**32)`).

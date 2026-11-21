@@ -133,7 +133,7 @@ def yaz(plan_yol, kosu, motor_notu="", tasi=False, ureten=""):
 def _parca_yaz(p, plan, plan_yol, kosu, dokum, dokum_yol, olcum, arac, tasi, ureten):
     ad = p["ad"]
     hedef = os.path.join(kosu, ad)
-    kaynaklar = [os.path.join(kosu, ad + u) for u in (".wav", ".mp3", ".soz_zamani.json")]
+    kaynaklar = [os.path.join(kosu, ad + u) for u in (".wav", ".mp3", "_panel.mp4", ".soz_zamani.json")]
     if not any(os.path.exists(k) for k in kaynaklar) and not os.path.isdir(hedef):
         return None
     os.makedirs(hedef, exist_ok=True)

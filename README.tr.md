@@ -46,6 +46,13 @@ Plan bir JSON'dur: `caption` (İngilizce tarz tarifi, 256 token sınırı), `[Ve
 ## Tohum (üç tane deneyin)
 Tohum (plandaki `tohum`), rastgeleliğin başlangıç sayısıdır. Aynı plan ve aynı tohum aynı parçayı verir; aynı tarif farklı tohumla aynı şarkının başka bir yorumunu verir, yani tek fikir birkaç şarkı olabilir. Yakın sayılar (41 ve 42) benzer sonuç vermez: birbirinden uzak sayılar seçin. `ornekler/tohum_denemesi.json` ile üç tohum deneyin, dinleyin, beğendiğinizi seçin. Her tohum tam üretim süresi kadar sürer (parça süresinin yaklaşık 0,6-0,8 katı); tohum yaratıcı bir seçimdir, kalite ayarı değildir. Ayrıntı: [`docs/KULLANIM.md`](docs/KULLANIM.md) ("Tohum denemesi"). Yapay zeka ajanlarına bunu ilk parçadan önce size anlatmaları söylenmiştir.
 
+## Paylaşmaya hazır panel videosu
+X, Instagram ve WhatsApp düz ses dosyası kabul etmiyor. Bu yüzden her `uret` sonrasında Rakkase parçanın yanına `<ad>_panel.mp4` de yapar: müzikle oynayan, eski radyo tarzı LED spektrumlu 1080x1080 bir video; ses kayıpsız kaynaktan AAC 320k olarak içinde. 100 sn'lik bir parçada CPU'da 49 sn sürdü ve 8,5 MB çıktı [bakımcılar ölçtü, tek koşu; başka makinelerde ölçülmedi]. Panel parçanın gerçek spektrumunu gösterir; müziği değiştirmez. ffmpeg ister (mp3'ün kullandığı aynısı; numpy, soundfile ve Pillow ACE-Step ortamında zaten var). ffmpeg yoksa parça ve mp3 yine yapılır, panel uyarıyla atlanır; `uret` sırasında panel düşerse yalnız uyarı alırsınız, çıkış kodu değişmez. `--panel-yok` ile kapatın, sonradan `python rakkase.py panel <wav ya da klasör>` ile yapın. Ayrıntı: [`docs/KULLANIM.md`](docs/KULLANIM.md) ("Paylaşmaya hazır panel"). Paylaştığınız şey için aynı telif notu geçerli: sanatçı adı yok, başkasının sözü yok.
+
+[![Rakkase LED panel karesi: 20 saniyelik örneği oynatmak için tıklayın](docs/gorsel/ornek_panel.png)](docs/gorsel/ornek_panel.mp4)
+
+Resme tıklayın, 20 saniyelik örnek oynar (Rakkase'nin kendi ürettiği halk tarzı bir Türkçe parçadan kesit; sesi model söylüyor, ses klonu yok).
+
 ## Bir şey ters giderse
 Önce [`docs/SORUN_GIDERME.md`](docs/SORUN_GIDERME.md) (ne görürsünüz, ne yapılır) ve [`docs/HATALAR.md`](docs/HATALAR.md) (15 sık hata, 7 yanlış inanç). `rakkase.py uret` çıkış kodları: 0 tamam, 2 plan denetiminde hata ya da motor başlamadı, 3 bir parça başarısız, 4 RAM bekçisi durdurdu, 5 üretim tamam ama arşiv başarısız, 6 `ayarlar.json` eksik ya da yanlış.
 
