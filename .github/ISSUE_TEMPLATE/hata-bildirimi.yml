@@ -1,0 +1,48 @@
+name: Bug report / Hata bildirimi
+description: Something failed during install or run
+body:
+  - type: input
+    id: ortam
+    attributes:
+      label: "Machine, versions / Makine, sürümler"
+      placeholder: "GTX 1050 Ti 4 GB, 16 GB RAM, Windows 10"
+    validations:
+      required: true
+  - type: input
+    id: komut
+    attributes:
+      label: "Command you ran / Çalıştırdığınız komut"
+    validations:
+      required: true
+  - type: input
+    id: cikis-kodu
+    attributes:
+      label: "Exit code / Çıkış kodu (0, 2, 3, 4, 5, 6)"
+      description: "`rakkase.py uret` exit codes: 0 done, 2 plan check error or engine did not start, 3 a track failed, 4 RAM guard stopped it, 5 done but archive failed, 6 `ayarlar.json` missing or wrong. See docs/SORUN_GIDERME.md. / Çıkış kodları yukarıda; docs/SORUN_GIDERME.md."
+      placeholder: "6"
+    validations:
+      required: false
+  - type: textarea
+    id: tani
+    attributes:
+      label: "Diagnosis report / Teşhis raporu (optional / isteğe bağlı)"
+      description: "Paste the output of `python rakkase.py denetle --plan <plan>`. Replace your folders with `<RAKKASE>` and `<ACE_KOK>`; no user name, e-mail or token. / Plan denetim çıktısını yapıştırın. Klasörlerinizi `<RAKKASE>` ve `<ACE_KOK>` yapın; kullanıcı adı, e-posta, token olmasın."
+    validations:
+      required: false
+  - type: textarea
+    id: log
+    attributes:
+      label: "First 20 lines of the output / Çıktının ilk 20 satırı (no personal paths please / kişisel yol yok)"
+    validations:
+      required: true
+  - type: textarea
+    id: beklenen
+    attributes:
+      label: "Expected vs what happened / Beklenen ve olan"
+  - type: checkboxes
+    id: gizlilik
+    attributes:
+      label: "Privacy / Gizlilik"
+      options:
+        - label: "I removed personal paths, user names, e-mails and tokens / Kişisel yol, kullanıcı adı, e-posta ve token sildim"
+          required: true

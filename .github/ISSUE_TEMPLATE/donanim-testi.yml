@@ -1,0 +1,29 @@
+name: Hardware test / Donanım testi
+description: Report a run on your machine
+body:
+  - type: input
+    id: donanim
+    attributes:
+      label: "GPU, VRAM, driver, RAM / Kart, VRAM, sürücü, RAM"
+    validations:
+      required: true
+  - type: input
+    id: calisma
+    attributes:
+      label: "Plan, length in seconds, load time, generation time, peak RAM/VRAM / Plan, süre (sn), yükleme ve üretim süresi, RAM/VRAM tepesi"
+    validations:
+      required: true
+  - type: dropdown
+    id: kapi
+    attributes:
+      label: "`python rakkase.py test` result / `test` sonucu (reference comparison)"
+      options:
+        - "passed / geçti"
+        - "failed / geçmedi"
+        - "not run / koşulmadı"
+    validations:
+      required: true
+  - type: textarea
+    id: not
+    attributes:
+      label: "Notes / Notlar (label each claim: [measured] [read] [guess])"
