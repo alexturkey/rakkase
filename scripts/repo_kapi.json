@@ -1,0 +1,215 @@
+{
+  "_not": "Rakkase repo_kapi.json (toplanti 8, 2026-11-21). Kaynak: README, docs/, rakkase.py [okudum]. CHECKOUT_SHA / SETUP_PYTHON_SHA gh api ile okunur.",
+  "kit_surumu": 1,
+  "kurulu_parcalar": {},
+  "repo": {
+    "ad": "Rakkase",
+    "sahip": "alexturkey",
+    "kisa_ad": "rk",
+    "tur": "uygulama",
+    "gpu": true,
+    "platform": [
+      "windows-10",
+      "windows-11"
+    ],
+    "ana_dal": "main",
+    "lisans": "MIT"
+  },
+  "betik_dizini": "araclar",
+  "korumali_yollar": [
+    "rakkase.py",
+    "motor/*",
+    "testler/*",
+    "testler/referans/*",
+    ".gitignore",
+    ".gitattributes",
+    "ayarlar.ornek.json",
+    ".github/*",
+    "LICENSE",
+    "NOTICE",
+    "SECURITY.md"
+  ],
+  "izinli_alan_adlari": [
+    "github.com",
+    "huggingface.co",
+    "hf.co",
+    "us.aws.cdn.hf.co",
+    "cdn-lfs.huggingface.co"
+  ],
+  "izinli_paketler": [
+    "torch",
+    "torchao",
+    "transformers",
+    "numpy",
+    "soundfile"
+  ],
+  "dil": {
+    "kaynak": "README.md",
+    "ceviri_deseni": "README.{dil}.md",
+    "kademe": {
+      "A": [
+        "tr"
+      ],
+      "B": [],
+      "C": []
+    },
+    "rtl": [],
+    "zwj_izinli": [],
+    "lrm_izinli": [],
+    "hukuki_belgeler_ingilizce": true
+  },
+  "kalite_sabitleri": [
+    {
+      "ad": "adim sayisi",
+      "aciklama": "turbo 8 adim (modelin kendi degeri)",
+      "dosyalar": [
+        "rakkase.py",
+        "motor/*.py",
+        "araclar/*.py"
+      ],
+      "yasak_desen": "inference_steps *= *(?!p\\.get)(?!8\\b)\\d+|get\\( *\"adim\" *, *(?:[0-79]|8\\d|[1-9]\\d)",
+      "izinli_deger": null
+    },
+    {
+      "ad": "fp32 hesap",
+      "aciklama": "hesap fp32 (fp16 Pascal'da NaN verir)",
+      "dosyalar": [
+        "rakkase.py",
+        "motor/*.py"
+      ],
+      "yasak_desen": "\\b(?:dit|model)\\.(?:half|bfloat16)\\(\\)|dit\\.dtype *= *torch\\.(?:float16|bfloat16|half)",
+      "izinli_deger": null
+    },
+    {
+      "ad": "LM kapali",
+      "aciklama": "lm / thinking acilmaz (4 GB'a sigmaz, kalite cizgisi DiT-only)",
+      "dosyalar": [
+        "rakkase.py",
+        "motor/*.py"
+      ],
+      "yasak_desen": "(thinking|use_lm) *= *True",
+      "izinli_deger": null
+    }
+  ],
+  "hata": {
+    "imza_dosyasi": "docs/hata_imzalari.json",
+    "sik_hatalar": "docs/HATALAR.md",
+    "kod_oneki": "RK"
+  },
+  "betikler": {
+    "kur": "KURULUM.md",
+    "uret": "rakkase.py",
+    "tani": "",
+    "on_kontrol": "rakkase.py denetle",
+    "denetim": "araclar/denetle.py"
+  },
+  "cikis_kodlari": {
+    "rakkase.py uret": {
+      "0": "TAMAM",
+      "2": "plan denetimi HATA ya da motor yuklenemedi",
+      "3": "bir parca basarisiz (bitenler arsivlenir)",
+      "4": "RAM bekcisi durdurdu",
+      "5": "uretim tamam ama mp3/arsiv basarisiz",
+      "6": "ayarlar.json eksik/yanlis"
+    },
+    "rakkase.py test": {
+      "0": "GECTI",
+      "1": "KALDI"
+    }
+  },
+  "yer_tutucular": {
+    "REPO_AD": "Rakkase",
+    "SAHIP_REPO": "alexturkey/Rakkase",
+    "REPO_URL": "https://github.com/alexturkey/Rakkase",
+    "KISA_ACIKLAMA_EN": "Local music generation with ACE-Step 1.5 turbo on a 4 GB GPU (tested: GTX 1050 Ti) and 16 GB RAM: plan file in, wav/mp3 plus recipe archive out. The repository contains no model weights and no music except one 15-second reference clip.",
+    "HATA_ONEKI": "RK",
+    "HATA_IMZA_DOSYASI": "docs/hata_imzalari.json",
+    "SIK_HATALAR_YOLU": "docs/HATALAR.md",
+    "KALITE_SABITLERI": "turbo 8 steps, int8 decoder only, fp32 compute, LM off",
+    "DEGISMEZ_KURALLAR_EN": "quality is fixed (turbo 8 steps, int8 decoder only, fp32 compute because fp16 gives NaN, language model off); `python rakkase.py test` must pass after any engine change; exit codes 4 and 6 of `rakkase.py uret` mean the run did not start properly",
+    "LISANS_ADI": "MIT",
+    "LISANS_NOTU_EN": "ACE-Step 1.5 code and weights (MIT) and Qwen3-Embedding-0.6B (Apache-2.0) are not distributed here; see `NOTICE`.",
+    "LISANS_NOTU_TR": "ACE-Step 1.5 kodu ve ağırlıkları (MIT) ile Qwen3-Embedding-0.6B (Apache-2.0) burada dağıtılmaz; `NOTICE`'a bakın.",
+    "ONKONTROL_KOMUTU": "python -I -X utf8 -m py_compile rakkase.py motor/dokum_muzik.py araclar/denetle.py",
+    "DENETIM_BETIGI": "araclar/denetle.py",
+    "ORTAM_ORNEGI": "GTX 1050 Ti 4 GB, 16 GB RAM, Windows 10",
+    "GPU_GEREKSINIMI": "an NVIDIA GPU with 4 GB or more (CUDA)",
+    "GPU_GEREKSINIMI_TR": "4 GB ya da üstü NVIDIA ekran kartı (CUDA) ister",
+    "GPU_KELIMESI": "GPU",
+    "GPU_KELIMESI_TR": "ekran kartınız",
+    "EN_DEGERLI_KATKILAR": "tests on other GPUs (card, driver, plan, time, RAM and VRAM peak, result of `python rakkase.py test`), clearer install steps, new measured recipes for `docs/TARIFLER.md`, typo and translation fixes, and measured memory improvements.",
+    "TR_DEGERLI_KATKILAR": "başka kartlarda test (kart, sürücü, plan, süre, RAM ve VRAM tepesi, `python rakkase.py test` sonucu), daha net kurulum adımları, `docs/TARIFLER.md` için ölçülmüş yeni tarifler, yazım ve çeviri düzeltmeleri, ölçülmüş bellek iyileştirmeleri.",
+    "EN_KABUL_1": "A test report from another GPU, with the log",
+    "TR_KABUL_1": "Başka kartta test raporu (günlükle)",
+    "AJAN_KURALI_EN": "the agent must never lower the quality settings (8 steps, fp32) to make a run faster",
+    "AJAN_KURALI_TR": "ajan hız için kalite ayarlarını (8 adım, fp32) asla düşürmez",
+    "GUVENLIK_KAPSAMI_EN": "`rakkase.py`, `motor/`, `araclar/` and the example plans.",
+    "GUVENLIK_KAPSAMI_TR": "`rakkase.py`, `motor/`, `araclar/` ve örnek planlar.",
+    "KAPSAM_DISI_UCUNCU_TARAF_EN": "ACE-Step 1.5, its model weights and Qwen3-Embedding-0.6B (report to their own projects); the music you generate.",
+    "KAPSAM_DISI_UCUNCU_TARAF_TR": "ACE-Step 1.5, model ağırlıkları ve Qwen3-Embedding-0.6B (kendi projelerine bildirin); ürettiğiniz müzik.",
+    "TASARIM_NOTLARI_EN": "Rakkase opens no network port and needs no administrator rights. Every run loads the model, finishes, and exits (no resident service).",
+    "TASARIM_NOTLARI_TR": "Rakkase ağ portu açmaz, yönetici hakkı istemez. Her çalıştırma modeli yükler, işi bitirir, kapanır (sürekli açık servis yok).",
+    "AG_ADRESLERI_TABLOSU": [
+      "| Host | What | Which step, when |",
+      "|---|---|---|",
+      "| `github.com` | ACE-Step-1.5 source (pinned commit) | install, by you (`KURULUM.md`) |",
+      "| `huggingface.co` | model weights (`ACE-Step/Ace-Step1.5`) | install, by you; runs set `HF_HUB_OFFLINE=1` |"
+    ],
+    "AG_ADRESLERI_TABLOSU_TR": [
+      "| Adres | Ne | Hangi adım, ne zaman |",
+      "|---|---|---|",
+      "| `github.com` | ACE-Step-1.5 kaynağı (sabit commit) | kurulum, sizin elinizle (`KURULUM.md`) |",
+      "| `huggingface.co` | model ağırlıkları (`ACE-Step/Ace-Step1.5`) | kurulum, sizin elinizle; üretimde `HF_HUB_OFFLINE=1` |"
+    ],
+    "AG_TARAMA_KOMUTU": "Select-String -Path rakkase.py,motor/*.py,araclar/*.py -Pattern 'https?://|curl|Invoke-WebRequest|urllib|socket'",
+    "GIZLILIK_EK_YAPMAZ_EN": "No upload of plans, lyrics or music.",
+    "GIZLILIK_EK_YAPMAZ_TR": "Plan, söz ya da müzik yüklemez.",
+    "YEREL_VERI_EN": "`ayarlar.json` (your local paths), and `uretimler/` (generated music and recipe archive) inside the project folder; both are git-ignored.",
+    "YEREL_VERI_TR": "Proje klasöründe `ayarlar.json` (yerel yollarınız) ve `uretimler/` (üretilen müzik ve reçete arşivi); ikisi de git dışıdır.",
+    "DIS_NOTLAR_EN": "The model and the music it generates are under the ACE-Step license and model card, not under this policy (`NOTICE`).",
+    "DIS_NOTLAR_TR": "Model ve ürettiği müzik ACE-Step lisansı ve model kartındadır, bu metnin kapsamı dışındadır (`NOTICE`).",
+    "DESTEK_DISI_EN": "other models, non-NVIDIA cards, quality settings changed to run faster (they are fixed on purpose), and the legal status of music you generate.",
+    "DESTEK_DISI_TR": "başka modeller, NVIDIA dışı kartlar, hız için değiştirilmiş kalite ayarları (bilerek sabit) ve ürettiğiniz müziğin hukuki durumu.",
+    "HEDEF_EN": "local music generation with ACE-Step 1.5 turbo on a Windows PC with a 4 GB NVIDIA card",
+    "HEDEF_TR": "Windows bilgisayarda, 4 GB NVIDIA kartla ACE-Step 1.5 turbo ile yerel müzik üretimi",
+    "KURU_KOMUT": "python rakkase.py denetle --plan ornekler/sozlu_balad.json",
+    "KURULUM_KOMUT": "KURULUM.md",
+    "ILK_KOMUT": "python rakkase.py uret --plan ornekler/sozlu_balad.json",
+    "ILK_SURE_EN": "about 2 minutes of model loading plus about 0.6-0.8 x the song length on a GTX 1050 Ti [measured by the authors]",
+    "ILK_SURE_TR": "GTX 1050 Ti'de yaklaşık 2 dk model yükleme ve parça süresinin yaklaşık 0,6-0,8 katı [yazarlar ölçtü]",
+    "ONAY_ADIMI_EN": "Installing ACE-Step and downloading its weights is the human's step (`KURULUM.md`); do not install silently",
+    "ONAY_ADIMI_TR": "ACE-Step kurulumu ve ağırlık indirmesi insanın adımıdır (`KURULUM.md`); sessizce kurma",
+    "KAPI_SINIRI_EN": "`denetle` checks plan limits (tokens, durations); it does NOT judge the music, listen to the result.",
+    "KAPI_SINIRI_TR": "`denetle` plan sınırlarını (token, süre) denetler; müziği YARGILAMAZ, sonucu dinle.",
+    "CIKIS_KODU_TABLOSU_EN": [
+      "| `rakkase.py uret` | 0 | OK | Listen to the result | - |",
+      "| `rakkase.py uret` | 2 | plan check ERROR or engine did not start | Fix the plan (read the message) or the install; do not use `--denetimsiz` to skip | - |",
+      "| `rakkase.py uret` | 3 | a track failed (finished ones are archived) | Re-run only the failed track | - |",
+      "| `rakkase.py uret` | 4 | RAM guard stopped the run | **Take it to the user**: close other programs; do not start a second copy | - |",
+      "| `rakkase.py uret` | 6 | `ayarlar.json` missing or wrong | **Take it to the user**: set `ace_kok` (your ACE-Step folder) | - |",
+      "| `rakkase.py test` | 1 | FAILED (reference mismatch) | **Take it to the user**; do not change the engine to make it pass | - |"
+    ],
+    "CIKIS_KODU_TABLOSU_TR": [
+      "| `rakkase.py uret` | 0 | TAMAM | Sonucu dinle | - |",
+      "| `rakkase.py uret` | 2 | plan denetimi HATA ya da motor başlamadı | Planı (mesajı oku) ya da kurulumu düzelt; `--denetimsiz` ile atlama | - |",
+      "| `rakkase.py uret` | 3 | bir parça başarısız (biten arşivlenir) | Yalnız başarısız parçayı yeniden çalıştır | - |",
+      "| `rakkase.py uret` | 4 | RAM bekçisi durdurdu | **Kullanıcıya götür**: başka programları kapat; ikinci kopya başlatma | - |",
+      "| `rakkase.py uret` | 6 | `ayarlar.json` eksik ya da yanlış | **Kullanıcıya götür**: `ace_kok` (ACE-Step klasörünüz) yazılsın | - |",
+      "| `rakkase.py test` | 1 | KALDI (referansla uyuşmadı) | **Kullanıcıya götür**; geçsin diye motoru değiştirme | - |"
+    ],
+    "KURU_ACIKLAMA_EN": "To check a plan without using the GPU, run `python rakkase.py denetle --plan <plan>` (CPU, about 5 s) and paste the output.",
+    "KURU_ACIKLAMA_TR": "Planı ekran kartı kullanmadan denetlemek için `python rakkase.py denetle --plan <plan>` (CPU, yaklaşık 5 sn) çalıştırıp çıktısını yapıştırın.",
+    "TANI_KOMUTU_ACIKLAMA": "Paste the output of `python rakkase.py denetle --plan <plan>` and the first error lines (remove personal paths). / Plan denetim çıktısını ve ilk hata satırlarını yapıştırın (kişisel yolları silin).",
+    "ILK_ISSUE_BILGI_EN": "The project was developed and measured on a single GTX 1050 Ti (4 GB); information from other cards is very valuable to us.",
+    "ILK_ISSUE_BILGI_TR": "Bu proje tek bir GTX 1050 Ti (4 GB) üzerinde ölçülerek geliştirildi; başka kartlardan gelen her bilgi bizim için değerli.",
+    "CHECKOUT_SHA": "TODO: gh api ile oku, uydurma",
+    "SETUP_PYTHON_SHA": "TODO: gh api ile oku, uydurma"
+  },
+  "atla": {
+    "KL-06": "ERTELENDI 2026-11-21: PR kapi betikleri (kit Faz 2) Rakkase'ye bagli degil; v1'de bekci + korumali yol (rakkase.py, motor/, testler/, .github/) + denetim.py tek kapi; ilk dis PR gelince kurulur",
+    "KL-07": "ERTELENDI 2026-11-21: yalniz iki dil (EN + TR), 29 dilli kademe yok; dil_eslik betigi gerekmeden elle eslik denetimi (denetci); 3. dil gelirse kurulur",
+    "KL-08": "ERTELENDI 2026-11-21: tek komut denetim.py zaten (python -I scripts/denetim.py); ayri on_kontrol sarmalayicisi katkisiz",
+    "KL-18": "KISMEN: AGENTS.md + llms.txt + GEMINI.md var; AGENTS_HIZLI.md yok (hata kodu sistemi RK-E-* ve hata_imzalari.json yok; olmayan sistemi anlatan kart yalan olurdu); cikis kodu tablosu AGENTS.md'de",
+    "KL-04": "UYGULANDI baska adla 2026-11-21: gizlilik taramasi scripts/denetim.py G2 (kisisel iz, e-posta, token, ic iz); ayri gizlilik_denetimi.py yok. Bedel: yok. Gevseme: kitin ayri modul sarti gelirse ince sarmalayici"
+  }
+}

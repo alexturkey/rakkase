@@ -1,0 +1,20 @@
+# Rakkase
+
+> Local music generation with ACE-Step 1.5 turbo on a 4 GB GPU (tested: GTX 1050 Ti) and 16 GB RAM: plan file in, wav/mp3 plus recipe archive out. The repository contains no model weights and no music except one 15-second reference clip.
+
+Rules that never change: quality is fixed (turbo 8 steps, int8 decoder only, fp32 compute because fp16 gives NaN, language model off); `python rakkase.py test` must pass after any engine change; exit codes 4 and 6 of `rakkase.py uret` mean the run did not start properly; no personal paths, e-mail addresses or tokens in anything you commit.
+
+## Start here
+- [AGENTS.md](https://github.com/alexturkey/Rakkase/blob/main/AGENTS.md): setup, hard rules, commands, exit codes, where things are written
+- [README.md](https://github.com/alexturkey/Rakkase/blob/main/README.md): overview and quick start (English is authoritative)
+- [KURULUM.md](https://github.com/alexturkey/Rakkase/blob/main/KURULUM.md): install summary (Turkish; details in docs/KURULUM_DEFTERI.md)
+
+## When something fails
+- [docs/SORUN_GIDERME.md](https://github.com/alexturkey/Rakkase/blob/main/docs/SORUN_GIDERME.md): symptom to fix (Turkish)
+- [docs/HATALAR.md](https://github.com/alexturkey/Rakkase/blob/main/docs/HATALAR.md): common mistakes and wrong beliefs (Turkish)
+
+## Safety, license, privacy
+- [SECURITY.md](https://github.com/alexturkey/Rakkase/blob/main/SECURITY.md): private reporting, what counts as a vulnerability
+- [PRIVACY.md](https://github.com/alexturkey/Rakkase/blob/main/PRIVACY.md): no telemetry; the only network addresses
+- [CONTRIBUTING.md](https://github.com/alexturkey/Rakkase/blob/main/CONTRIBUTING.md): how to contribute
+- [NOTICE](https://github.com/alexturkey/Rakkase/blob/main/NOTICE): third-party licenses (ACE-Step MIT, Qwen3-Embedding Apache-2.0; not distributed here)
