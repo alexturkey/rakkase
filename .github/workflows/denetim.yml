@@ -1,0 +1,71 @@
+# Rakkase audit. REPORT-ONLY for the first two weeks: steps do not fail the PR, results go to the job summary.
+# Remove the `continue-on-error` lines marked REPORT-ONLY once the checks ran clean on real PRs.
+#
+# Security (why / cost / when to loosen):
+#  - Trigger is `pull_request` and push to main only. No privileged PR triggers, no comment/issue triggers:
+#    fork code never runs with secrets or a write token. Cost: fork PRs run with a read-only token (intended).
+#  - `permissions: contents: read`; no secrets, no GPU, no model download, no network step beyond checkout/setup-python.
+#  - Actions are pinned to full commit SHAs (version in the comment); Dependabot updates them.
+#  - PR title/body never enter a shell through `${{ }}`.
+#  - Not run here: testler/denetle_test.py (needs the ACE-Step tokenizer = model files). It runs on the maintainer's machine.
+#    Cost: the planner gate is not covered by CI. Loosen: add it when a CI-sized tokenizer fixture exists.
+name: denetim
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: denetim-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  denetim:
+    name: denetim (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    defaults:
+      run:
+        shell: bash
+    env:
+      PYTHONUTF8: "1"
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.11"
+
+      - name: Repo audit (scripts/denetim.py)
+        id: denetim
+        continue-on-error: true # REPORT-ONLY
+        run: python -I scripts/denetim.py 2>&1 | tee "$RUNNER_TEMP/denetim.txt"; test "${PIPESTATUS[0]}" -eq 0
+
+      - name: Audit negative tests (testler/denetim_test.py)
+        id: testler
+        continue-on-error: true # REPORT-ONLY
+        run: python -B -m unittest testler/denetim_test.py 2>&1 | tee "$RUNNER_TEMP/testler.txt"; test "${PIPESTATUS[0]}" -eq 0
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "## Rakkase audit"
+            echo "- repo audit: \`${{ steps.denetim.outcome }}\`"
+            echo "- audit tests: \`${{ steps.testler.outcome }}\`"
+            echo '```'
+            head -c 6000 "$RUNNER_TEMP/denetim.txt" 2>/dev/null || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
