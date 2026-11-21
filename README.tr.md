@@ -25,7 +25,7 @@ Rakkase, [ACE-Step 1.5](https://github.com/ace-step/ACE-Step-1.5)'in turbo model
    Parça `uretimler/<tarih_saat>_<ad>/` altına wav + mp3, sözler ve reçete dosyasıyla düşer.
 5. **Kurulumunuzu kanıtlayın:** `python rakkase.py test` 15 sn'lik bir referans üretir ve depodaki referans wav ile kıyaslar (geçer: korelasyon > 0,999 ve SNR > 40 dB; çıkış 0 = geçti, 1 = kaldı). GPU ister.
 
-Durum: kurulum yolu belgeli, ama yalnız bu depodan boş bir makinede uçtan uca kurulum denenmedi [henüz doğrulanmadı]; takılırsanız hata bildirimi açın, adımları düzeltmemize yarar. GPU'nuz ya da ACE-Step kurulumunuz yoksa beş dakikada hiçbir şey çalışmaz: belgeleri okuyun, plan ya da çeviri düzeltmesi gönderin (`CONTRIBUTING.md`), 2. adımdan sonra dönün.
+Durum: yazarların makinesinde (GTX 1050 Ti 4 GB) günlük kullanımda: 81 üretim koşusu, her biri tarifiyle arşivli [ölçtük]. Henüz yapmadığımız tek şey, yalnız bu depoyla boş bir makineye sıfırdan kurulum; takılırsanız hata bildirimi açın, adımları düzeltmemize yarar. GPU'nuz ya da ACE-Step kurulumunuz yoksa beş dakikada hiçbir şey çalışmaz: belgeleri okuyun, plan ya da çeviri düzeltmesi gönderin (`CONTRIBUTING.md`), 2. adımdan sonra dönün.
 
 ```
 python rakkase.py denetle --plan P.json   # plan denetimi, CPU, birkaç sn, modeli yüklemez

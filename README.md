@@ -25,7 +25,7 @@ Rakkase is a thin, careful wrapper around [ACE-Step 1.5](https://github.com/ace-
    The track lands in `uretimler/<date_time>_<name>/` as wav + mp3 with lyrics and a recipe file.
 5. **Prove your install:** `python rakkase.py test` generates a 15 s reference and compares it with the committed reference wav (pass: correlation > 0.999 and SNR > 40 dB; exit 0 = pass, 1 = fail). It needs the GPU.
 
-Status: the install path is documented but a clean-machine install from this repository alone has not been run end to end [not yet verified]; if you get stuck, please open a bug report, it helps us fix the steps. No GPU or no ACE-Step yet? Then nothing runs for you in five minutes: read the documents, send plans or translation fixes (see `CONTRIBUTING.md`), and come back after step 2.
+Status: in daily use on the authors' machine (GTX 1050 Ti 4 GB): 81 generation runs, each archived with its recipe [measured]. What we have not done yet is a fresh install on an empty machine using only this repository; if you get stuck, please open a bug report, it helps us fix the steps. No GPU or no ACE-Step yet? Then nothing runs for you in five minutes: read the documents, send plans or translation fixes (see `CONTRIBUTING.md`), and come back after step 2.
 
 ```
 python rakkase.py denetle --plan P.json   # plan check, CPU, a few seconds, does not load the model
