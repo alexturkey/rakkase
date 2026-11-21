@@ -1,0 +1,32 @@
+{
+  "not": "Tohum denemesi: ayni caption ile uc farkli tohum, sozsuz 30 sn. Yalniz tohum degisir, tarif ayni; her tohum farkli bir yorum verir. ad'a tohum eklenir. Dinle, begendigini sec. Aciklama: docs/KULLANIM.md 'Tohum denemesi'.",
+  "parcalar": [
+    {
+      "ad": "tohum_ninni_t482113_30sn",
+      "caption": "slow gentle lullaby instrumental, fingerpicked nylon classical guitar, warm soft cello melody, quiet night, tender and calm, sparse arrangement, no drums, no percussion, no vocals",
+      "sure": 30,
+      "bpm": 66,
+      "ton": "D Minor",
+      "olcu": "3",
+      "tohum": 482113
+    },
+    {
+      "ad": "tohum_ninni_t7730921_30sn",
+      "caption": "slow gentle lullaby instrumental, fingerpicked nylon classical guitar, warm soft cello melody, quiet night, tender and calm, sparse arrangement, no drums, no percussion, no vocals",
+      "sure": 30,
+      "bpm": 66,
+      "ton": "D Minor",
+      "olcu": "3",
+      "tohum": 7730921
+    },
+    {
+      "ad": "tohum_ninni_t2915604_30sn",
+      "caption": "slow gentle lullaby instrumental, fingerpicked nylon classical guitar, warm soft cello melody, quiet night, tender and calm, sparse arrangement, no drums, no percussion, no vocals",
+      "sure": 30,
+      "bpm": 66,
+      "ton": "D Minor",
+      "olcu": "3",
+      "tohum": 2915604
+    }
+  ]
+}

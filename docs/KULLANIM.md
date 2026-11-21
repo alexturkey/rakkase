@@ -53,7 +53,7 @@ kendi yükleme yolu silindi, gerekirse `git tag paket-yolu-son`.
 | `caption` | evet | İngilizce tarz/enstrüman/duygu/vokal betimi. Sınır **256 token** (bpm, ton, süre bilgisiyle birlikte; fazlası uyarısız sondan kesilir: önce bpm/ton/süre satırları, sonra caption'ın sonu, ölçüm 2026-11-05: 1083 karakterlik caption = 253 token, yani ~4,3 karakter/token). Ölçmek: ACE-Step venv'inde `checkpoints/Qwen3-Embedding-0.6B` tokenizer'ı ile `SFT_GEN_PROMPT` şablonu |
 | `sure` | evet | saniye, 10-600 |
 | `bpm`, `ton`, `olcu` | evet | tempo; "G Major", "C Minor"; "4" (4/4), "3" |
-| `tohum` | evet | sabit sayı; aynı plan + tohum = aynı parça. Çeşit için tohumu değiştir, caption'ı değil |
+| `tohum` | evet | sabit sayı; aynı plan + tohum = aynı parça. Çeşit için tohumu değiştir, caption'ı değil (bkz. [Tohum denemesi](#tohum-denemesi)) |
 | `lyrics` | sözlüde | `[Verse 1]`, `[Pre-Chorus]`, `[Chorus]`, `[Bridge]`, `[Outro]` etiketli satırlar; tam olarak `[Instrumental]` ise enstrümantal sayılır |
 | `vocal_language` | sözlüde | ISO kodu; `tr` geçerli (`acestep/constants.py: VALID_LANGUAGES`); yoksa `unknown` |
 | `instrumental` | hayır | `true` zorla enstrümantal (lyrics olsa da) |
@@ -86,6 +86,16 @@ python rakkase.py uret --plan ornekler/cesit_6_tarz.json --ad kosu1 --yalniz 1_d
 Her koşu kendi `dokum.json`'unu yazar (her parçadan sonra güncellenir); parçalar `uretimler/`e.
 
 Aynı parçadan başka aday: yalnız `tohum`u değiştir (`ad`a tohumu ekle). Caption değişince başka parça olur.
+
+## Tohum denemesi
+
+**Tohum nedir:** plandaki `tohum`, rastgeleliğin başlangıç sayısıdır. Aynı plan + aynı tohum = aynı parça (GPU'da bit düzeyi değil; SNR > 40 dB, korelasyon > 0,999). Aynı caption ve söz farklı tohumla aynı şarkının başka bir yorumunu verir: farklı ezgi, hava, düzenleme. Yakın sayılar (41, 42) benzer parça vermez; birbirinden uzak sayılar seç (yeni tohum çekmek için `secrets.randbelow(2**32)`).
+
+**Nasıl denenir:** aynı `caption`, `lyrics`, `sure`, `bpm`, `ton`, `olcu` ile 3 parça yaz; yalnız `tohum` (ve `ad`) değişsin. Hazır örnek: `ornekler/tohum_denemesi.json` (sözsüz, 30 sn, 3 tohum). Üret, dinle, beğeneni seç; seçilen tohum o parçanın tarifidir (`recete.json` içinde kayıtlıdır) ve sonradan aynı parça yeniden üretilebilir.
+
+**Bedel:** her tohum tam üretim süresi kadar sürer (parça süresinin yaklaşık 0,6-0,8 katı; GTX 1050 Ti'de 100 sn'lik parça için yaklaşık 75 sn [yazarlar ölçtü, `OLCUMLER.md`]); model yüklemesi koşu başına bir kez (yaklaşık 2 dk). Üç tohum, tek parçanın yaklaşık üç katı üretim süresidir. Uzun plan için `rakkase.py bol`.
+
+**Sınır:** tohum yaratıcı bir seçimdir, kalite ayarı değildir: turbo 8 adım ve fp32 değişmez. Çeşit için caption'ı değiştirme; o başka bir parça olur.
 
 ## Plan denetimi: `rakkase.py denetle` (2026-11-05, üretimden önce, CPU ~5 sn)
 

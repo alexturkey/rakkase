@@ -43,6 +43,9 @@ python rakkase.py mp3     <folder>        # mp3 192k next to every wav
 
 A plan is JSON: `caption` (English style description, 256-token limit), `lyrics` with `[Verse]`/`[Chorus]` tags, `sure` (seconds), `bpm`, `ton`, `olcu`, `tohum` (same plan + same seed = same track). Every field is explained in [`docs/KULLANIM.md`](docs/KULLANIM.md), the limits in [`docs/SINIRLAR.md`](docs/SINIRLAR.md), recipes that worked in [`docs/TARIFLER.md`](docs/TARIFLER.md).
 
+## Seeds (try three)
+A seed (`tohum` in the plan) is the starting number of the randomness. The same plan with the same seed gives the same track; the same recipe with a different seed gives a different performance of it, so one idea can become several songs. Nearby numbers (41 and 42) do not give similar results: pick numbers far apart. Try three seeds with `ornekler/tohum_denemesi.json`, listen and keep the one you like. Every seed takes the full generation time (about 0.6-0.8 x the track length) and the seed is a creative choice, not a quality setting. Details: [`docs/KULLANIM.md`](docs/KULLANIM.md) ("Tohum denemesi"). AI agents are told to explain this to you before the first track.
+
 ## When something goes wrong
 Start with [`docs/SORUN_GIDERME.md`](docs/SORUN_GIDERME.md) (what you see, what to do) and [`docs/HATALAR.md`](docs/HATALAR.md) (15 common mistakes, 7 common wrong beliefs). `rakkase.py uret` exit codes: 0 done, 2 plan check error or engine did not start, 3 a track failed, 4 RAM guard stopped it, 5 done but archive failed, 6 `ayarlar.json` missing or wrong.
 

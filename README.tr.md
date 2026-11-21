@@ -43,6 +43,9 @@ python rakkase.py mp3     <klasör>        # her wav'ın yanına mp3 192k
 
 Plan bir JSON'dur: `caption` (İngilizce tarz tarifi, 256 token sınırı), `[Verse]`/`[Chorus]` etiketli `lyrics`, `sure` (sn), `bpm`, `ton`, `olcu`, `tohum` (aynı plan + aynı tohum = aynı parça). Her alan [`docs/KULLANIM.md`](docs/KULLANIM.md)'de, sınırlar [`docs/SINIRLAR.md`](docs/SINIRLAR.md)'de, işe yarayan tarifler [`docs/TARIFLER.md`](docs/TARIFLER.md)'de.
 
+## Tohum (üç tane deneyin)
+Tohum (plandaki `tohum`), rastgeleliğin başlangıç sayısıdır. Aynı plan ve aynı tohum aynı parçayı verir; aynı tarif farklı tohumla aynı şarkının başka bir yorumunu verir, yani tek fikir birkaç şarkı olabilir. Yakın sayılar (41 ve 42) benzer sonuç vermez: birbirinden uzak sayılar seçin. `ornekler/tohum_denemesi.json` ile üç tohum deneyin, dinleyin, beğendiğinizi seçin. Her tohum tam üretim süresi kadar sürer (parça süresinin yaklaşık 0,6-0,8 katı); tohum yaratıcı bir seçimdir, kalite ayarı değildir. Ayrıntı: [`docs/KULLANIM.md`](docs/KULLANIM.md) ("Tohum denemesi"). Yapay zeka ajanlarına bunu ilk parçadan önce size anlatmaları söylenmiştir.
+
 ## Bir şey ters giderse
 Önce [`docs/SORUN_GIDERME.md`](docs/SORUN_GIDERME.md) (ne görürsünüz, ne yapılır) ve [`docs/HATALAR.md`](docs/HATALAR.md) (15 sık hata, 7 yanlış inanç). `rakkase.py uret` çıkış kodları: 0 tamam, 2 plan denetiminde hata ya da motor başlamadı, 3 bir parça başarısız, 4 RAM bekçisi durdurdu, 5 üretim tamam ama arşiv başarısız, 6 `ayarlar.json` eksik ya da yanlış.
 
