@@ -12,6 +12,7 @@ Third-party components (not distributed here; you download them yourself, see KU
 - Qwen3-Embedding-0.6B (text encoder used by ACE-Step) - Apache License 2.0
   https://huggingface.co/Qwen/Qwen3-Embedding-0.6B
 - PyTorch, torchao, Transformers: used from their own packages under their own licenses; none is vendored in this repository.
+- FFmpeg (optional, only for wav to mp3): called from your PATH if installed; its license (LGPL-2.1+ or GPL) depends on the build you install. Not included here.
 
 This project is not affiliated with or endorsed by the ACE-Step or Qwen projects.
 
