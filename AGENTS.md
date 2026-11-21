@@ -13,6 +13,8 @@ Evidence labels ([measured], [read], [guess], [not tried]) are used in `docs/`. 
 - Do not use artist names or someone else's lyrics in plans (`docs/HATALAR.md`, Y7).
 
 ## Install
+Quick card first: `AGENTS_HIZLI.md` (decision tree, exit code to action). Error codes: `docs/SIK_HATALAR.md`.
+
 Follow `KURULUM.md` (summary) and `docs/KURULUM_DEFTERI.md` (versions and every wall we hit). ACE-Step is installed by you, from the pinned commit; the weights come from the official source. Then `python rakkase.py test`.
 
 ## Commands

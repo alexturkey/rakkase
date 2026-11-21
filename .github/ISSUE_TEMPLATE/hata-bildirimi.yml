@@ -17,16 +17,17 @@ body:
   - type: input
     id: cikis-kodu
     attributes:
-      label: "Exit code / Çıkış kodu (0, 2, 3, 4, 5, 6)"
-      description: "`rakkase.py uret` exit codes: 0 done, 2 plan check error or engine did not start, 3 a track failed, 4 RAM guard stopped it, 5 done but archive failed, 6 `ayarlar.json` missing or wrong. See docs/SORUN_GIDERME.md. / Çıkış kodları yukarıda; docs/SORUN_GIDERME.md."
+      label: "Error code and exit code / Hata kodu ve çıkış kodu (e.g. RK-E-DISK, 3)"
+      description: "`rakkase.py uret` exit codes: 0 done, 2 plan check error or engine did not start, 3 a track failed, 4 RAM guard stopped it, 5 done but archive failed, 6 `ayarlar.json` missing or wrong. The `HATA: [RK-E-...]` line has the error code: see docs/SIK_HATALAR.md and docs/SORUN_GIDERME.md. / Çıkış kodları yukarıda; docs/SORUN_GIDERME.md."
       placeholder: "6"
     validations:
       required: false
   - type: textarea
     id: tani
     attributes:
-      label: "Diagnosis report / Teşhis raporu (optional / isteğe bağlı)"
-      description: "Paste the output of `python rakkase.py denetle --plan <plan>`. Replace your folders with `<RAKKASE>` and `<ACE_KOK>`; no user name, e-mail or token. / Plan denetim çıktısını yapıştırın. Klasörlerinizi `<RAKKASE>` ve `<ACE_KOK>` yapın; kullanıcı adı, e-posta, token olmasın."
+      label: "Diagnosis report / Tanı raporu (optional, recommended / isteğe bağlı, önerilir)"
+      description: "Run `scripts\tani.ps1`; it writes `tani_raporu.txt` on your computer and masks your paths and user name. Paste its content here. Read it before you post: it should hold no name, e-mail or token. / `scripts\tani.ps1` çalıştırın; `tani_raporu.txt` bilgisayarınıza yazılır, yollarınızı ve kullanıcı adınızı maskeler. İçeriği buraya yapıştırın; göndermeden önce okuyun: ad, e-posta, token olmamalı."
+      render: text
     validations:
       required: false
   - type: textarea
@@ -44,5 +45,5 @@ body:
     attributes:
       label: "Privacy / Gizlilik"
       options:
-        - label: "I removed personal paths, user names, e-mails and tokens / Kişisel yol, kullanıcı adı, e-posta ve token sildim"
+        - label: "I read the output and it holds no personal path, user name, e-mail or token / Çıktıyı okudum, kişisel yol, kullanıcı adı, e-posta ya da token yok"
           required: true

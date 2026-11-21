@@ -116,3 +116,18 @@ Test ölçütü bu yüzden korelasyon > 0,999 ve SNR > 40 dB.
 ## 5. Karşılaştırma (okudum, denenmedi)
 - ACE-Step `docs/en/GPU_COMPATIBILITY.md`: Tier 1 (≤4 GB) = DiT-only + INT8 + CPU offload; süre verilmiyor.
 - Issue #142: torchao 0.16 + torch 2.7 `.to()` fallback 11 sn, torchao 0.12 ile 1,4 sn (Linux). Bizde RAM sağlıklıyken 1 sn, değiştirilmedi.
+
+## 6. Temiz klasörde kurulum ve ilk GPU testi (2026-11-22, ölçtüm)
+Aynı makine (GTX 1050 Ti 4 GB, 16 GB RAM, Windows 10). Kurulum `scripts/kur.ps1` ile boş bir klasöre, taze uv ortamıyla yapıldı; modeller yerel bir kopyadan alındı (HuggingFace indirmesi bu ölçüme dahil değil).
+
+| Ölçüm | Değer | Not |
+|---|---|---|
+| `kur.ps1` toplam süre | 32 dk 6 sn (uv paket indirme 13 dk 50 sn, 125 paket kurulumu 3 dk 34 sn, modeller yaklaşık 14 dk), çıkış kodu 0, HAZIR | modeller yerel kopyadan; internetten indirme süresi ölçülmedi |
+| Kurulumun disk tüketimi | yaklaşık 23 GB (boş E: 823 GB -> 800 GB) | `df` GB yuvarlaması, birkaç yüz MB sapabilir; denetim eşiği bu yüzden ~25 GiB |
+| `rakkase.py test` sonucu | GEÇTİ | referans karşılaştırması |
+| SNR / korelasyon | 44,1 dB / 0,999988 | eşik: SNR > 40 dB, korelasyon > 0,999 |
+| Toplam süre | 539 sn | soğuk ilk yükleme dahil (ilk koşu, önbellek yok) |
+| VRAM tepe | 2653 MiB | 15 sn'lik test parçası; uzun parçada artabilir |
+| RAM (RSS) tepe | 7688 MB | |
+
+Kaynak: ana oturumun kurulum günlüğü ve test çıktı klasörü (yerel iş klasörü, repoda değil). Denenmedi: HuggingFace'ten gerçek indirme, git/uv'siz boş makine, başka GPU.

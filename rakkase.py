@@ -28,21 +28,28 @@ KOK = os.path.dirname(os.path.abspath(__file__))
 GIZLI = 0x08000000 if os.name == "nt" else 0  # CREATE_NO_WINDOW (yalniz Windows)
 
 
+# Kodlar (hata() 'HATA: [KOD] ...' basar; cikis kodu docs/hata_imzalari.json): [RK-E-AYAR-YOK] [RK-E-ACE-KOK] [RK-E-KILIT] [RK-E-VENV] [RK-E-MODEL] [RK-E-PLAN] [RK-E-PARCA] [RK-E-RAM-BEKCI] [RK-E-ARSIV] [RK-W-FFMPEG]
+def hata(kod, mesaj, cikis):
+    """Tek bicim: 'HATA: [RK-E-XXX] mesaj'. Kod -> cikis haritasi: docs/hata_imzalari.json, cozumler: docs/SIK_HATALAR.md."""
+    print(f"HATA: [{kod}] {mesaj}", flush=True)
+    sys.exit(cikis)
+
+
 def ayar_yukle():
-    """ayarlar.json yerel ve git disi; ilk calismada ayarlar.ornek.json'dan kopyalanir, kullanici yollari duzeltir."""
+    """ayarlar.json yerel ve git disi; kur.cmd (scripts/kur.ps1) yazar, elle: ayarlar.ornek.json'u ayarlar.json olarak kopyala."""
     yol = os.path.join(KOK, "ayarlar.json")
     if not os.path.exists(yol):
-        shutil.copyfile(os.path.join(KOK, "ayarlar.ornek.json"), yol)
-        print("ayarlar.json olusturuldu (ayarlar.ornek.json'dan): ace_kok ve kilit ayarlarini duzelt, sonra yeniden calistir.")
-        sys.exit(6)
-    with open(yol, encoding="utf-8") as f:
-        ayar = json.load(f)
-    if not os.path.isdir(ayar.get("ace_kok", "")):
-        print(f"ayarlar.json: ace_kok klasoru yok ({ayar.get('ace_kok')}); ACE-Step-1.5 klasorunu yaz (docs/KURULUM_DEFTERI.md).")
-        sys.exit(6)
+        hata("RK-E-AYAR-YOK", "ayarlar.json yok. Cozum: kur.cmd'yi cift tiklayin (ACE-Step'i kurar ve ayarlari yazar); ACE-Step zaten kuruluysa "
+             "ayarlar.ornek.json'u ayarlar.json adiyla kopyalayip ace_kok'a ACE-Step klasorunuzu yazin / ayarlar.json is missing: run kur.cmd", 6)
+    try:
+        with open(yol, encoding="utf-8") as f:
+            ayar = json.load(f)
+    except (OSError, ValueError) as e:
+        hata("RK-E-AYAR-YOK", f"ayarlar.json okunamadi ya da bozuk ({e}). Duzeltin ya da silip kur.cmd'yi yeniden calistirin / ayarlar.json unreadable", 6)
+    if not os.path.isdir(os.path.expandvars(ayar.get("ace_kok", ""))):
+        hata("RK-E-ACE-KOK", f"ayarlar.json ace_kok klasoru yok ({ayar.get('ace_kok')!r}). ACE-Step klasorunun yolunu yazin ya da kur.cmd'yi calistirin / ace_kok folder not found", 6)
     if ayar.get("kilit") and not os.path.isdir(ayar.get("kilit_src", "")):
-        print("ayarlar.json: kilit=true ama kilit_src klasoru yok; kilit altyapisi yoksa kilit=false yap.")
-        sys.exit(6)
+        hata("RK-E-KILIT", "ayarlar.json: kilit=true ama kilit_src klasoru yok. GPU kilidi icin ozel bir modul gerekir; yoksa kilit=false yapin / kilit=true needs kilit_src", 6)
     return ayar
 
 
@@ -60,6 +67,18 @@ def venv_python():
     return os.path.join(venv_klasoru(), "bin", "python")
 
 
+def kurulum_kontrol(model=True):
+    """venv ve model dosyalari yoksa uzun bir hata yerine anlasilir kod: RK-E-VENV, RK-E-MODEL (cikis 6)."""
+    if not os.path.exists(venv_python()):
+        hata("RK-E-VENV", f"ACE-Step Python ortami yok ({venv_python()}). Cozum: kur.cmd (uv ortamini kurar) / the Python environment is missing: run kur.cmd", 6)
+    ck = os.path.join(os.path.expandvars(AYAR["ace_kok"]), "checkpoints")
+    gerek = ["Qwen3-Embedding-0.6B/tokenizer.json"] + (["acestep-v15-turbo/model.safetensors", "vae/diffusion_pytorch_model.safetensors",
+                                                       "Qwen3-Embedding-0.6B/model.safetensors"] if model else [])
+    for g in gerek:
+        if not os.path.exists(os.path.join(ck, g)):
+            hata("RK-E-MODEL", f"model dosyasi eksik: {g}. Cozum: kur.cmd (indirir, sha256 dogrular, kaldigi yerden surer) / model file missing: run kur.cmd", 6)
+
+
 def uret(plan, cikti, ad, yalniz=""):
     env = dict(os.environ, BETIK="dokum_muzik.py", HF_HUB_OFFLINE="1", PYTHONIOENCODING="utf-8", RAKKASE_VENV=venv_klasoru())
     kom = [venv_python(), "-B", os.path.join(KOK, "motor", "calistir.py"), "--plan", os.path.abspath(plan),
@@ -74,6 +93,9 @@ def uret(plan, cikti, ad, yalniz=""):
 
 
 def mp3(klasor):
+    if not shutil.which("ffmpeg"):
+        print("UYARI: [RK-W-FFMPEG] ffmpeg PATH'te yok: mp3 yapilmadi, wav dosyalari yerinde (ffmpeg kurunca: python rakkase.py mp3 <klasor>) / ffmpeg not found, no mp3", flush=True)
+        return
     for w in sorted(glob.glob(os.path.join(klasor, "**", "*.wav"), recursive=True)):
         m = w[:-4] + ".mp3"
         if not os.path.exists(m):
@@ -123,14 +145,16 @@ def main():
     a = ap.parse_args()
 
     if a.komut == "denetle":
+        kurulum_kontrol(model=False)
         sys.exit(denetle(a.plan, a.yalniz))
+    if a.komut in ("uret", "test"):
+        kurulum_kontrol()
     if a.komut == "uret":
         if not a.denetimsiz:
             dk = denetle(a.plan, a.yalniz)
             if dk:
-                print("URETIM BASLAMADI: " + ("plan denetiminde HATA var" if dk == 2 else f"denetim calismadi (cikis {dk})")
-                      + " (duzelt ya da --denetimsiz)", flush=True)
-                sys.exit(2)
+                hata("RK-E-PLAN", "URETIM BASLAMADI: " + ("plan denetiminde HATA var (yukaridaki satirlar)" if dk == 2 else f"denetim calismadi (cikis {dk})")
+                     + ". Plani duzeltin; --denetimsiz ile atlamak onerilmez / plan check failed", 2)
         cikti = a.cikti or os.path.join(KOK, "cikti", "kosular")
         kod = uret(a.plan, cikti, a.ad, a.yalniz)
         kosu = os.path.join(os.path.abspath(cikti), a.ad)
@@ -143,6 +167,10 @@ def main():
             except Exception as e:  # uretim yapildi; arsiv hatasi uretimi yok saymaz
                 print(f"UYARI arsiv/mp3 basarisiz ({e!r}); wav'lar yerinde: {kosu}  (elle: python araclar/recete.py --plan .. --kosu ..)", flush=True)
                 kod = kod or 5
+        _KOD_AD = {2: ("RK-E-PLAN", "motor baslamadi ya da yuklenemedi"), 3: ("RK-E-PARCA", "bir parca basarisiz (biten parcalar arsivlendi; yalnizca basarisizi --yalniz ile yeniden calistirin)"),
+                   4: ("RK-E-RAM-BEKCI", "bos RAM bitti, RAM bekcisi durdurdu: diger programlari kapatin, ikinci kopya baslatmayin"), 5: ("RK-E-ARSIV", "uretim tamam ama mp3/arsiv basarisiz (wav yerinde)")}
+        if kod in _KOD_AD:
+            print(f"HATA: [{_KOD_AD[kod][0]}] {_KOD_AD[kod][1]}", flush=True)
         sys.exit(kod)
     if a.komut == "bol":
         for i, g in enumerate(bol(a.plan), 1):

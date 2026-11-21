@@ -4,7 +4,7 @@ Kapilar (her biri: neden / bedel / gevseme):
   G1 gizli Unicode ve ham kontrol karakteri: gorunmez metin ajana/okura talimat tasir. Bedel: yok. Gevseme: yok.
   G2 kisisel iz: kullanici-yolu, surucu-yolu, kisisel kullanici adi, e-posta, token kaliplari. Bedel: yer tutucu (<RAKKASE>) kullanilir.
      Gevseme: yalniz scripts/denetim_izinli.txt'e yazili, gerekceli tam satir.
-  G3 ikili dosya: yalniz testler/referans/*.wav (<= 8 MB); baska wav/mp3/pt/safetensors/zip repoya girmez. Gevseme: gerekceyle liste.
+  G3 ikili dosya: yalniz testler/referans/*.wav (<= 8 MB) ve docs/gorsel/*.jpg|png (<= 2 MB); baska wav/mp3/pt/safetensors/zip repoya girmez. Gevseme: gerekceyle liste.
   G4 JSON: ornekler/, testler/ ve ayarlar.ornek.json gecerli UTF-8 JSON olmali.
   G5 Python: her .py derlenir (sozdizimi), import yapilmaz (model yuklenmez).
   G6 yerel dosya: ayarlar.json, .env, uretimler/, cikti/ izlenmez.
@@ -37,10 +37,16 @@ KISISEL = [
                          r"-----BEGIN [A-Z ]*PRIVATE KEY-----|[Bb]earer\s+[A-Za-z0-9._-]{20,})")),
 ]
 EPOSTA_IZINLI = re.compile(r"@(?:users\.noreply\.github\.com|example\.(?:com|org)|localhost\.invalid|yerel\.invalid)$|^noreply@", re.I)
-YASAK_UZANTI = {".wav", ".mp3", ".flac", ".ogg", ".pt", ".pth", ".safetensors", ".ckpt", ".bin", ".gguf", ".onnx", ".zip", ".7z", ".mp4", ".mkv"}
+YASAK_UZANTI = {".wav", ".mp3", ".flac", ".ogg", ".pt", ".pth", ".safetensors", ".ckpt", ".bin", ".gguf", ".onnx", ".zip", ".7z", ".mp4", ".mkv", ".exe", ".dll", ".msi", ".so", ".dylib", ".jar", ".whl"}
 YEREL = ("ayarlar.json", ".env")
 YEREL_KLASOR = ("uretimler/", "cikti/", ".ajan/")
 WAV_ENFAZLA = 8 * 1024 * 1024
+GORSEL_ENFAZLA = 2 * 1024 * 1024
+
+
+def gorsel_izinli(r, ek, yol):
+    """docs/gorsel/ altindaki jpg/png (<= 2 MB) tanitim gorseli: ikili ama izinli."""
+    return r.startswith("docs/gorsel/") and ek in (".jpg", ".jpeg", ".png") and os.path.getsize(yol) <= GORSEL_ENFAZLA
 
 
 def dosyalar(kok):
@@ -80,6 +86,8 @@ def denetle(kok):
                 bulgu.append(("G3", r, 0, "izinsiz ikili/agirlik/ses dosyasi ya da referans wav > 8 MB"))
             continue
         ham = open(yol, "rb").read()
+        if gorsel_izinli(r, ek, yol):
+            continue
         if b"\0" in ham[:4096]:
             bulgu.append(("G3", r, 0, "bilinmeyen ikili dosya"))
             continue

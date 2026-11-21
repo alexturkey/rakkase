@@ -14,20 +14,15 @@ Rakkase, [ACE-Step 1.5](https://github.com/ace-step/ACE-Step-1.5)'in turbo model
 
 ## Hızlı başlangıç (Quick start)
 
-1. **Ne gerekir:** Windows 10/11 [ölçtüm: Windows 10], 4 GB ya da üstü NVIDIA kart [yalnız GTX 1050 Ti'de denendi], 16 GB RAM, yaklaşık 6,1 GB model için boş disk [okudum: `docs/KURULUM_DEFTERI.md` bölüm 3] ve torch'lu Python ortamı için yer (boyutu ölçülmedi), giriş kapısı için Python, ACE-Step ortamını kurmak için [uv](https://docs.astral.sh/uv/).
-2. **ACE-Step 1.5'i bir kez kurun** (sabit commit, model indirme, ayar dosyası): [`KURULUM.md`](KURULUM.md) (kısa), [`docs/KURULUM_DEFTERI.md`](docs/KURULUM_DEFTERI.md) (tam, karşılaştığımız her duvarla).
-3. **Planı CPU'da denetleyin** (GPU yok, model yüklenmez; tokenizer için ACE-Step klasörü gerekir):
-   ```
-   python rakkase.py denetle --plan ornekler/sozsuz_fon_ninni.json
-   ```
-4. **Üretin:**
-   ```
-   python rakkase.py uret --plan ornekler/sozsuz_fon_ninni.json
-   ```
-   Parça `uretimler/<tarih_saat>_<ad>/` altına wav + mp3, sözler ve reçete dosyasıyla düşer.
-5. **Kurulumunuzu kanıtlayın:** `python rakkase.py test` 15 sn'lik bir referans üretir ve depodaki referans wav ile kıyaslar (geçer: korelasyon > 0,999 ve SNR > 40 dB; çıkış 0 = geçti, 1 = kaldı). GPU ister.
+1. **Makinenizi kontrol edin:** Windows 10/11 [ölçtüm: Windows 10], 4 GB ya da üstü NVIDIA kart [yalnız GTX 1050 Ti'de denendi], 16 GB RAM, yaklaşık 6,4 GB model (22 dosya) için boş disk [okudum: `scripts/modeller.json`] ve torch'lu Python ortamı; kurulumun tamamı yaklaşık 23 GB (denetim ~25 GiB boş yer ister) [ölçtüm: temiz kurulumda yaklaşık 23 GB, modeller yerel kaynaktan kopyalandı]. Önce **git** ve **uv**'yi kurun (sizin için kurulmaz): `winget install --id Git.Git -e` ve `winget install --id=astral-sh.uv -e`, sonra yeni bir terminal açın. ffmpeg isteğe bağlı (yoksa wav alırsınız, mp3 olmaz): `winget install --id Gyan.FFmpeg -e`.
+2. **Bu depoyu indirip açın** (yeşil **Code** düğmesi, **Download ZIP**): boşluksuz ve Türkçe harfsiz KISA bir klasöre, örneğin bir sürücünün en üstünde `rk` adlı bir klasöre. İnternetten inen dosya için Windows SmartScreen uyarısı çıkabilir: önce `scripts\kur.ps1`'i okuyun (düz metin betiktir), sonra karar verin. Yönetici olarak çalıştırmayın (gerekmez).
+3. **`kur.cmd`'ye çift tıklayın.** git, uv, sürücü, disk ve VRAM'i denetler, [ACE-Step 1.5](https://github.com/ACE-Step/ACE-Step-1.5)'i denediğimiz commit'te kurar, model dosyalarını indirir (yaklaşık 6,4 GB, yalnız `huggingface.co/ACE-Step` ve `huggingface.co/Qwen`'den, sha256 ile denetlenir) ve `ayarlar.json`'u sizin için yazar. Süre bağlantınıza ve diskinize bağlıdır [ölçülmedi]. Yarım kalan çalışma kaldığı yerden sürer: yeniden çalıştırın. Önce planı görmek için terminalde `kur.cmd -Kuru`: neyi yapacağının raporunu yazar ve hiçbir şey yazmaz: dosya, klasör, ağ yok [bakımcılar kopya klasörde ölçtü]. ACE-Step klasörünüz zaten varsa `kur.cmd` bulur, yeniden kurmaz.
+4. **`uret.cmd`'ye çift tıklayın:** en güvenli örneği üretir (`ornekler/sozsuz_fon_ninni.json`, sözsüz); kendi parçanız için bir `plan.json`'u `uret.cmd`'nin üzerine sürükleyin. Parça `uretimler/<tarih_saat>_<ad>/` altına wav + mp3 ve reçete dosyasıyla düşer. GTX 1050 Ti'mizde yaklaşık 2 dk model yükleme ve parça süresinin 0,6-0,8 katı [yazarlar ölçtü, `docs/OLCUMLER.md`]; varsayılan örnek (96 sn) kabaca 3 dk sürer [bu sayılardan türetildi, olduğu gibi koşulmadı].
+5. **Kurulumunuzu kanıtlayın (GPU):** `python rakkase.py test` 15 sn'lik bir referans üretir ve depodaki referans wav ile kıyaslar (geçer: korelasyon > 0,999 ve SNR > 40 dB; çıkış 0 = geçti, 1 = kaldı).
 
-Durum: yazarların makinesinde (GTX 1050 Ti 4 GB) günlük kullanımda: 81 üretim koşusu, her biri tarifiyle arşivli [ölçtük]. Henüz yapmadığımız tek şey, yalnız bu depoyla boş bir makineye sıfırdan kurulum; takılırsanız hata bildirimi açın, adımları düzeltmemize yarar. GPU'nuz ya da ACE-Step kurulumunuz yoksa beş dakikada hiçbir şey çalışmaz: belgeleri okuyun, plan ya da çeviri düzeltmesi gönderin (`CONTRIBUTING.md`), 2. adımdan sonra dönün.
+Bir şey ters giderse betik `HATA: [RK-E-...]` basar: kodu [`docs/SIK_HATALAR.md`](docs/SIK_HATALAR.md)'de arayın (her kod için tek ilk adım). Hata bildirmek için `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\tani.ps1 -Cikti tani_raporu.txt` çalıştırın (yollarınızı ve kullanıcı adınızı maskeler; yine de dosyayı yapıştırmadan önce okuyun). Betiksiz elle kurulum: [`KURULUM.md`](KURULUM.md).
+
+Durum: temiz bir klasörde taze uv ortamıyla tam kurulum 32 dk 6 sn’de (uv paket indirme 13 dk 50 sn, paket kurulumu 3 dk 34 sn, modeller yaklaşık 14 dk) HAZIR oldu, ardından GPU’da `rakkase.py test` geçti (SNR 44,1 dB, korelasyon 0,999988, 539 sn, VRAM tepe 2653 MB, RAM tepe 7688 MB) [ölçtüm: bakımcılar, 2026-11-22, modeller yerel kopyadan alındı; HuggingFace indirmesinin kendisi ve git/uv’siz gerçekten boş makine henüz doğrulanmadı]; takılırsanız hata bildirimi açın, adımları düzeltmemize yarar. GPU'nuz ya da ACE-Step kurulumunuz yoksa beş dakikada hiçbir şey çalışmaz: belgeleri okuyun, plan ya da çeviri düzeltmesi gönderin (`CONTRIBUTING.md`), 3. adımdan sonra dönün.
 
 ```
 python rakkase.py denetle --plan P.json   # plan denetimi, CPU, birkaç sn, modeli yüklemez

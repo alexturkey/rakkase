@@ -14,20 +14,15 @@ Rakkase is a thin, careful wrapper around [ACE-Step 1.5](https://github.com/ace-
 
 ## Quick start (start here)
 
-1. **What you need:** Windows 10/11 [measured: Windows 10], an NVIDIA GPU with 4 GB or more [tested only on GTX 1050 Ti], 16 GB RAM, free disk for about 6.1 GB of models [read: `docs/KURULUM_DEFTERI.md` section 3] plus the Python environment with torch (size not measured), Python for the front door, and [uv](https://docs.astral.sh/uv/) to build the ACE-Step environment.
-2. **Install ACE-Step 1.5 once** (pinned commit, model download, settings file): see [`KURULUM.md`](KURULUM.md) (short) and [`docs/KURULUM_DEFTERI.md`](docs/KURULUM_DEFTERI.md) (full, with every wall we hit).
-3. **Check a plan on the CPU** (no GPU, no model load; it does need the ACE-Step folder for the tokenizer):
-   ```
-   python rakkase.py denetle --plan ornekler/sozsuz_fon_ninni.json
-   ```
-4. **Generate:**
-   ```
-   python rakkase.py uret --plan ornekler/sozsuz_fon_ninni.json
-   ```
-   The track lands in `uretimler/<date_time>_<name>/` as wav + mp3 with lyrics and a recipe file.
-5. **Prove your install:** `python rakkase.py test` generates a 15 s reference and compares it with the committed reference wav (pass: correlation > 0.999 and SNR > 40 dB; exit 0 = pass, 1 = fail). It needs the GPU.
+1. **Check your machine:** Windows 10/11 [measured: Windows 10], an NVIDIA GPU with 4 GB or more [tested only on a GTX 1050 Ti], 16 GB RAM, free disk for about 6.4 GB of models (22 files) [read: `scripts/modeller.json`] plus the Python environment with torch; the whole install may need about 23 GB of disk (the check asks for about 25 GiB free) [measured: one clean install used about 23 GB on a 1050 Ti machine, models copied from a local source, so the download time was not measured]. Install **git** and **uv** first (they are not installed for you): `winget install --id Git.Git -e` and `winget install --id=astral-sh.uv -e`, then open a new terminal. ffmpeg is optional (without it you get wav files but no mp3): `winget install --id Gyan.FFmpeg -e`.
+2. **Download and extract** this repository (green **Code** button, **Download ZIP**) into a SHORT folder without spaces or non-English letters, for example a folder named `rk` at the top of a drive. Windows may show a SmartScreen warning for a file downloaded from the internet: read `scripts\kur.ps1` first (it is a plain text script), then decide. Do not run it as administrator (it is not needed).
+3. **Double-click `kur.cmd`.** It checks git, uv, driver, disk and VRAM, installs [ACE-Step 1.5](https://github.com/ACE-Step/ACE-Step-1.5) at the tested commit, downloads the model files (about 6.4 GB, only from `huggingface.co/ACE-Step` and `huggingface.co/Qwen`, checked with sha256), and writes `ayarlar.json` for you. Time depends on your connection and disk [not measured]. A half-finished run continues where it stopped: just run it again. To see the plan first, run `kur.cmd -Kuru` in a terminal: it prints a report of what it would do and writes nothing, no file, no folder, no network [measured by the maintainers on a copy folder]. If you already have an ACE-Step folder, `kur.cmd` finds it and does not install it again.
+4. **Double-click `uret.cmd`:** it generates the safest example (`ornekler/sozsuz_fon_ninni.json`, no lyrics); to make your own, drag a `plan.json` onto `uret.cmd`. The track lands in `uretimler/<date_time>_<name>/` as wav + mp3 with a recipe file. About 2 minutes of model loading plus 0.6-0.8 x the song length on our GTX 1050 Ti [measured by the authors, `docs/OLCUMLER.md`]; the default example (96 s) takes roughly 3 minutes [derived from those numbers, not run as is].
+5. **Prove your install (GPU):** `python rakkase.py test` generates a 15 s reference and compares it with the committed reference wav (pass: correlation > 0.999 and SNR > 40 dB; exit 0 = pass, 1 = fail).
 
-Status: in daily use on the authors' machine (GTX 1050 Ti 4 GB): 81 generation runs, each archived with its recipe [measured]. What we have not done yet is a fresh install on an empty machine using only this repository; if you get stuck, please open a bug report, it helps us fix the steps. No GPU or no ACE-Step yet? Then nothing runs for you in five minutes: read the documents, send plans or translation fixes (see `CONTRIBUTING.md`), and come back after step 2.
+If something fails the script prints `HATA: [RK-E-...]`: look the code up in [`docs/SIK_HATALAR.md`](docs/SIK_HATALAR.md) (one first step per code). For a bug report run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\tani.ps1 -Cikti tani_raporu.txt` (it masks your paths and user name; still read the file before you post it). Manual install without the scripts: [`KURULUM.md`](KURULUM.md).
+
+Status: one complete install into a clean folder with a fresh uv environment ran to HAZIR in 32 min 6 s (uv downloads 13 min 50 s, package install 3 min 34 s, models about 14 min), then `rakkase.py test` passed on the GPU (SNR 44.1 dB, correlation 0.999988, 539 s, VRAM peak 2653 MB, RAM peak 7688 MB) [measured: maintainers, 2026-11-22, models copied from a local copy, so the HuggingFace download itself and a truly empty machine (no git/uv) are not yet verified]; if you get stuck, please open a bug report, it helps us fix the steps. No GPU or no ACE-Step yet? Then nothing runs for you in five minutes: read the documents, send plans or translation fixes (see `CONTRIBUTING.md`), and come back after step 3.
 
 ```
 python rakkase.py denetle --plan P.json   # plan check, CPU, a few seconds, does not load the model

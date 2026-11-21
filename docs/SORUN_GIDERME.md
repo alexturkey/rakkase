@@ -20,7 +20,7 @@ Kısa liste; tam öykü ve kaynaklar `KURULUM_DEFTERI.md` §6 (numaralar oradaki
 | — | `soz_zamani.json` `success: false`, "ara veri yok" | `save_memory_mode` açık, ara tensörler atılıyor | Ortam değişkeni ile kapat ya da bu parçada söz zamanı kullanma |
 | — | mp3 yok, çıkış 5 "arşiv/mp3 başarısız" | ffmpeg PATH'te değil ya da arşiv yazılamadı | wav'lar yerinde; `ffmpeg -version`, sonra `rakkase.py mp3 <klasör>` ve `python araclar/recete.py --plan .. --kosu ..` |
 | — | `URETIM BASLAMADI: plan denetiminde HATA var` | plan bozuk ya da sınır aşıldı | satırdaki HATA'yı düzelt (`SINIRLAR.md`); bilerek atlamak `--denetimsiz` |
-| — | `ayarlar.json olusturuldu` (çıkış 1) | ilk çalıştırma, yerel ayar yok | `ayarlar.json`'da `ace_kok` (ACE-Step klasörü) ve kilit ayarını düzelt, yeniden çalıştır |
+| — | `[RK-E-AYAR-YOK]` ya da `[RK-E-ACE-KOK]` (çıkış 6) | `ayarlar.json` yok ya da `ace_kok` klasörü yok | `kur.cmd` çalıştır (ayarı yazar) ya da `ayarlar.ornek.json`'u `ayarlar.json` olarak kopyalayıp `ace_kok`'a ACE-Step klasörünü yaz; kod listesi `docs/SIK_HATALAR.md` |
 | — | Çıkış 3, `HATA <parça> ...` | bir parça üretilemedi | önceki parçalar arşivlendi; `dokum.json: hata` alanı neden; o parçayı `--yalniz` ile yeniden dene |
 | — | Söz zamanında satır 0 sn ya da 30 sn sürüyor | paketin hizalaması enstrümantal aralıkta çöküyor (≥5 token aynı karede) | o satırları klipte elle ya da komşu satırlardan ara değerle kullan (`SINIRLAR.md` "Söz zamanı") |
 | — | Regex/desen sessizce bozuk, dosyada görünmez bayt | kabuk heredoc'u `\b`'yi geri silme baytına (0x08) çevirdi | dosyayı Write/Edit ile yaz; `grep -c $'\x08' <dosya>` |

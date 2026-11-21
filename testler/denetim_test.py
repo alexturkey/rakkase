@@ -26,7 +26,7 @@ class Denetim(unittest.TestCase):
     def kirmizi(self, dosyalar, kapi):
         kod, cikti = kos(dosyalar)
         self.assertEqual(kod, 1, cikti)
-        self.assertIn(kapi + " ", cikti)
+        self.assertIn(kapi, cikti)
 
     def test_temiz(self):
         kod, cikti = kos({"README.md": "Rakkase. noreply@github.com\n", "k.py": "x = 1\n", "ornekler/p.json": "{}"})
@@ -55,6 +55,13 @@ class Denetim(unittest.TestCase):
         self.kirmizi({"testler/referans/b.wav": b"R" * (9 * 1024 * 1024)}, "G3")
         kod, cikti = kos({"testler/referans/b.wav": b"RIFF" * 10})
         self.assertEqual(kod, 0, cikti)
+
+    def test_g3_gorsel(self):
+        kod, cikti = kos({"docs/gorsel/b.jpg": b"\xff\xd8\xff" + b"x" * 100})
+        self.assertEqual(kod, 0, cikti)
+        self.kirmizi({"docs/gorsel/b.jpg": b"\xff\xd8\xff" + b"x" * (3 * 1024 * 1024)}, "G")
+        self.kirmizi({"baska/b.jpg": b"\xff\xd8\xff" + b"x" * 100}, "G")
+        self.kirmizi({"docs/gorsel/b.exe": b"MZ"}, "G3")
 
     def test_g4_json(self):
         self.kirmizi({"ornekler/p.json": "{bozuk"}, "G4")

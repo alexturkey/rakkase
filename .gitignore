@@ -13,3 +13,8 @@ ayarlar.json
 *.pt
 .venv/
 araclar/olcum.json
+
+# tani.ps1 -Cikti ciktisi (kisisel olabilir)
+tani_raporu.txt
+DUR
+ace_step/

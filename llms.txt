@@ -5,11 +5,13 @@
 Rules that never change: quality is fixed (turbo 8 steps, int8 decoder only, fp32 compute because fp16 gives NaN, language model off); `python rakkase.py test` must pass after any engine change; exit codes 4 and 6 of `rakkase.py uret` mean the run did not start properly; no personal paths, e-mail addresses or tokens in anything you commit.
 
 ## Start here
+- [AGENTS_HIZLI.md](https://github.com/alexturkey/Rakkase/blob/main/AGENTS_HIZLI.md): 12-step decision tree and exit code to action table (English and Turkish)
 - [AGENTS.md](https://github.com/alexturkey/Rakkase/blob/main/AGENTS.md): setup, hard rules, commands, exit codes, where things are written
 - [README.md](https://github.com/alexturkey/Rakkase/blob/main/README.md): overview and quick start (English is authoritative)
 - [KURULUM.md](https://github.com/alexturkey/Rakkase/blob/main/KURULUM.md): install summary (Turkish; details in docs/KURULUM_DEFTERI.md)
 
 ## When something fails
+- [docs/SIK_HATALAR.md](https://github.com/alexturkey/Rakkase/blob/main/docs/SIK_HATALAR.md): stable error codes `RK-E-...` with one first step each (English and Turkish)
 - [docs/SORUN_GIDERME.md](https://github.com/alexturkey/Rakkase/blob/main/docs/SORUN_GIDERME.md): symptom to fix (Turkish)
 - [docs/HATALAR.md](https://github.com/alexturkey/Rakkase/blob/main/docs/HATALAR.md): common mistakes and wrong beliefs (Turkish)
 

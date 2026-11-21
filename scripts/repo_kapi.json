@@ -93,28 +93,39 @@
   ],
   "hata": {
     "imza_dosyasi": "docs/hata_imzalari.json",
-    "sik_hatalar": "docs/HATALAR.md",
+    "sik_hatalar": "docs/SIK_HATALAR.md",
     "kod_oneki": "RK"
   },
   "betikler": {
-    "kur": "KURULUM.md",
+    "kur": "scripts/kur.ps1",
     "uret": "rakkase.py",
-    "tani": "",
+    "tani": "scripts/tani.ps1",
     "on_kontrol": "rakkase.py denetle",
-    "denetim": "araclar/denetle.py"
+    "denetim": "scripts/denetim.py"
   },
   "cikis_kodlari": {
+    "kur.ps1": {
+      "0": "HAZIR",
+      "1": "hata (klon, uv, indirme, sha256)",
+      "2": "girdi/ayar gerek (git ya da uv yok, ayarlar.json bozuk)",
+      "3": "donanim ya da disk yetmiyor",
+      "4": "DURDU"
+    },
     "rakkase.py uret": {
       "0": "TAMAM",
       "2": "plan denetimi HATA ya da motor yuklenemedi",
       "3": "bir parca basarisiz (bitenler arsivlenir)",
       "4": "RAM bekcisi durdurdu",
       "5": "uretim tamam ama mp3/arsiv basarisiz",
-      "6": "ayarlar.json eksik/yanlis"
+      "6": "ayarlar.json/ace_kok/venv/model eksik"
     },
     "rakkase.py test": {
       "0": "GECTI",
       "1": "KALDI"
+    },
+    "tani.ps1": {
+      "0": "rapor uretildi",
+      "6": "calismadi"
     }
   },
   "yer_tutucular": {
@@ -124,7 +135,7 @@
     "KISA_ACIKLAMA_EN": "Local music generation with ACE-Step 1.5 turbo on a 4 GB GPU (tested: GTX 1050 Ti) and 16 GB RAM: plan file in, wav/mp3 plus recipe archive out. The repository contains no model weights and no music except one 15-second reference clip.",
     "HATA_ONEKI": "RK",
     "HATA_IMZA_DOSYASI": "docs/hata_imzalari.json",
-    "SIK_HATALAR_YOLU": "docs/HATALAR.md",
+    "SIK_HATALAR_YOLU": "docs/SIK_HATALAR.md",
     "KALITE_SABITLERI": "turbo 8 steps, int8 decoder only, fp32 compute, LM off",
     "DEGISMEZ_KURALLAR_EN": "quality is fixed (turbo 8 steps, int8 decoder only, fp32 compute because fp16 gives NaN, language model off); `python rakkase.py test` must pass after any engine change; exit codes 4 and 6 of `rakkase.py uret` mean the run did not start properly",
     "LISANS_ADI": "MIT",
@@ -172,8 +183,8 @@
     "DESTEK_DISI_TR": "başka modeller, NVIDIA dışı kartlar, hız için değiştirilmiş kalite ayarları (bilerek sabit) ve ürettiğiniz müziğin hukuki durumu.",
     "HEDEF_EN": "local music generation with ACE-Step 1.5 turbo on a Windows PC with a 4 GB NVIDIA card",
     "HEDEF_TR": "Windows bilgisayarda, 4 GB NVIDIA kartla ACE-Step 1.5 turbo ile yerel müzik üretimi",
-    "KURU_KOMUT": "python rakkase.py denetle --plan ornekler/sozlu_balad.json",
-    "KURULUM_KOMUT": "KURULUM.md",
+    "KURU_KOMUT": "kur.cmd -Kuru",
+    "KURULUM_KOMUT": "kur.cmd",
     "ILK_KOMUT": "python rakkase.py uret --plan ornekler/sozlu_balad.json",
     "ILK_SURE_EN": "about 2 minutes of model loading plus about 0.6-0.8 x the song length on a GTX 1050 Ti [measured by the authors]",
     "ILK_SURE_TR": "GTX 1050 Ti'de yaklaşık 2 dk model yükleme ve parça süresinin yaklaşık 0,6-0,8 katı [yazarlar ölçtü]",
@@ -199,7 +210,7 @@
     ],
     "KURU_ACIKLAMA_EN": "To check a plan without using the GPU, run `python rakkase.py denetle --plan <plan>` (CPU, about 5 s) and paste the output.",
     "KURU_ACIKLAMA_TR": "Planı ekran kartı kullanmadan denetlemek için `python rakkase.py denetle --plan <plan>` (CPU, yaklaşık 5 sn) çalıştırıp çıktısını yapıştırın.",
-    "TANI_KOMUTU_ACIKLAMA": "Paste the output of `python rakkase.py denetle --plan <plan>` and the first error lines (remove personal paths). / Plan denetim çıktısını ve ilk hata satırlarını yapıştırın (kişisel yolları silin).",
+    "TANI_KOMUTU_ACIKLAMA": "Run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts\tani.ps1 -KartSatiri` and paste the result (it is local, hides personal names, sends nothing). / Ayni komutun ciktisini yapistirin (yereldir, kisisel adlari gizler, hicbir sey gondermez).",
     "ILK_ISSUE_BILGI_EN": "The project was developed and measured on a single GTX 1050 Ti (4 GB); information from other cards is very valuable to us.",
     "ILK_ISSUE_BILGI_TR": "Bu proje tek bir GTX 1050 Ti (4 GB) üzerinde ölçülerek geliştirildi; başka kartlardan gelen her bilgi bizim için değerli.",
     "CHECKOUT_SHA": "TODO: gh api ile oku, uydurma",
@@ -209,7 +220,6 @@
     "KL-06": "ERTELENDI 2026-11-21: PR kapi betikleri (kit Faz 2) Rakkase'ye bagli degil; v1'de bekci + korumali yol (rakkase.py, motor/, testler/, .github/) + denetim.py tek kapi; ilk dis PR gelince kurulur",
     "KL-07": "ERTELENDI 2026-11-21: yalniz iki dil (EN + TR), 29 dilli kademe yok; dil_eslik betigi gerekmeden elle eslik denetimi (denetci); 3. dil gelirse kurulur",
     "KL-08": "ERTELENDI 2026-11-21: tek komut denetim.py zaten (python -I scripts/denetim.py); ayri on_kontrol sarmalayicisi katkisiz",
-    "KL-18": "KISMEN: AGENTS.md + llms.txt + GEMINI.md var; AGENTS_HIZLI.md yok (hata kodu sistemi RK-E-* ve hata_imzalari.json yok; olmayan sistemi anlatan kart yalan olurdu); cikis kodu tablosu AGENTS.md'de",
     "KL-04": "UYGULANDI baska adla 2026-11-21: gizlilik taramasi scripts/denetim.py G2 (kisisel iz, e-posta, token, ic iz); ayri gizlilik_denetimi.py yok. Bedel: yok. Gevseme: kitin ayri modul sarti gelirse ince sarmalayici"
   }
 }

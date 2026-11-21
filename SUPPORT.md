@@ -6,7 +6,7 @@ Rakkase is a small volunteer project. The times below are **goals, not commitmen
 
 | You need | Go to | Goal |
 |---|---|---|
-| Install or run problem | Read `docs/SORUN_GIDERME.md` (what you see / what to do) and `docs/HATALAR.md` first, then open a **Bug report** issue | first reply within 7 days |
+| Install or run problem | Look up the `RK-E-...` code in `docs/SIK_HATALAR.md`, then `docs/SORUN_GIDERME.md` and `docs/HATALAR.md`, first, then open a **Bug report** issue | first reply within 7 days |
 | You tested on another machine | Open a **Hardware test** issue (machine, driver, command, time, result) | first reply within 7 days |
 | Security problem | **Do not open a public issue**: `SECURITY.md` (private reporting) | first reply within 7 days |
 | Want to contribute | `CONTRIBUTING.md` (first pull request in 5 steps) | first reply within 7 days |
@@ -25,7 +25,7 @@ Rakkase küçük, gönüllü bir proje. Aşağıdaki süreler **hedeftir; taahh�
 
 | İhtiyacınız | Nereye | Hedef |
 |---|---|---|
-| Kurulum ya da çalıştırma sorunu | Önce `docs/SORUN_GIDERME.md` (ne görürsünüz / ne yapılır) ve `docs/HATALAR.md`, sonra **Hata bildirimi** issue'su | ilk yanıt 7 gün içinde |
+| Kurulum ya da çalıştırma sorunu | Önce `RK-E-...` kodunu `docs/SIK_HATALAR.md`'de arayın, sonra `docs/SORUN_GIDERME.md` ve `docs/HATALAR.md`, sonra **Hata bildirimi** issue'su | ilk yanıt 7 gün içinde |
 | Başka bir makinede denediniz | **Donanım testi** issue'su (makine, sürücü, komut, süre, sonuç) | ilk yanıt 7 gün içinde |
 | Güvenlik sorunu | **Herkese açık issue açmayın**: `SECURITY.md` (gizli bildirim) | ilk yanıt 7 gün içinde |
 | Katkı vermek | `CONTRIBUTING.md` (ilk PR 5 adımda) | ilk yanıt 7 gün içinde |

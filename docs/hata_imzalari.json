@@ -1,0 +1,689 @@
+{
+ "surum": 1,
+ "aciklama_en": "Stable error codes of the Rakkase scripts. Signatures are plain sub-strings (no regular expressions). `cikis` is the exit code of the publishing script (the single source for the code -> exit code map; 0 = warning only). The anchors in SIK_HATALAR.md are the lower-case code.",
+ "aciklama_tr": "Rakkase betiklerinin kararli hata kodlari. Imzalar duz alt dizedir (regex yok). `cikis` yayinlayan betigin cikis kodudur (kod -> cikis haritasinin tek kaynagi; 0 = yalniz uyari). SIK_HATALAR.md capalari kodun kucuk harfidir.",
+ "kodlar": [
+  {
+   "kod": "RK-E-OS",
+   "tur": "hata",
+   "cikis": 3,
+   "sik_hatalar": "1",
+   "yayinlayan": [
+    "kur.ps1"
+   ],
+   "baslik_en": "Windows 10 or newer required",
+   "baslik_tr": "Windows 10 ya da ustu gerekir",
+   "imza": [
+    "[RK-E-OS]"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-OS] Windows 10 ya da ustu gerekir / Windows 10 or newer required"
+   ],
+   "ilk_adim_en": "Use Windows 10 or 11 (the scripts are Windows PowerShell 5.1 scripts).",
+   "ilk_adim_tr": "Windows 10 ya da 11 kullanin (betikler Windows PowerShell 5.1 icindir).",
+   "capa": "docs/SIK_HATALAR.md#rk-e-os"
+  },
+  {
+   "kod": "RK-E-GPU",
+   "tur": "hata",
+   "cikis": 3,
+   "sik_hatalar": "2",
+   "yayinlayan": [
+    "kur.ps1"
+   ],
+   "baslik_en": "No usable NVIDIA GPU (nvidia-smi missing or silent)",
+   "baslik_tr": "Kullanilabilir NVIDIA kart yok (nvidia-smi yok ya da cikti vermiyor)",
+   "imza": [
+    "[RK-E-GPU]",
+    "nvidia-smi yok"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-GPU] nvidia-smi yok: NVIDIA surucusu kurulu degil ya da NVIDIA kart yok"
+   ],
+   "ilk_adim_en": "Install the current NVIDIA driver and run kur.cmd again. Rakkase needs an NVIDIA GPU with CUDA; it does not run on AMD or Intel cards.",
+   "ilk_adim_tr": "Guncel NVIDIA surucusunu kurup kur.cmd'yi yeniden calistirin. Rakkase CUDA'li NVIDIA kart ister; AMD ya da Intel kartta calismaz.",
+   "capa": "docs/SIK_HATALAR.md#rk-e-gpu"
+  },
+  {
+   "kod": "RK-E-GPU-VRAM",
+   "tur": "hata",
+   "cikis": 3,
+   "sik_hatalar": "3",
+   "yayinlayan": [
+    "kur.ps1"
+   ],
+   "baslik_en": "Less than 4 GB VRAM or compute capability below 6.1",
+   "baslik_tr": "4 GB'tan az VRAM ya da compute capability 6.1'in altinda",
+   "imza": [
+    "[RK-E-GPU-VRAM]",
+    "en az 4 GB ekran karti bellegi"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-GPU-VRAM] en az 4 GB ekran karti bellegi (VRAM) gerekir"
+   ],
+   "ilk_adim_en": "Rakkase was measured on a 4 GB card. With less VRAM it does not fit; with kur.cmd -Zorla the check is skipped at your own risk (not tried).",
+   "ilk_adim_tr": "Rakkase 4 GB kartta olculdu. Daha azinda sigmaz; kur.cmd -Zorla kontrolu kendi riskinizle atlar (denenmedi).",
+   "capa": "docs/SIK_HATALAR.md#rk-e-gpu-vram"
+  },
+  {
+   "kod": "RK-E-RAM",
+   "tur": "hata",
+   "cikis": 3,
+   "sik_hatalar": "4",
+   "yayinlayan": [
+    "kur.ps1"
+   ],
+   "baslik_en": "Less than 12 GB RAM",
+   "baslik_tr": "12 GB'tan az RAM",
+   "imza": [
+    "[RK-E-RAM]",
+    "en az 16 GB RAM onerilir"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-RAM] en az 16 GB RAM onerilir (uretimde ~6,4 GB, kurulumda daha fazla); 12 GB alti desteklenmez"
+   ],
+   "ilk_adim_en": "Close other programs and use a computer with 16 GB RAM; below 12 GB is not supported.",
+   "ilk_adim_tr": "Diger programlari kapatin ve 16 GB RAM'li bir bilgisayar kullanin; 12 GB alti desteklenmez.",
+   "capa": "docs/SIK_HATALAR.md#rk-e-ram"
+  },
+  {
+   "kod": "RK-E-DISK",
+   "tur": "hata",
+   "cikis": 3,
+   "sik_hatalar": "5",
+   "yayinlayan": [
+    "kur.ps1",
+    "modelleri_indir.ps1"
+   ],
+   "baslik_en": "Not enough free disk space",
+   "baslik_tr": "Disk bos yeri yetmiyor",
+   "imza": [
+    "[RK-E-DISK]",
+    "surucusunde bos yer"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-DISK] E surucusunde bos yer 10 GiB; en az 24,94 GiB gerekir (model + uv ortami)"
+   ],
+   "ilk_adim_en": "Free disk space or install on another drive: kur.cmd -AceKok <SURUCU>:\\rk\\ace_step.",
+   "ilk_adim_tr": "Disk yeri acin ya da baska surucuye kurun: kur.cmd -AceKok <SURUCU>:\\rk\\ace_step.",
+   "capa": "docs/SIK_HATALAR.md#rk-e-disk"
+  },
+  {
+   "kod": "RK-E-GIT",
+   "tur": "hata",
+   "cikis": 2,
+   "sik_hatalar": "6",
+   "yayinlayan": [
+    "kur.ps1"
+   ],
+   "baslik_en": "git is missing",
+   "baslik_tr": "git yok",
+   "imza": [
+    "[RK-E-GIT]",
+    "git yok:"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-GIT] git yok: ACE-Step kodunu klonlamak icin gerekir"
+   ],
+   "ilk_adim_en": "Install git (winget install --id Git.Git -e) and run kur.cmd again.",
+   "ilk_adim_tr": "git kurun (winget install --id Git.Git -e) ve kur.cmd'yi yeniden calistirin.",
+   "capa": "docs/SIK_HATALAR.md#rk-e-git"
+  },
+  {
+   "kod": "RK-E-UV",
+   "tur": "hata",
+   "cikis": 2,
+   "sik_hatalar": "7",
+   "yayinlayan": [
+    "kur.ps1"
+   ],
+   "baslik_en": "uv is missing (it is not installed automatically)",
+   "baslik_tr": "uv yok (kendiliginden kurulmaz)",
+   "imza": [
+    "[RK-E-UV]",
+    "uv yok:"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-UV] uv yok: Python ortamini kurmak icin gerekir"
+   ],
+   "ilk_adim_en": "Install uv (winget install --id=astral-sh.uv -e, or python -m pip install uv) and run kur.cmd again; or put the path of uv.exe into the RK_UV environment variable.",
+   "ilk_adim_tr": "uv kurun (winget install --id=astral-sh.uv -e ya da python -m pip install uv) ve kur.cmd'yi yeniden calistirin; ya da uv.exe yolunu RK_UV ortam degiskenine yazin.",
+   "capa": "docs/SIK_HATALAR.md#rk-e-uv"
+  },
+  {
+   "kod": "RK-E-KLON",
+   "tur": "hata",
+   "cikis": 1,
+   "sik_hatalar": "8",
+   "yayinlayan": [
+    "kur.ps1"
+   ],
+   "baslik_en": "ACE-Step clone failed, wrong commit, or folder is not an ACE-Step folder",
+   "baslik_tr": "ACE-Step klonu basarisiz, commit yanlis ya da klasor ACE-Step degil",
+   "imza": [
+    "[RK-E-KLON]",
+    "git clone basarisiz",
+    "commit dogrulanamadi",
+    "dolu ama bir ACE-Step klasoru degil"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-KLON] git clone basarisiz (cikis 128)"
+   ],
+   "ilk_adim_en": "Check the connection and the disk; delete the half-made folder and run kur.cmd again, or give an empty folder with -AceKok.",
+   "ilk_adim_tr": "Baglantiyi ve diski kontrol edin; yarim klasoru silip kur.cmd'yi yeniden calistirin ya da -AceKok ile bos bir klasor verin.",
+   "capa": "docs/SIK_HATALAR.md#rk-e-klon"
+  },
+  {
+   "kod": "RK-E-SYNC",
+   "tur": "hata",
+   "cikis": 1,
+   "sik_hatalar": "9",
+   "yayinlayan": [
+    "kur.ps1"
+   ],
+   "baslik_en": "uv could not build the Python environment (or the plan check after install failed)",
+   "baslik_tr": "uv Python ortamini kuramadi (ya da kurulum sonrasi plan denetimi basarisiz)",
+   "imza": [
+    "[RK-E-SYNC]",
+    "uv sync basarisiz",
+    "uv python install basarisiz",
+    "uv sync bitti ama"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-SYNC] uv sync basarisiz (cikis 1)"
+   ],
+   "ilk_adim_en": "Check the network and free disk space and run kur.cmd again: it continues where it stopped.",
+   "ilk_adim_tr": "Agi ve disk bos yerini kontrol edip kur.cmd'yi yeniden calistirin: kaldigi yerden surer.",
+   "capa": "docs/SIK_HATALAR.md#rk-e-sync"
+  },
+  {
+   "kod": "RK-E-INDIR",
+   "tur": "hata",
+   "cikis": 1,
+   "sik_hatalar": "10",
+   "yayinlayan": [
+    "kur.ps1",
+    "modelleri_indir.ps1"
+   ],
+   "baslik_en": "Model download or sha256 check failed",
+   "baslik_tr": "Model indirme ya da sha256 dogrulamasi basarisiz",
+   "imza": [
+    "[RK-E-INDIR]",
+    "sha256 tutmadi",
+    "izinli olmayan adres",
+    "boyut tutmadi",
+    "var olan dosya beklenenden farkli"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-INDIR] sha256 tutmadi: vae/config.json"
+   ],
+   "ilk_adim_en": "Run kur.cmd again: an interrupted download continues. A file that failed the check is kept as .sha256_uyusmadi; delete it and run again.",
+   "ilk_adim_tr": "kur.cmd'yi yeniden calistirin: yarim indirme kaldigi yerden surer. Dogrulamayi gecemeyen dosya .sha256_uyusmadi adiyla saklanir; silip yeniden calistirin.",
+   "capa": "docs/SIK_HATALAR.md#rk-e-indir"
+  },
+  {
+   "kod": "RK-E-AYAR",
+   "tur": "hata",
+   "cikis": 2,
+   "sik_hatalar": "11",
+   "yayinlayan": [
+    "kur.ps1"
+   ],
+   "baslik_en": "ayarlar.json is not valid JSON (setup left it untouched)",
+   "baslik_tr": "ayarlar.json bozuk (kurulum dokunmadi)",
+   "imza": [
+    "[RK-E-AYAR]",
+    "ayarlar.json bozuk"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-AYAR] ayarlar.json bozuk (JSON okunamadi): dosyaya dokunulmadi"
+   ],
+   "ilk_adim_en": "Fix the JSON or rename the file and run kur.cmd again.",
+   "ilk_adim_tr": "JSON'u duzeltin ya da dosyanin adini degistirip kur.cmd'yi yeniden calistirin.",
+   "capa": "docs/SIK_HATALAR.md#rk-e-ayar"
+  },
+  {
+   "kod": "RK-E-AYAR-YOK",
+   "tur": "hata",
+   "cikis": 6,
+   "sik_hatalar": "12",
+   "yayinlayan": [
+    "rakkase.py"
+   ],
+   "baslik_en": "ayarlar.json is missing or unreadable",
+   "baslik_tr": "ayarlar.json yok ya da okunamiyor",
+   "imza": [
+    "[RK-E-AYAR-YOK]",
+    "ayarlar.json yok."
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-AYAR-YOK] ayarlar.json yok. Cozum: kur.cmd'yi cift tiklayin"
+   ],
+   "ilk_adim_en": "Double-click kur.cmd (it installs ACE-Step and writes the settings). If ACE-Step is already installed, copy ayarlar.ornek.json to ayarlar.json and write your ACE-Step folder into ace_kok.",
+   "ilk_adim_tr": "kur.cmd'yi cift tiklayin (ACE-Step'i kurar ve ayarlari yazar). ACE-Step zaten kuruluysa ayarlar.ornek.json'u ayarlar.json olarak kopyalayip ace_kok'a ACE-Step klasorunuzu yazin.",
+   "capa": "docs/SIK_HATALAR.md#rk-e-ayar-yok"
+  },
+  {
+   "kod": "RK-E-ACE-KOK",
+   "tur": "hata",
+   "cikis": 6,
+   "sik_hatalar": "13",
+   "yayinlayan": [
+    "rakkase.py"
+   ],
+   "baslik_en": "ace_kok folder in ayarlar.json does not exist",
+   "baslik_tr": "ayarlar.json'daki ace_kok klasoru yok",
+   "imza": [
+    "[RK-E-ACE-KOK]",
+    "ace_kok klasoru yok"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-ACE-KOK] ayarlar.json ace_kok klasoru yok"
+   ],
+   "ilk_adim_en": "Write the real ACE-Step folder into ace_kok in ayarlar.json, or run kur.cmd.",
+   "ilk_adim_tr": "ayarlar.json'daki ace_kok'a gercek ACE-Step klasorunu yazin ya da kur.cmd'yi calistirin.",
+   "capa": "docs/SIK_HATALAR.md#rk-e-ace-kok"
+  },
+  {
+   "kod": "RK-E-KILIT",
+   "tur": "hata",
+   "cikis": 6,
+   "sik_hatalar": "14",
+   "yayinlayan": [
+    "rakkase.py"
+   ],
+   "baslik_en": "kilit=true but kilit_src is missing",
+   "baslik_tr": "kilit=true ama kilit_src yok",
+   "imza": [
+    "[RK-E-KILIT]",
+    "kilit=true ama kilit_src"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-KILIT] ayarlar.json: kilit=true ama kilit_src klasoru yok"
+   ],
+   "ilk_adim_en": "Set \"kilit\": false in ayarlar.json (the GPU lock needs a module of your own).",
+   "ilk_adim_tr": "ayarlar.json'da \"kilit\": false yapin (GPU kilidi kendi modulunuzu ister).",
+   "capa": "docs/SIK_HATALAR.md#rk-e-kilit"
+  },
+  {
+   "kod": "RK-E-VENV",
+   "tur": "hata",
+   "cikis": 6,
+   "sik_hatalar": "15",
+   "yayinlayan": [
+    "rakkase.py"
+   ],
+   "baslik_en": "The ACE-Step Python environment (.venv) is missing",
+   "baslik_tr": "ACE-Step Python ortami (.venv) yok",
+   "imza": [
+    "[RK-E-VENV]",
+    "Python ortami yok"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-VENV] ACE-Step Python ortami yok"
+   ],
+   "ilk_adim_en": "Run kur.cmd (the uv step builds the environment).",
+   "ilk_adim_tr": "kur.cmd'yi calistirin (uv adimi ortami kurar).",
+   "capa": "docs/SIK_HATALAR.md#rk-e-venv"
+  },
+  {
+   "kod": "RK-E-MODEL",
+   "tur": "hata",
+   "cikis": 6,
+   "sik_hatalar": "16",
+   "yayinlayan": [
+    "rakkase.py"
+   ],
+   "baslik_en": "A model file is missing",
+   "baslik_tr": "Model dosyasi eksik",
+   "imza": [
+    "[RK-E-MODEL]",
+    "model dosyasi eksik"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-MODEL] model dosyasi eksik: acestep-v15-turbo/model.safetensors"
+   ],
+   "ilk_adim_en": "Run kur.cmd (it downloads the missing files with sha256 checks and continues where it stopped).",
+   "ilk_adim_tr": "kur.cmd'yi calistirin (eksik dosyalari sha256 dogrulamali indirir, kaldigi yerden surer).",
+   "capa": "docs/SIK_HATALAR.md#rk-e-model"
+  },
+  {
+   "kod": "RK-E-PLAN",
+   "tur": "hata",
+   "cikis": 2,
+   "sik_hatalar": "17",
+   "yayinlayan": [
+    "rakkase.py"
+   ],
+   "baslik_en": "Plan check found an error, or the engine did not start",
+   "baslik_tr": "Plan denetimi hata buldu ya da motor baslamadi",
+   "imza": [
+    "[RK-E-PLAN]",
+    "URETIM BASLAMADI",
+    "plan denetimi"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-PLAN] URETIM BASLAMADI: plan denetiminde HATA var (yukaridaki satirlar)"
+   ],
+   "ilk_adim_en": "Read the HATA lines printed above it and fix the plan (docs/KULLANIM.md, plan fields); do not skip the check with --denetimsiz.",
+   "ilk_adim_tr": "Ustunde yazan HATA satirlarini okuyup plani duzeltin (docs/KULLANIM.md); --denetimsiz ile atlamayin.",
+   "capa": "docs/SIK_HATALAR.md#rk-e-plan"
+  },
+  {
+   "kod": "RK-E-PARCA",
+   "tur": "hata",
+   "cikis": 3,
+   "sik_hatalar": "18",
+   "yayinlayan": [
+    "rakkase.py"
+   ],
+   "baslik_en": "A track failed",
+   "baslik_tr": "Bir parca basarisiz",
+   "imza": [
+    "[RK-E-PARCA]",
+    "bir parca basarisiz"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-PARCA] bir parca basarisiz (biten parcalar arsivlendi)"
+   ],
+   "ilk_adim_en": "Finished tracks are archived. Re-run only the failed one with --yalniz <name>.",
+   "ilk_adim_tr": "Biten parcalar arsivlendi. Yalniz basarisizi --yalniz <ad> ile yeniden calistirin.",
+   "capa": "docs/SIK_HATALAR.md#rk-e-parca"
+  },
+  {
+   "kod": "RK-E-RAM-BEKCI",
+   "tur": "hata",
+   "cikis": 4,
+   "sik_hatalar": "19",
+   "yayinlayan": [
+    "rakkase.py"
+   ],
+   "baslik_en": "The RAM guard stopped the run (free RAM ran out)",
+   "baslik_tr": "RAM bekcisi kosuyu durdurdu (bos RAM bitti)",
+   "imza": [
+    "[RK-E-RAM-BEKCI]",
+    "RAM bekcisi durdurdu"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-RAM-BEKCI] bos RAM bitti, RAM bekcisi durdurdu"
+   ],
+   "ilk_adim_en": "Close browsers and other big programs; do not start a second copy; run again.",
+   "ilk_adim_tr": "Tarayici ve buyuk programlari kapatin; ikinci kopya baslatmayin; yeniden calistirin.",
+   "capa": "docs/SIK_HATALAR.md#rk-e-ram-bekci"
+  },
+  {
+   "kod": "RK-E-ARSIV",
+   "tur": "hata",
+   "cikis": 5,
+   "sik_hatalar": "20",
+   "yayinlayan": [
+    "rakkase.py"
+   ],
+   "baslik_en": "Generation finished but the mp3/archive step failed",
+   "baslik_tr": "Uretim bitti ama mp3/arsiv adimi basarisiz",
+   "imza": [
+    "[RK-E-ARSIV]",
+    "mp3/arsiv basarisiz"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-ARSIV] uretim tamam ama mp3/arsiv basarisiz (wav yerinde)"
+   ],
+   "ilk_adim_en": "The wav files are in place. Install ffmpeg, then python rakkase.py mp3 <folder>; archive by hand: python araclar/recete.py --plan .. --kosu ..",
+   "ilk_adim_tr": "wav dosyalari yerinde. ffmpeg kurup python rakkase.py mp3 <klasor> calistirin; arsiv elle: python araclar/recete.py --plan .. --kosu ..",
+   "capa": "docs/SIK_HATALAR.md#rk-e-arsiv"
+  },
+  {
+   "kod": "RK-W-RAM",
+   "tur": "uyari",
+   "cikis": 0,
+   "sik_hatalar": "21",
+   "yayinlayan": [
+    "kur.ps1"
+   ],
+   "baslik_en": "Less than 16 GB RAM",
+   "baslik_tr": "16 GB'tan az RAM",
+   "imza": [
+    "[RK-W-RAM]",
+    "16 GB onerilir; uretimden once"
+   ],
+   "ornek_log": [
+    "UYARI: [RK-W-RAM] RAM 12.0 GB: 16 GB onerilir; uretimden once diger uygulamalari kapatin"
+   ],
+   "ilk_adim_en": "Close other programs before generating.",
+   "ilk_adim_tr": "Uretimden once diger uygulamalari kapatin.",
+   "capa": "docs/SIK_HATALAR.md#rk-w-ram"
+  },
+  {
+   "kod": "RK-W-DISK-PAY",
+   "tur": "uyari",
+   "cikis": 0,
+   "sik_hatalar": "22",
+   "yayinlayan": [
+    "kur.ps1"
+   ],
+   "baslik_en": "Free disk space is above the limit but the margin is thin",
+   "baslik_tr": "Disk bos yeri esigi gecti ama pay dar",
+   "imza": [
+    "[RK-W-DISK-PAY]",
+    "pay dar"
+   ],
+   "ornek_log": [
+    "UYARI: [RK-W-DISK-PAY] E surucusunde bos yer 25 GiB: esik (24,94 GiB) gecildi ama pay dar"
+   ],
+   "ilk_adim_en": "Free some more space if the install stops.",
+   "ilk_adim_tr": "Kurulum durursa biraz daha yer acin.",
+   "capa": "docs/SIK_HATALAR.md#rk-w-disk-pay"
+  },
+  {
+   "kod": "RK-W-GPU-DENENMEDI",
+   "tur": "uyari",
+   "cikis": 0,
+   "sik_hatalar": "23",
+   "yayinlayan": [
+    "kur.ps1"
+   ],
+   "baslik_en": "This GPU was not tried (only the GTX 1050 Ti 4 GB was verified)",
+   "baslik_tr": "Bu kart denenmedi (yalniz GTX 1050 Ti 4 GB dogrulandi)",
+   "imza": [
+    "[RK-W-GPU-DENENMEDI]",
+    "denenmedi; devam edebilirsiniz"
+   ],
+   "ornek_log": [
+    "UYARI: [RK-W-GPU-DENENMEDI] Dogrulanmis donanim yalniz GTX 1050 Ti 4 GB"
+   ],
+   "ilk_adim_en": "You can continue; the result is not guaranteed. Please report your result with the hardware test form.",
+   "ilk_adim_tr": "Devam edebilirsiniz; sonuc garanti degil. Sonucunuzu donanim testi formuyla bildirirseniz seviniriz.",
+   "capa": "docs/SIK_HATALAR.md#rk-w-gpu-denenmedi"
+  },
+  {
+   "kod": "RK-W-ACE-SURUM",
+   "tur": "uyari",
+   "cikis": 0,
+   "sik_hatalar": "24",
+   "yayinlayan": [
+    "kur.ps1"
+   ],
+   "baslik_en": "Your ACE-Step folder is on a different commit",
+   "baslik_tr": "ACE-Step klasoru farkli bir commit'te",
+   "imza": [
+    "[RK-W-ACE-SURUM]",
+    "farkli commit'te"
+   ],
+   "ornek_log": [
+    "UYARI: [RK-W-ACE-SURUM] ACE-Step klasoru farkli commit'te (1234567; olculen ca1e85f)"
+   ],
+   "ilk_adim_en": "Left untouched. Rakkase was measured with the pinned commit; if something breaks, try that commit.",
+   "ilk_adim_tr": "Dokunulmadi. Rakkase sabit commit'le olculdu; bir sey bozulursa o commit'i deneyin.",
+   "capa": "docs/SIK_HATALAR.md#rk-w-ace-surum"
+  },
+  {
+   "kod": "RK-W-AYAR-FARKLI",
+   "tur": "uyari",
+   "cikis": 0,
+   "sik_hatalar": "25",
+   "yayinlayan": [
+    "kur.ps1"
+   ],
+   "baslik_en": "ayarlar.json points to a different ACE-Step folder than the one just installed",
+   "baslik_tr": "ayarlar.json az once kurulandan farkli bir ACE-Step klasorunu gosteriyor",
+   "imza": [
+    "[RK-W-AYAR-FARKLI]",
+    "ace_kok ="
+   ],
+   "ornek_log": [
+    "UYARI: [RK-W-AYAR-FARKLI] ayarlar.json ace_kok = ...; kurulan = ..."
+   ],
+   "ilk_adim_en": "Not changed. Edit ace_kok in ayarlar.json if you want the new folder.",
+   "ilk_adim_tr": "Degistirilmedi. Yeni klasoru kullanmak icin ayarlar.json'daki ace_kok'u duzenleyin.",
+   "capa": "docs/SIK_HATALAR.md#rk-w-ayar-farkli"
+  },
+  {
+   "kod": "RK-W-UVLOCK",
+   "tur": "uyari",
+   "cikis": 0,
+   "sik_hatalar": "26",
+   "yayinlayan": [
+    "kur.ps1"
+   ],
+   "baslik_en": "uv.lock is missing, unlocked sync",
+   "baslik_tr": "uv.lock yok, kilitsiz sync",
+   "imza": [
+    "[RK-W-UVLOCK]",
+    "uv.lock yok"
+   ],
+   "ornek_log": [
+    "UYARI: [RK-W-UVLOCK] uv.lock yok, kilitsiz sync"
+   ],
+   "ilk_adim_en": "Package versions may differ from the measured ones.",
+   "ilk_adim_tr": "Paket surumleri olculenlerden farkli olabilir.",
+   "capa": "docs/SIK_HATALAR.md#rk-w-uvlock"
+  },
+  {
+   "kod": "RK-W-FFMPEG",
+   "tur": "uyari",
+   "cikis": 0,
+   "sik_hatalar": "27",
+   "yayinlayan": [
+    "kur.ps1",
+    "rakkase.py"
+   ],
+   "baslik_en": "ffmpeg is not on PATH: no mp3",
+   "baslik_tr": "ffmpeg PATH'te yok: mp3 yapilamaz",
+   "imza": [
+    "[RK-W-FFMPEG]",
+    "ffmpeg PATH'te yok"
+   ],
+   "ornek_log": [
+    "UYARI: [RK-W-FFMPEG] ffmpeg PATH'te yok: mp3 yapilamaz"
+   ],
+   "ilk_adim_en": "Install ffmpeg (winget install --id Gyan.FFmpeg -e); wav files are still produced.",
+   "ilk_adim_tr": "ffmpeg kurun (winget install --id Gyan.FFmpeg -e); wav dosyalari yine uretilir.",
+   "capa": "docs/SIK_HATALAR.md#rk-w-ffmpeg"
+  },
+  {
+   "kod": "RK-W-INDIR-KAYNAK",
+   "tur": "uyari",
+   "cikis": 0,
+   "sik_hatalar": "28",
+   "yayinlayan": [
+    "modelleri_indir.ps1"
+   ],
+   "baslik_en": "A file in -ModelKlasoru did not match its sha256 and is downloaded instead",
+   "baslik_tr": "-ModelKlasoru'ndaki dosya sha256 tutmadi, indirilecek",
+   "imza": [
+    "[RK-W-INDIR-KAYNAK]",
+    "kaynaktaki dosya sha256 tutmadi"
+   ],
+   "ornek_log": [
+    "UYARI: [RK-W-INDIR-KAYNAK] kaynaktaki dosya sha256 tutmadi, indirilecek: vae/config.json"
+   ],
+   "ilk_adim_en": "Nothing to do; it is downloaded from the official source.",
+   "ilk_adim_tr": "Yapacak bir sey yok; resmi kaynaktan indirilir.",
+   "capa": "docs/SIK_HATALAR.md#rk-w-indir-kaynak"
+  },
+  {
+   "kod": "RK-W-YOL-BOSLUK",
+   "tur": "uyari",
+   "cikis": 0,
+   "sik_hatalar": "29",
+   "yayinlayan": [
+    "kur.ps1"
+   ],
+   "baslik_en": "A path contains a space",
+   "baslik_tr": "Yolda bosluk var",
+   "imza": [
+    "[RK-W-YOL-BOSLUK]",
+    "yolu bosluk iceriyor"
+   ],
+   "ornek_log": [
+    "UYARI: [RK-W-YOL-BOSLUK] Kurulum (repo) yolu bosluk iceriyor"
+   ],
+   "ilk_adim_en": "Prefer a short ASCII path such as <SURUCU>:\\rk.",
+   "ilk_adim_tr": "Kisa ASCII bir yol (ornek <SURUCU>:\\rk) onerilir.",
+   "capa": "docs/SIK_HATALAR.md#rk-w-yol-bosluk"
+  },
+  {
+   "kod": "RK-W-YOL-ASCII",
+   "tur": "uyari",
+   "cikis": 0,
+   "sik_hatalar": "30",
+   "yayinlayan": [
+    "kur.ps1"
+   ],
+   "baslik_en": "A path contains non-ASCII characters",
+   "baslik_tr": "Yolda ASCII disi karakter var",
+   "imza": [
+    "[RK-W-YOL-ASCII]",
+    "ASCII disi karakter"
+   ],
+   "ornek_log": [
+    "UYARI: [RK-W-YOL-ASCII] Kurulum (repo) yolu ASCII disi karakter (ornek Turkce harf) iceriyor"
+   ],
+   "ilk_adim_en": "Prefer a short ASCII path such as <SURUCU>:\\rk.",
+   "ilk_adim_tr": "Kisa ASCII bir yol (ornek <SURUCU>:\\rk) onerilir.",
+   "capa": "docs/SIK_HATALAR.md#rk-w-yol-ascii"
+  },
+  {
+   "kod": "RK-W-YOL-ONEDRIVE",
+   "tur": "uyari",
+   "cikis": 0,
+   "sik_hatalar": "31",
+   "yayinlayan": [
+    "kur.ps1"
+   ],
+   "baslik_en": "A path is inside OneDrive",
+   "baslik_tr": "Yol OneDrive icinde",
+   "imza": [
+    "[RK-W-YOL-ONEDRIVE]",
+    "OneDrive icinde"
+   ],
+   "ornek_log": [
+    "UYARI: [RK-W-YOL-ONEDRIVE] Kurulum (repo) yolu OneDrive icinde"
+   ],
+   "ilk_adim_en": "OneDrive may lock files and upload 6 GB of models; use a folder outside OneDrive.",
+   "ilk_adim_tr": "OneDrive dosyalari kilitleyebilir ve 6 GB modeli buluta yukler; OneDrive disinda bir klasor kullanin.",
+   "capa": "docs/SIK_HATALAR.md#rk-w-yol-onedrive"
+  },
+  {
+   "kod": "RK-W-YOL-UZUN",
+   "tur": "uyari",
+   "cikis": 0,
+   "sik_hatalar": "32",
+   "yayinlayan": [
+    "kur.ps1"
+   ],
+   "baslik_en": "A path is long",
+   "baslik_tr": "Yol uzun",
+   "imza": [
+    "[RK-W-YOL-UZUN]",
+    "yolu uzun"
+   ],
+   "ornek_log": [
+    "UYARI: [RK-W-YOL-UZUN] Kurulum (repo) yolu uzun (95 karakter)"
+   ],
+   "ilk_adim_en": "Use a shorter folder such as <SURUCU>:\\rk.",
+   "ilk_adim_tr": "Daha kisa bir klasor (ornek <SURUCU>:\\rk) kullanin.",
+   "capa": "docs/SIK_HATALAR.md#rk-w-yol-uzun"
+  }
+ ]
+}

@@ -58,6 +58,12 @@ jobs:
         continue-on-error: true # REPORT-ONLY
         run: python -B -m unittest testler/denetim_test.py 2>&1 | tee "$RUNNER_TEMP/testler.txt"; test "${PIPESTATUS[0]}" -eq 0
 
+      - name: Installer script tests (Windows PowerShell; testler/test_*.py)
+        id: betikler
+        if: runner.os == 'Windows'
+        continue-on-error: true # REPORT-ONLY
+        run: python -B -m unittest testler/test_indirici_guvenlik.py testler/test_kur_kuru.py testler/test_tani_sizdirmaz.py 2>&1 | tee "$RUNNER_TEMP/betikler.txt"; test "${PIPESTATUS[0]}" -eq 0
+
       - name: Summary
         if: always()
         run: |
@@ -65,6 +71,7 @@ jobs:
             echo "## Rakkase audit"
             echo "- repo audit: \`${{ steps.denetim.outcome }}\`"
             echo "- audit tests: \`${{ steps.testler.outcome }}\`"
+            echo "- installer script tests (Windows): \`${{ steps.betikler.outcome }}\`"
             echo '```'
             head -c 6000 "$RUNNER_TEMP/denetim.txt" 2>/dev/null || true
             echo '```'
