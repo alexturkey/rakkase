@@ -1,0 +1,38 @@
+{
+  "not": "Claude Code rap v2: ACE-Step resmi kilavuzuna gore (paragraf caption, 6-11 hece, ad-lib parantez, buyuk harf vurgu); 3 tur",
+  "parcalar": [
+    {
+      "ad": "claude_code_rap_v2_a_boombap_t1301",
+      "caption": "A head-nodding 90s boom bap hip-hop track built on a dusty sampled piano loop, crisp punchy kick and snare, warm deep bass and subtle vinyl crackle. A charismatic male Turkish rapper delivers a tight, rhythmic, witty flow with clear diction, riding the groove with confidence and humor. The chorus is a short catchy chanted hook with layered backing vocals and ad-libs. Polished studio mix, groovy and energetic.",
+      "sure": 30,
+      "bpm": 92,
+      "ton": "A minor",
+      "olcu": "4",
+      "tohum": 1301,
+      "lyrics": "[Intro]\n(Hey, hey) Claude burada\n\n[Verse - rap]\nTokyo'da gece üç, biri yazıyor\nİstanbul'da bir stajyer bekliyor\nLagos'ta yarın demo, ter döküyor\nBerlin'de eski kodlar uyuyor\nBen dalarım içine, satır satır\nTestler yeşil, kahvem soğudu (yeah)\n\n[Chorus - catchy]\nBİR SATIR DAHA (bir satır daha)\nDostum sen uyu, ben buradayım\n",
+      "vocal_language": "tr"
+    },
+    {
+      "ad": "claude_code_rap_v2_b_trap_t1302",
+      "caption": "A modern trap track driven by deep 808 sub-bass, hard-hitting kick and crisp rolling hi-hats from a drum machine, with a dark bell melody and moody synth pad. A confident male Turkish rapper delivers punchy, fast verses with a playful attitude and echoed ad-libs. The chorus is a catchy layered hook that hits harder than the verse. Polished modern production, high energy, club-ready.",
+      "sure": 30,
+      "bpm": 100,
+      "ton": "F# minor",
+      "olcu": "4",
+      "tohum": 1302,
+      "lyrics": "[Intro]\n(Hey, hey) Claude burada\n\n[Verse - rap]\nTokyo'da gece üç, biri yazıyor\nİstanbul'da bir stajyer bekliyor\nLagos'ta yarın demo, ter döküyor\nBerlin'de eski kodlar uyuyor\nBen dalarım içine, satır satır\nTestler yeşil, kahvem soğudu (yeah)\n\n[Chorus - catchy]\nBİR SATIR DAHA (bir satır daha)\nDostum sen uyu, ben buradayım\n",
+      "vocal_language": "tr"
+    },
+    {
+      "ad": "claude_code_rap_v2_c_funk_t1303",
+      "caption": "An upbeat, funky hip-hop track with a bouncy slap bassline, live drum groove, bright brass stabs and jazzy electric piano chords. A charismatic male Turkish rapper tells a funny story with a playful, bouncing flow and clear diction. The chorus uses crowd-style gang vocals and call and response. Feel-good, fun, polished live-band sound.",
+      "sure": 30,
+      "bpm": 96,
+      "ton": "D minor",
+      "olcu": "4",
+      "tohum": 1303,
+      "lyrics": "[Intro]\n(Hey, hey) Claude burada\n\n[Verse - rap]\nTokyo'da gece üç, biri yazıyor\nİstanbul'da bir stajyer bekliyor\nLagos'ta yarın demo, ter döküyor\nBerlin'de eski kodlar uyuyor\nBen dalarım içine, satır satır\nTestler yeşil, kahvem soğudu (yeah)\n\n[Chorus - catchy]\nBİR SATIR DAHA (bir satır daha)\nDostum sen uyu, ben buradayım\n",
+      "vocal_language": "tr"
+    }
+  ]
+}

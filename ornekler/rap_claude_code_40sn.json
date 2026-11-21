@@ -1,0 +1,17 @@
+{
+  "not": "rap v3: ayni soz, 40 sn (nakarat sigsin), soz zamani",
+  "parcalar": [
+    {
+      "ad": "claude_code_rap_v3_boombap_40sn_t1301",
+      "caption": "A head-nodding 90s boom bap hip-hop track built on a dusty sampled piano loop, crisp punchy kick and snare, warm deep bass and subtle vinyl crackle. A charismatic male Turkish rapper delivers a tight, rhythmic, witty flow with clear diction, riding the groove with confidence and humor. The chorus is a short catchy chanted hook with layered backing vocals and ad-libs. Polished studio mix, groovy and energetic.",
+      "sure": 40,
+      "bpm": 92,
+      "ton": "A minor",
+      "olcu": "4",
+      "tohum": 1301,
+      "lyrics": "[Intro]\n(Hey, hey) Claude burada\n\n[Verse - rap]\nTokyo'da gece üç, biri yazıyor\nİstanbul'da bir stajyer bekliyor\nLagos'ta yarın demo, ter döküyor\nBerlin'de eski kodlar uyuyor\nBen dalarım içine, satır satır\nTestler yeşil, kahvem soğudu (yeah)\n\n[Chorus - catchy]\nBİR SATIR DAHA (bir satır daha)\nDostum sen uyu, ben buradayım\n",
+      "vocal_language": "tr",
+      "soz_zamani": true
+    }
+  ]
+}

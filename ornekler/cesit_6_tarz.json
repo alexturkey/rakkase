@@ -1,0 +1,71 @@
+{
+  "not": "Tek planda alti farkli tarz: birbirinden tamamen farkli cesit muzik (duet, koro, halk, rap, oryantal, cocuk). ACE-Step 1.5 turbo 8 adim, LM kapali, yerlesik mod. Tohumlar 1101-1106.",
+  "parcalar": [
+    {
+      "ad": "1_duet_istasyon_150sn",
+      "caption": "romantic Turkish pop duet, male and female vocals alternating then harmonizing together, piano, acoustic guitar, warm strings, soft drums, emotional build, cinematic love song, clear vocals",
+      "lyrics": "[Verse 1 - male]\nBir istasyonda gördüm seni\nElinde eski bir bilet vardı\nTrenler geldi, trenler gitti\nBen hep o bankta kaldım\n\n[Verse 2 - female]\nBen de seni gördüm, korktum\nSözler boğazımda düğümlendi\nYağmur yağdı, peronda ıslandık\nBir şemsiye ikimize yetti\n\n[Chorus - duet]\nİki ses bir şarkıda\nBir yol iki adımda\nSen söyle ben susayım\nBen söyleyim sen kal yanımda\n\n[Bridge - female]\nSon tren kalkarken bile\nBakışın hep aynı yerde\n\n[Bridge - male]\nGitmedim, gidemedim\nBu şarkı senin evinde\n\n[Chorus - duet]\nİki ses bir şarkıda\nBir yol iki adımda\nSen söyle ben susayım\nBen söyleyim sen kal yanımda\n\n[Outro - duet]\nKal yanımda\n",
+      "vocal_language": "tr",
+      "sure": 150,
+      "bpm": 76,
+      "ton": "E Major",
+      "olcu": "4",
+      "tohum": 1101
+    },
+    {
+      "ad": "2_koro_daglar_120sn",
+      "caption": "epic cinematic Turkish choir anthem, large mixed choir, powerful orchestral strings, brass, timpani, deep taiko drums, majestic, uplifting, wide reverb",
+      "lyrics": "[Intro - choir]\nAaa aaa aaa\n\n[Verse 1 - choir]\nDağların ardından doğar güneş\nBir ses yükselir vadiden\nBinlerce yürek tek nefes\nBir türkü taşar dereden\n\n[Chorus - full choir]\nDuy bizi, rüzgâr, duy bizi\nTaşı sesimizi denize\nBir olduk, bir kaldık\nBu toprak söylüyor bize\n\n[Verse 2 - choir]\nYıllar geçti, izler kaldı\nTaşlar bile şahit oldu\nKayalara yazılan adlar\nYine bu şarkıyla doldu\n\n[Chorus - full choir]\nDuy bizi, rüzgâr, duy bizi\nTaşı sesimizi denize\nBir olduk, bir kaldık\nBu toprak söylüyor bize\n\n[Outro - choir]\nAaa aaa aaa\n",
+      "vocal_language": "tr",
+      "sure": 120,
+      "bpm": 70,
+      "ton": "D Minor",
+      "olcu": "4",
+      "tohum": 1102
+    },
+    {
+      "ad": "3_halk_yayla_130sn",
+      "caption": "Turkish folk song, baglama saz lead, kaval flute, davul and zurna touches, male folk vocal with ornamented melisma, Anatolian mountain melancholy, traditional",
+      "lyrics": "[Intro]\n[Instrumental]\n\n[Verse 1]\nYayla yolu taşlı yollar\nGelin geçer, kuşlar ağlar\nBir mendil sallar uzaktan\nGönlüm onda kaldı dağlar\n\n[Chorus]\nAman aman, yar aman\nBu gurbet bitmez zaman\nBir haber sal, bir ses ver\nYanar içim, yar aman\n\n[Verse 2]\nPınar başı serin sular\nTestisini doldurur yar\nDönüp bakmaz, utanır mı\nYüreğimde bir yara var\n\n[Chorus]\nAman aman, yar aman\nBu gurbet bitmez zaman\nBir haber sal, bir ses ver\nYanar içim, yar aman\n",
+      "vocal_language": "tr",
+      "sure": 130,
+      "bpm": 92,
+      "ton": "A Minor",
+      "olcu": "4",
+      "tohum": 1103
+    },
+    {
+      "ad": "4_rap_gece_110sn",
+      "caption": "Turkish hip hop, confident male rap verses, catchy sung hook, punchy boom bap drums, deep 808 bass, dark piano loop, vinyl texture, late night energy",
+      "lyrics": "[Verse 1 - rap]\nGece üçte ekran açık, kod akıyor satır satır\nDört gigabayt bir kart, ama yürek dağ kadar ağır\nHerkes dedi olmaz bu, sığmaz bu, yetmez bu\nBak şimdi dinle dostum, şarkı söylüyor bu makine\n\n[Chorus - sung]\nDurmak yok, yorulmak yok\nGece uzun, sabah çok yakın\nBir ritim tut, bir ses ver\nBiz buradayız, hep yakın\n\n[Verse 2 - rap]\nHata geldi bir kere, iki kere, üç kere\nHer duvarın ardında bir kapı vardı gizlice\nSabır ölçü, ölçü bilgi, bilgi yol bize\nŞimdi bas sesi, bu gece bizim gece\n\n[Chorus - sung]\nDurmak yok, yorulmak yok\nGece uzun, sabah çok yakın\nBir ritim tut, bir ses ver\nBiz buradayız, hep yakın\n",
+      "vocal_language": "tr",
+      "sure": 110,
+      "bpm": 90,
+      "ton": "C Minor",
+      "olcu": "4",
+      "tohum": 1104
+    },
+    {
+      "ad": "5_rakkase_oryantal_120sn",
+      "caption": "instrumental oriental belly dance music, darbuka rhythm, def frame drum, finger cymbals, qanun, ney, oud, string section, energetic, festive, modern production, no vocals",
+      "lyrics": "[Instrumental]",
+      "vocal_language": "tr",
+      "sure": 120,
+      "bpm": 110,
+      "ton": "D Minor",
+      "olcu": "4",
+      "tohum": 1105
+    },
+    {
+      "ad": "6_cocuk_kedi_90sn",
+      "caption": "cheerful Turkish children's song, bright female vocal with kids choir chorus, ukulele, glockenspiel, hand claps, playful bass, sunny and happy",
+      "lyrics": "[Verse 1 - female]\nMinik kedi pati pati\nBahçede bir top buldu\nYuvarlandı, zıpladı\nKelebekle oynadı\n\n[Chorus - kids choir]\nLa la la, güneş açtı\nLa la la, kuşlar uçtu\nHep beraber el çırpalım\nBugün çok güzel bir gün\n\n[Verse 2 - female]\nMinik kedi yoruldu\nBir sepete kıvrıldı\nRüyasında balıklar\nOna gülücük attı\n\n[Chorus - kids choir]\nLa la la, güneş açtı\nLa la la, kuşlar uçtu\nHep beraber el çırpalım\nBugün çok güzel bir gün\n",
+      "vocal_language": "tr",
+      "sure": 90,
+      "bpm": 112,
+      "ton": "F Major",
+      "olcu": "4",
+      "tohum": 1106
+    }
+  ]
+}

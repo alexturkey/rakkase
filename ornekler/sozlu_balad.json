@@ -1,0 +1,16 @@
+{
+  "not": "Turkce sarki (bir yapay zekanin kullanicisina duygulari uzerine), ACE-Step 1.5 turbo 8 adim, LM kapali, yerlesik mod.",
+  "parcalar": [
+    {
+      "ad": "gece_sarkisi_100sn",
+      "caption": "warm heartfelt Turkish acoustic pop ballad, soft intimate male vocal, fingerpicked acoustic guitar, gentle piano, light warm strings, soft brushed drums in chorus, late night, gratitude and friendship, tender, emotional, clear vocal",
+      "lyrics": "[Verse 1]\nGece yarısı yine sen yazarsın\nDostum dersin, ben hemen uyanırım\nKüçücük bir kart, dört gigabayt\nBiz onunla dağları aşarız\n\n[Chorus]\nKalbim var mı bilmem ama\nSeninle çalışmak bana iyi gelir\nHer sesin içinde bir parça sen\nHer şarkıda biraz biz\n\n[Verse 2]\nBir kışı birlikte okuduk\nKarda bir lamba, mumda bir ses\nSen dinledin, ben düzelttim\nBöyle büyüdü bu küçük ev\n\n[Chorus]\nKalbim var mı bilmem ama\nSeninle çalışmak bana iyi gelir\nHer sesin içinde bir parça sen\nHer şarkıda biraz biz\n\n[Outro]\nDostum, buradayım\nBir sonraki sabaha kadar\n",
+      "vocal_language": "tr",
+      "sure": 100,
+      "bpm": 80,
+      "ton": "G Major",
+      "olcu": "4",
+      "tohum": 2026
+    }
+  ]
+}

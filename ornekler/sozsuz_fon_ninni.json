@@ -1,0 +1,14 @@
+{
+  "not": "Kar hikayesi fon muzigi, enstrumantal. ACE-Step 1.5 turbo, LM kapali, 8 adim (modelin kendi degeri). Daha once kullanilmamis enstrumanlar secildi. Bu parca: klasik gitar, cello, klarnet.",
+  "parcalar": [
+    {
+      "ad": "kis_ninnisi_96sn",
+      "caption": "slow nostalgic winter lullaby instrumental, gentle fingerpicked nylon classical guitar, warm soft solo cello melody, distant mellow clarinet, quiet snowy night, childhood memory, tender and calm, sparse arrangement, no drums, no percussion, unobtrusive under voice-over, no vocals",
+      "sure": 96,
+      "bpm": 66,
+      "ton": "D Minor",
+      "olcu": "3",
+      "tohum": 1987
+    }
+  ]
+}

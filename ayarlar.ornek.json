@@ -1,0 +1,9 @@
+{
+  "ace_kok": "<ACE_KOK: ACE-Step-1.5 klasoru, icinde .venv ve checkpoints>",
+  "kilit": false,
+  "kilit_src": "<yalniz kilit=true ise: kaynak_kilidi modulunu iceren src klasoru>",
+  "kilit_bekle_sn": 3600,
+  "on_plan_ses_siniri_sn": 300,
+  "int8_onbellek": null,
+  "venv": null
+}

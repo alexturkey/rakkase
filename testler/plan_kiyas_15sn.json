@@ -1,0 +1,14 @@
+{
+  "not": "Aynilik referansi: 2026-11-02 aday1_intro_neseli_15sn (eski yol int8+fp32, LM kapali, tohum 42). Yeni yol ayni planla kosulur, dalga farki olculur.",
+  "parcalar": [
+    {
+      "caption": "upbeat modern pop instrumental, bright plucked synth hook, punchy kick, crisp claps, funky bass, catchy happy melody, energetic tech product intro, polished radio-ready production, no vocals",
+      "sure": 15,
+      "bpm": 120,
+      "ton": "C Major",
+      "olcu": "4",
+      "tohum": 42,
+      "ad": "ref_aday1_15sn"
+    }
+  ]
+}

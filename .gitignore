@@ -1,0 +1,15 @@
+cikti/
+__pycache__/
+*.wav
+*.mp3
+!testler/referans/*.wav
+uretimler/
+.ajan/
+
+# yerel ayar (ornek: ayarlar.ornek.json)
+ayarlar.json
+*.log
+*.csv
+*.pt
+.venv/
+araclar/olcum.json
