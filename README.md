@@ -39,6 +39,23 @@ python rakkase.py test                    # compare against the reference after 
 python rakkase.py mp3     <folder>        # mp3 192k next to every wav
 ```
 
+## Disk layout and removal
+Everything Rakkase installs lives in one root folder, `<ACE_KOK>` (default `<repo>\ace_step`; change it with `kur.cmd -AceKok <folder>`, for example to a roomier drive). Nothing is written to the system PATH, the user profile or the registry. `ayarlar.json` (your settings) stays next to `rakkase.py`.
+
+| Folder under `<ACE_KOK>` | What is in it | Size |
+|---|---|---|
+| `checkpoints` | model files (22 files from `huggingface.co/ACE-Step` and `/Qwen`, sha256-checked) | about 6.4 GB [read: `scripts/modeller.json`] |
+| `.venv` | the Python environment (uv, torch 2.7.1+cu128) | most of the rest of the about 23 GB [measured: one clean install, total] |
+| `.onbellek\uv` | uv download cache | part of the same total [not measured separately] |
+| `.onbellek\uv-python`, `.onbellek\uv-bin` | uv's own Python 3.11 and its launcher shortcuts; created only if no suitable Python 3.11 was found | part of the same total [not measured separately] |
+| `gecici` | temporary files of the install | small [not measured] |
+
+For the install script's own process only, `UV_CACHE_DIR`, `TMP` and `TEMP` point into this root (and `UV_PYTHON_INSTALL_DIR` and `UV_PYTHON_BIN_DIR` too when uv has to install its own Python; if a `.venv` already exists nothing is changed; a value you set yourself for any of the `UV_` variables is left alone and used; `TMP` and `TEMP` always go to the root), so uv does not fill the user profile or the system drive. Hugging Face and torch caches are not used (Rakkase has its own pinned downloader).
+
+**Already downloaded the model?** Give the folder to `kur.cmd` with `-AceKok`; a complete file with the right sha256 is skipped, not downloaded again. An interrupted download continues from its `.part` file.
+
+**Removal:** close Rakkase, then delete the Rakkase folder and the `<ACE_KOK>` folder (by default these are the same folder, because `<ACE_KOK>` is inside the repository folder). That is the whole uninstall. Not ours to remove: pip or uv caches that existed before the install, and git, uv or Python installed with `winget` (use `pip cache purge`, `uv cache clean` or Windows "Apps" yourself). Your tracks are in `uretimler/`: copy them out before deleting.
+
 ## Example plans
 
 | File | What | Notes |

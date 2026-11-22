@@ -38,6 +38,22 @@ Windows 10/11 and an NVIDIA GPU with 4 GB or more (tested only on a GTX 1050 Ti;
 
 Quick card first: `AGENTS_HIZLI.md` (decision tree, exit code to action). Error codes: `docs/SIK_HATALAR.md`. Manual install, only if `kur.cmd` cannot be used: `KURULUM.md` (summary) and `docs/KURULUM_DEFTERI.md` (versions and every wall we hit).
 
+## Install layout and agent discipline
+These rules apply to you (an AI agent) and to any sub-agent you start. They exist so that installing Rakkase leaves nothing behind outside its folder and downloads nothing twice.
+
+1. **One root.** Everything lives under one root folder: `<ACE_KOK>` (default `<repo>\ace_step`; give `-AceKok <short folder on a roomier drive>` to `kur.cmd` if C: is tight). Models (`checkpoints`), the Python environment (`.venv`), temporary files (`gecici`) and the uv cache (`.onbellek\uv`; `.onbellek\uv-python` and `.onbellek\uv-bin` only when uv has to install its own Python) go into fixed sub-folders of it; only the folders that are really used are created. Map: `README.md`, "Disk layout and removal".
+2. **No trace outside the root.** For its own process only, `kur.ps1` sets `UV_CACHE_DIR`, `TMP` and `TEMP` to those folders, and, only when no suitable Python 3.11 is found (`uv python find 3.11`), also `UV_PYTHON_INSTALL_DIR` and `UV_PYTHON_BIN_DIR` (so uv's own Python stays in the root and no shortcut lands on PATH). If you have already set your own `UV_CACHE_DIR`, `UV_PYTHON_INSTALL_DIR` or `UV_PYTHON_BIN_DIR`, `kur.ps1` leaves it alone and uses it; only an empty one is pointed into the root. `TMP` and `TEMP` always go to the root (this process only). It does not change the system PATH, the user profile, the registry or any global setting, and you must not either (no `setx`, no profile edits, no `reg add`). If a `.venv` already exists no variable is changed (the existing environment stays consistent and no second Python is downloaded); if `uv python find 3.11` finds a suitable Python on the system, `uv python install` is skipped and the Python folders are not redirected (no `uv-python` folder is created). If the first `uv sync` stopped half-way, the second run uses the uv cache that is already in `.onbellek\uv` inside the root. `HF_HOME`, `HF_HUB_CACHE` and `TORCH_HOME` are not needed: Rakkase downloads with its own pinned downloader, not with `huggingface_hub` or `torch.hub`; if you ever add a tool that uses them, point them into the root too.
+   For your own manual `uv`/`pip` calls in the same terminal (nothing is saved, the terminal forgets it when closed):
+   ```powershell
+   $env:UV_CACHE_DIR = "<ACE_KOK>\.onbellek\uv"; $env:UV_PYTHON_INSTALL_DIR = "<ACE_KOK>\.onbellek\uv-python"; $env:UV_PYTHON_BIN_DIR = "<ACE_KOK>\.onbellek\uv-bin"
+   $env:PIP_CACHE_DIR = "<ACE_KOK>\.onbellek\pip"; $env:TMP = "<ACE_KOK>\gecici"; $env:TEMP = $env:TMP
+   ```
+3. **No double download.** A complete model file with the right sha256 is skipped; an interrupted download continues from its `.part` file; a suitable ACE-Step folder that already exists is found and not installed again. If the user already has the model files, point `kur.cmd` at the folder with `-AceKok` instead of downloading again. Never fetch the same model into a second place and never start a second `kur.cmd` while one is running.
+4. **Measure first.** Run `kur.cmd -Kuru` (dry run: writes nothing, no network) and read every `HATA:` / `UYARI:` line before any download. Tell the user the size and the sources and wait for a yes (Install step 3).
+5. **Show before you delete.** Before removing anything (a half install, a cache, an old environment) show the user the path, the size and the reason. The supported uninstall is deleting the root folder (see the README); never delete outside it, never delete the user's own models or caches. The scripts do not delete your files or anything outside the root: at most they replace their own half-finished download (`.part`), and `-ModelZorla` renames a model file that fails its sha256 check to `.eski` instead of deleting it.
+6. **Same error twice: stop.** Do not try a third time; take the code and the first 20 lines of output to the user.
+7. **Sub-agents follow the same rules.** Put these rules in the brief of any agent you start; one install at a time; no agent edits the install scripts to get past a check.
+
 ## Commands
 ```
 python rakkase.py denetle --plan ornekler/rap_claude_code_40sn.json   # plan check on CPU, no model load (needs the ACE-Step tokenizer)

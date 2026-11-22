@@ -11,7 +11,8 @@
 # Her adim tekrar calistirilabilir: var olan dogru dosya/klasor atlanir. Durdurma: <repo>\DUR dosyasi -> DURDU.
 # Cikis kodlari / exit: 0 HAZIR (ya da -Kuru raporu tamam), 1 hata, 2 girdi/ayar gerek (git ya da uv yok, ayarlar.json bozuk), 3 donanim/disk yetmiyor, 4 DURDU.
 #   Kod -> cikis haritasi: docs\hata_imzalari.json (her kodda "cikis" alani).
-# Ortam / env: RK_UV (uv.exe yolu), RK_ACE_KOK, UV_CACHE_DIR, UV_PYTHON_INSTALL_DIR (uv'nin kendi degiskenleri; kur.ps1 global ayar degistirmez).
+# Ortam / env: RK_UV (uv.exe yolu), RK_ACE_KOK. uv adimi UV_CACHE_DIR / UV_PYTHON_INSTALL_DIR / UV_PYTHON_BIN_DIR bos ise <ACE_KOK>\.onbellek altina yonlendirir (yalniz bu surec;
+#   kullanici profili, registry, PATH degismez); sizin verdiginiz DOLU deger korunur, ezilmez. TMP/TEMP <ACE_KOK>\gecici olur (yalniz bu surec).
 # Test: -Kuru ile RK_KURU_SAHTE='ram=8;bos_ram=2;disk=10;gpu=yok;vram=3000;git=yok;uv=yok;cc=5.2' sahte olcum verir (yalniz -Kuru).
 param(
     [string[]]$Adim = @('kontrol0', 'klon', 'uv', 'model', 'ayar', 'kontrol'),
@@ -226,8 +227,35 @@ Dur-Kontrol
 if ($Adim -contains 'uv') {
     Say '== uv: Python 3.11 ve paketler (indirme buyuk olabilir: torch cu128 dahil; yarim kalirsa yeniden calistirin) / Python and packages'
     if (Test-Path -LiteralPath (Join-Path $AceKok '.venv\Scripts\python.exe')) { Say '  .venv var; uv sync yine de calisir (dogrulama, degisiklik yoksa hizli) / .venv exists, sync re-checks' }
-    $kod = Calistir $uvExe @('python', 'install', '3.11') $AceKok
-    if ($kod -ne 0) { Say "HATA: [RK-E-SYNC] uv python install basarisiz (cikis $kod)"; exit 1 }
+    # Kurulum duzeni: uv onbellegi, uv Python'u ve gecici dosyalar ACE klasorune gider (yalniz bu surec; kullanici profili, registry, PATH degismez;
+    # kaldirma = klasoru silmek). .venv zaten varsa env DEGISMEZ (yalniz kokte .onbellek\uv de varsa o kullanilir). Dolu kullanici degeri ezilmez. Uygun Python zaten varsa tekrar indirilmez.
+    # Install layout: uv cache, uv Python and temp stay inside the ACE folder (this process only). An existing .venv keeps the environment unchanged.
+    $venvVar = Test-Path -LiteralPath (Join-Path (Join-Path (Join-Path $AceKok '.venv') 'Scripts') 'python.exe')
+    $pyVar = $false
+    $onb = Join-Path $AceKok '.onbellek'; $gec = Join-Path $AceKok 'gecici'
+    # Ilk kosu .venv'i olusturup yarida kaldiysa onbellek koktedir: ikinci kosuda yine o kullanilir (torch yeniden inmez) / a half-finished first run keeps using the in-root cache
+    $onbVar = Test-Path -LiteralPath (Join-Path $onb 'uv')
+    if ((-not $venvVar) -or $onbVar) {
+        # onceki kosuda uv Python'u kokteyse once onu gor (yoksa ayni Python bir daha aranir/iner)
+        $pyDizin = Join-Path $onb 'uv-python'
+        if ((-not $env:UV_PYTHON_INSTALL_DIR) -and (Test-Path -LiteralPath $pyDizin)) { $env:UV_PYTHON_INSTALL_DIR = $pyDizin; if (-not $env:UV_PYTHON_BIN_DIR) { $env:UV_PYTHON_BIN_DIR = Join-Path $onb 'uv-bin' } }
+        $eskiEap = $ErrorActionPreference; $ErrorActionPreference = 'Continue'
+        try { Push-Location -LiteralPath $AceKok; & $uvExe python find 3.11 *> $null; $pyVar = ($LASTEXITCODE -eq 0) } catch { $pyVar = $false } finally { Pop-Location; $ErrorActionPreference = $eskiEap }
+        New-Item -ItemType Directory -Force $gec | Out-Null
+        # sizin verdiginiz DOLU deger korunur / a value you already set is kept
+        if (-not $env:UV_CACHE_DIR) { $env:UV_CACHE_DIR = Join-Path $onb 'uv' }
+        if (-not $pyVar) {
+            if (-not $env:UV_PYTHON_INSTALL_DIR) { $env:UV_PYTHON_INSTALL_DIR = Join-Path $onb 'uv-python' }
+            if (-not $env:UV_PYTHON_BIN_DIR) { $env:UV_PYTHON_BIN_DIR = Join-Path $onb 'uv-bin' }
+        }
+        $env:TMP = $gec; $env:TEMP = $gec
+        Say ("  onbellek ve gecici dosyalar kurulum klasorunun icinde: {0}" -f $AceKok)
+    }
+    if ($pyVar) { Say '  uygun Python 3.11 zaten var: uv python install atlandi' }
+    else {
+        $kod = Calistir $uvExe @('python', 'install', '3.11') $AceKok
+        if ($kod -ne 0) { Say "HATA: [RK-E-SYNC] uv python install basarisiz (cikis $kod)"; exit 1 }
+    }
     $sync = @('sync'); if (Test-Path -LiteralPath (Join-Path $AceKok 'uv.lock')) { $sync += '--frozen' } else { [void]$uyari.Add('[RK-W-UVLOCK] uv.lock yok, kilitsiz sync') }
     $kod = Calistir $uvExe $sync $AceKok
     if ($kod -ne 0) { Say "HATA: [RK-E-SYNC] uv sync basarisiz (cikis $kod). Ag ve disk bos yerini kontrol edip yeniden calistirin: kaldigi yerden surer / uv sync failed"; exit 1 }

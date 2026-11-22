@@ -39,6 +39,23 @@ python rakkase.py test                    # motor değişince referansla kıyas
 python rakkase.py mp3     <klasör>        # her wav'ın yanına mp3 192k
 ```
 
+## Disk düzeni ve kaldırma
+Rakkase'in kurduğu her şey tek kök klasörde, `<ACE_KOK>` altında durur (varsayılan `<repo>\ace_step`; `kur.cmd -AceKok <klasör>` ile değişir, ör. daha boş bir sürücüye). Sistem PATH'ine, kullanıcı profiline ve registry'ye hiçbir şey yazılmaz. `ayarlar.json` (ayarlarınız) `rakkase.py`'nin yanında kalır.
+
+| `<ACE_KOK>` altındaki klasör | İçinde ne var | Boyut |
+|---|---|---|
+| `checkpoints` | model dosyaları (`huggingface.co/ACE-Step` ve `/Qwen`'den 22 dosya, sha256 denetimli) | yaklaşık 6,4 GB [okudum: `scripts/modeller.json`] |
+| `.venv` | Python ortamı (uv, torch 2.7.1+cu128) | yaklaşık 23 GB toplamın büyük kısmı [ölçtüm: bir temiz kurulum, toplam] |
+| `.onbellek\uv` | uv indirme önbelleği | aynı toplamın parçası [ayrı ölçülmedi] |
+| `.onbellek\uv-python`, `.onbellek\uv-bin` | uv'nin kendi Python 3.11'i ve başlatıcı kısayolları; yalnız uygun bir Python 3.11 bulunamazsa oluşur | aynı toplamın parçası [ayrı ölçülmedi] |
+| `gecici` | kurulumun geçici dosyaları | küçük [ölçülmedi] |
+
+Yalnız kurulum betiğinin kendi süreci için `UV_CACHE_DIR`, `TMP` ve `TEMP` bu köke yönlenir (uv kendi Python'unu kurmak zorundaysa `UV_PYTHON_INSTALL_DIR` ve `UV_PYTHON_BIN_DIR` de; `.venv` zaten varsa hiçbir şey değişmez; `UV_` değişkenlerinden birini kendiniz tanımladıysanız ona dokunulmaz ve o kullanılır; `TMP` ve `TEMP` her zaman köke gider); böylece uv kullanıcı profilinizi ya da sistem sürücüsünü doldurmaz. Hugging Face ve torch önbellekleri kullanılmaz (Rakkase kendi sabitlenmiş indiricisini kullanır).
+
+**Modeli zaten indirdiniz mi?** Klasörü `kur.cmd -AceKok` ile gösterin; sha256'sı doğru tam dosya atlanır, yeniden indirilmez. Yarım kalan indirme `.part` dosyasından sürer.
+
+**Kaldırma:** Rakkase'i kapatın, sonra Rakkase klasörünü ve `<ACE_KOK>` klasörünü silin (varsayılanda ikisi aynı klasördür, çünkü `<ACE_KOK>` depo klasörünün içindedir). Kaldırma bu kadar. Bizim silmemiz gerekmeyenler: kurulumdan ÖNCE var olan pip ya da uv önbellekleri ve `winget` ile kurulan git, uv, Python (`pip cache purge`, `uv cache clean` ya da Windows "Uygulamalar" ile siz silersiniz). Ürettiğiniz parçalar `uretimler/` içindedir: silmeden önce kopyalayın.
+
 ## Örnek planlar
 
 | Dosya | Ne | Not |
