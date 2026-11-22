@@ -10,14 +10,15 @@ English first, Türkçe below. Full rules and evidence: [`AGENTS.md`](AGENTS.md)
 ## English: decision tree (12 steps)
 1. Goal: local music generation with ACE-Step 1.5 turbo on a Windows PC with a 4 GB NVIDIA card. Anything else: tell the user and stop.
 2. Quality is fixed (turbo 8 steps, int8 decoder only, fp32 compute, LM off). Never lower it to save time or memory, and never edit a plan's `adim` to anything but 8.
-3. Dry run first, it writes nothing: `kur.cmd -Kuru` (install report) and `python rakkase.py denetle --plan ornekler/sozsuz_fon_ninni.json` (plan check; it needs the ACE-Step folder). Read every `HATA:` / `UYARI:` line; each carries a code such as `[RK-E-DISK]`.
+2b. Prerequisites are the HUMAN's (check, do not install): NVIDIA driver (`nvidia-smi`), git (`git --version`), uv (`uv --version`), Python 3 on PATH (`python --version`; the Microsoft Store alias is not Python), about 25 GiB free disk. Table with fixes: `AGENTS.md` "Before you start".
+3. Dry run first, it writes nothing: `kur.cmd -Kuru` (install report). Read every `HATA:` / `UYARI:` line; each carries a code such as `[RK-E-DISK]`. Do NOT use `python rakkase.py denetle` as a dry run: it needs the ACE-Step folder that `kur.cmd` creates, and before that it exits 6 (expected, not a bug). Run `denetle` only after `kur.cmd` printed HAZIR.
 4. A non-zero exit or any `HATA`: take it to the user with the code and its first step from `docs/SIK_HATALAR.md`. Do not skip a check (`--denetimsiz`) to get past it.
-5. Installing is the human's step (git and uv must be installed first; `RK-E-GIT` and `RK-E-UV` say how): tell the user what `kur.cmd` will download (ACE-Step source from github.com, about 6.4 GB of models from huggingface.co/ACE-Step and /Qwen), and let the user start it. Never accept anything on the user's behalf, never type a confirmation for the human, never run a remote script piped into a shell.
+5. Who installs what: the human installs git, uv and Python (`RK-E-GIT` and `RK-E-UV` say how); you tell the user what `kur.cmd` will download (ACE-Step source from github.com, about 6.4 GB of models from huggingface.co/ACE-Step and /Qwen) and wait for a yes; after the yes you may run `kur.cmd` yourself. Never accept anything on the user's behalf, never type a confirmation for the human, never run a remote script piped into a shell.
 6. Install: `kur.cmd` (double click, or `scripts\kur.ps1`). Safe to re-run: complete files are skipped, an interrupted download continues.
 7. First success: `uret.cmd` or `python rakkase.py uret --plan ornekler/sozsuz_fon_ninni.json` (about 2 minutes of model loading plus about 0.6-0.8 x the song length on a GTX 1050 Ti [measured by the authors]). Long runs: start hidden in the background and poll; do not block.
 7b. To share a track on X, Instagram or WhatsApp (they do not take audio files), tell the user to use `<name>_panel.mp4` next to the track, not the wav or mp3 (if it is missing: `python rakkase.py panel <folder>`; `--panel-yok` turns it off). Do not post it anywhere yourself.
 8. Exit 0 means the run finished, nothing more: `denetle` checks plan limits (tokens, durations); it does NOT judge the music. Do not claim the music is good; the human listens.
-9. `rakkase.py test` failed or did not run means the install or engine is NOT accepted. Never report success.
+9. `rakkase.py test` did not run: do not report success. Exit 0 = passed. On the tested card (GTX 1050 Ti) exit 1 means the install or engine is NOT accepted. Exit 7 (`RK-W-REFERANS-DISI`, another card, reference does not match but the card-independent health checks passed) does NOT mean "install broken" but "byte-level agreement with the reference is not proven on this card": take it to the user, do not claim success, the human listens. Exit 8 (`RK-E-NAN`) is a real problem (corrupt sound): report it with the card name; a fix for GTX 16xx is in the code but GPU verification is still pending, do not say "solved". Never change the engine or the quality settings to make it pass.
 10. A line with a code: look it up in `docs/SIK_HATALAR.md`, give the user its first step, quote the code. Same error twice: stop, do not try a third time.
 11. `ayarlar.json` paths are only what the user gave you (`ace_kok`). Never guess a path and never write a random folder there.
 12. Report in the user's language, with the code, the exit code and the first 20 lines of output (or `scripts\tani.ps1`, which masks paths). No personal paths, user names, e-mail addresses or tokens: write `<ROOT>`.
@@ -45,21 +46,24 @@ English first, Türkçe below. Full rules and evidence: [`AGENTS.md`](AGENTS.md)
 | `rakkase.py denetle` | 2 | plan check found errors | Fix the plan; read the `HATA` lines | `RK-E-PLAN` |
 | `rakkase.py denetle` / `uret` / `test` | 6 | `ayarlar.json` or install missing (also checked before `denetle`) | **Take it to the user** | `RK-E-AYAR-YOK` `RK-E-ACE-KOK` `RK-E-KILIT` `RK-E-VENV` `RK-E-MODEL` |
 | `rakkase.py test` | 2, 3, 4 | the 15 s generation itself failed (same meaning as `uret`) | As for `uret` | `RK-E-PLAN` `RK-E-PARCA` `RK-E-RAM-BEKCI` |
-| `rakkase.py test` | 1 | FAILED (reference mismatch) | **Take it to the user**; do not change the engine to make it pass | - |
+| `rakkase.py test` | 1 | FAILED (1050 Ti reference mismatch, or a card-independent health check failed) | **Take it to the user**; never change the engine to make it pass | - |
+| `rakkase.py test` | 7 | not the reference card, reference does not match, health checks passed | **Take it to the user**; "not proven on this card", NOT "install broken"; do not claim success (step 9) | `RK-W-REFERANS-DISI` |
+| `rakkase.py uret` / `test` | 8 | NaN/inf in the audio | **Take it to the user** with the card name; no mp3 or panel is made | `RK-E-NAN` |
 | `scripts\tani.ps1 -Cikti tani_raporu.txt` | 0 | report made (even if it found errors; without `-Cikti` it prints to the screen only) | Show the user, ask before posting it anywhere | - |
 | `scripts\tani.ps1` | 6 | could not run (for example the file could not be written) | Report the first 20 lines | - |
 
 ## Türkçe: karar ağacı (12 adım)
 1. Amaç: Windows bilgisayarda, 4 GB NVIDIA kartla ACE-Step 1.5 turbo ile yerel müzik üretimi. Başka bir ortamsa kullanıcıya söyle ve dur.
 2. Kalite sabit (turbo 8 adım, int8 yalnız decoder, fp32 hesap, LM kapalı). Zaman ya da bellek için asla düşürme; plandaki `adim`'ı 8'den başka değere çekme.
-3. Önce kuru çalıştır, hiçbir şey yazmaz: `kur.cmd -Kuru` (kurulum raporu) ve `python rakkase.py denetle --plan ornekler/sozsuz_fon_ninni.json` (plan denetimi; ACE-Step klasörü ister). Her `HATA:` / `UYARI:` satırını oku; her biri `[RK-E-DISK]` gibi bir kod taşır.
+2b. Önkoşullar İNSANIN işidir (denetle, kurma): NVIDIA sürücüsü (`nvidia-smi`), git (`git --version`), uv (`uv --version`), PATH'te Python 3 (`python --version`; Microsoft Store takma adı Python değildir), yaklaşık 25 GiB boş disk. Çözümlü tablo: `AGENTS.md` "Before you start".
+3. Önce kuru çalıştır, hiçbir şey yazmaz: `kur.cmd -Kuru` (kurulum raporu). Her `HATA:` / `UYARI:` satırını oku; her biri `[RK-E-DISK]` gibi bir kod taşır. `python rakkase.py denetle`yi kuru çalışma diye KULLANMA: `kur.cmd`'nin yaratacağı ACE-Step klasörünü ister, ondan önce 6 koduyla çıkar (beklenen, hata değil). `denetle`yi yalnız `kur.cmd` HAZIR yazdıktan sonra çalıştır.
 4. Sıfır olmayan çıkış ya da herhangi bir `HATA`: kodu ve `docs/SIK_HATALAR.md`'deki ilk adımı kullanıcıya götür. Geçmek için denetimi atlama (`--denetimsiz`).
-5. Kurulum insanın adımıdır (önce git ve uv kurulu olmalı; `RK-E-GIT` ve `RK-E-UV` nasıl olduğunu söyler): `kur.cmd`'nin neyi indireceğini (github.com'dan ACE-Step kaynağı, huggingface.co/ACE-Step ve /Qwen'den yaklaşık 6,4 GB model) kullanıcıya söyle, başlatmayı kullanıcıya bırak. Kullanıcı adına hiçbir şeyi kabul etme, insan yerine onay yazma, uzak bir betiği kabuğa borulayıp çalıştırma.
+5. Kim ne kurar: git, uv ve Python'u insan kurar (`RK-E-GIT` ve `RK-E-UV` nasıl olduğunu söyler); `kur.cmd`'nin neyi indireceğini (github.com'dan ACE-Step kaynağı, huggingface.co/ACE-Step ve /Qwen'den yaklaşık 6,4 GB model) kullanıcıya söyle ve evet'ini bekle; evet'ten sonra `kur.cmd`'yi kendin çalıştırabilirsin. Kullanıcı adına hiçbir şeyi kabul etme, insan yerine onay yazma, uzak bir betiği kabuğa borulayıp çalıştırma.
 6. Kurulum: `kur.cmd` (çift tık ya da `scripts\kur.ps1`). Tekrar çalıştırmak güvenli: tam dosya atlanır, yarım indirme sürer.
 7. İlk başarı: `uret.cmd` ya da `python rakkase.py uret --plan ornekler/sozsuz_fon_ninni.json` (GTX 1050 Ti'de yaklaşık 2 dk model yükleme ve parça süresinin yaklaşık 0,6-0,8 katı [yazarlar ölçtü]). Uzun işleri gizli arka planda başlat, yoklayarak izle; bekleyerek kilitlenme.
 7b. Kullanıcı X, Instagram ya da WhatsApp'ta paylaşmak isterse (ses dosyası kabul etmezler) parçanın yanındaki `<ad>_panel.mp4`'ü kullanmasını söyle; wav ya da mp3 değil (yoksa `python rakkase.py panel <klasör>`; `--panel-yok` kapatır). Kendin hiçbir yere paylaşma.
 8. Çıkış 0 yalnız koşunun bittiği demektir: `denetle` plan sınırlarını (token, süre) denetler; müziği YARGILAMAZ. "Müzik güzel" deme; dinlemek insanın işi.
-9. `rakkase.py test` kaldı ya da koşmadı: kurulum ya da motor KABUL EDİLMEZ. Asla başarı bildirme.
+9. `rakkase.py test` koşmadıysa başarı bildirme. Çıkış 0 = geçti. Denenmiş kartta (GTX 1050 Ti) çıkış 1 kurulum ya da motor KABUL EDİLMEZ demektir. Çıkış 7 (`RK-W-REFERANS-DISI`: başka kart, referans uyuşmadı ama karttan bağımsız sağlık ölçümleri geçti) "kurulum bozuk" DEĞİL, "bu kartta referansla bayt uyumu kanıtlanmadı" demektir: kullanıcıya götür, başarı deme, müziği insan dinler. Çıkış 8 (`RK-E-NAN`) gerçek sorundur (bozuk ses): kart adıyla bildir; GTX 16xx için düzeltme kodda ama GPU doğrulaması bekliyor, "çözüldü" deme. Geçsin diye motoru ya da kalite ayarını değiştirme.
 10. Kodlu satır: `docs/SIK_HATALAR.md`'de ara, ilk adımı kullanıcıya ver, kodu yaz. Aynı hata iki kez: dur, üçüncü kez deneme.
 11. `ayarlar.json` yolları yalnız kullanıcının sana verdiğidir (`ace_kok`). Yol tahmin etme, oraya rastgele klasör yazma.
 12. Kullanıcının dilinde, kodla, çıkış koduyla ve çıktının ilk 20 satırıyla (ya da yolları maskeleyen `scripts\tani.ps1` ile) bildir. Kişisel yol, kullanıcı adı, e-posta, token yazma: `<ROOT>` yaz.
@@ -87,7 +91,9 @@ English first, Türkçe below. Full rules and evidence: [`AGENTS.md`](AGENTS.md)
 | `rakkase.py denetle` | 2 | plan denetimi hata buldu | Planı düzelt; `HATA` satırlarını oku | `RK-E-PLAN` |
 | `rakkase.py denetle` / `uret` / `test` | 6 | `ayarlar.json` ya da kurulum eksik (`denetle`den önce de denetlenir) | **Kullanıcıya götür** | `RK-E-AYAR-YOK` `RK-E-ACE-KOK` `RK-E-KILIT` `RK-E-VENV` `RK-E-MODEL` |
 | `rakkase.py test` | 2, 3, 4 | 15 sn'lik üretimin kendisi başarısız (`uret` ile aynı anlam) | `uret` gibi | `RK-E-PLAN` `RK-E-PARCA` `RK-E-RAM-BEKCI` |
-| `rakkase.py test` | 1 | KALDI (referansla uyuşmadı) | **Kullanıcıya götür**; geçsin diye motoru değiştirme | - |
+| `rakkase.py test` | 1 | KALDI (1050 Ti referansı uyuşmadı ya da karttan bağımsız sağlık ölçümü kaldı) | **Kullanıcıya götür**; geçsin diye motoru değiştirme | - |
+| `rakkase.py test` | 7 | referans kartı değil, referans uyuşmadı, sağlık ölçümleri geçti | **Kullanıcıya götür**; "burada kanıtlanmadı", "kurulum bozuk" değil; başarı deme (adım 9) | `RK-W-REFERANS-DISI` |
+| `rakkase.py uret` / `test` | 8 | seste NaN/inf | **Kullanıcıya götür**, kart adıyla; mp3 ya da panel yapılmaz | `RK-E-NAN` |
 | `scripts\tani.ps1 -Cikti tani_raporu.txt` | 0 | rapor yazıldı (`-Cikti` yoksa yalnız ekrana yazar) | Kullanıcıya göster, bir yere yapıştırmadan önce sor | - |
 | `scripts\tani.ps1` | 6 | çalışamadı (ör. dosya yazılamadı) | İlk 20 satırı bildir | - |
 

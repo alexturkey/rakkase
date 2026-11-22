@@ -24,6 +24,8 @@ from contextlib import ExitStack, contextmanager
 
 _AYAR = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "ayarlar.json"), encoding="utf-8"))
 ACE = os.environ.get("RAKKASE_ACE", _AYAR["ace_kok"])
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import kart_kural  # noqa: E402  saf Python: kart adina gore kurallar (VAE fp32 yamasi)
 sys.path.insert(0, ACE)
 
 T0 = time.time()
@@ -438,6 +440,13 @@ def main():
         if getattr(dit, "text_encoder", None) is not None:
             dit.text_encoder = dit.text_encoder.to(torch.bfloat16)
     asama("fp32_kopya(model+text_encoder)", fp32_kopya)
+    # GTX 16xx: paket VAE'yi Pascal oncesi kartlarda GPU'da fp16 yapar ve bu kartlarda NaN verir (issue #1: ilk NaN vae.decoder.block.1.res_unit1.conv1,
+    # DiT ve text encoder temiz). VAE'yi GPU'da da fp32 tut: kalite sabitleri (8 adim, fp32 hesap) ayni, yalniz VAE hassasiyeti ARTAR.
+    # 1050 Ti ve diger kartlarda blok calismaz: varsayilan yol degismez (1050 Ti olcumu 2026-11-23: eski/yeni kod kiyasi SNR 56,8 dB, korelasyon 0,999999; GPU'da bayt aynilik garanti degil). Elle: ayarlar.json "vae_fp32": true/false (null = karta gore).
+    vae_fp32 = kart_kural.vae_fp32_gerek(torch.cuda.get_device_name(0) if torch.cuda.is_available() else "", _AYAR.get("vae_fp32"))
+    if vae_fp32:
+        dit._get_vae_dtype = lambda device=None: torch.float32
+        print("VAE fp32 (GPU): GTX 16xx ya da ayarlar.json vae_fp32; NaN onlemi (issue #1)", flush=True)
     env = {ad: param_envanteri(ad, m) for ad, m in (("model", dit.model), ("vae", dit.vae), ("text_encoder", dit.text_encoder))}
     yukleme_sn = round(time.time() - T0 - kilit_bekleme_sn, 1)  # kilit beklemesi haric
     print(f"yukleme bitti: {yukleme_sn:.1f} sn, RSS {rss_mb():.0f} MB, tepe {bekci.tepe_rss:.0f} MB", flush=True)
@@ -635,7 +644,7 @@ def main():
     def dokum_yaz(hata=None):
         """Her parcadan sonra (ve hatada) yeniden yazilir: yarida kalan kosuda biten parcalarin olcumu kaybolmaz."""
         ozet = dict(ad=args.ad, asamalar=ASAMALAR, envanter_mb=env, kilit_bekleme_sn=kilit_bekleme_sn, yukleme_toplam_sn=yukleme_sn,
-                    parcalar=sonuclar, rss_tepe_mb=round(bekci.tepe_rss), min_bos_ram_mb=round(bekci.min_bos),
+                    parcalar=sonuclar, vae_fp32=vae_fp32, rss_tepe_mb=round(bekci.tepe_rss), min_bos_ram_mb=round(bekci.min_bos),
                     toplam_sn=round(time.time() - T0, 1), hata=hata)
         with open(os.path.join(cikti, "dokum.json"), "w", encoding="utf-8") as f:
             json.dump(ozet, f, ensure_ascii=False, indent=1)

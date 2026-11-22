@@ -6,13 +6,16 @@
   python rakkase.py denetle --plan plan.json [--yalniz ..] -> uretim oncesi plan denetimi (CPU, ~5 sn); uret bunu kendisi
       once calistirir, HATA varsa durur (cikis 2; atlamak: uret --denetimsiz). Ayrinti: docs/KULLANIM.md "Plan denetimi".
   python rakkase.py bol   --plan plan.json            -> on plan siniri (ayarlar.json) icin kosu gruplari (--yalniz satirlari)
-  python rakkase.py test                              -> 15 sn kiyas parcasi uretir, testler/referans ile karsilastirir
+  python rakkase.py test [--tek-kosu]                 -> 15 sn kiyas parcasi uretir, testler/referans ile karsilastirir. GTX 1050 Ti (referans karti):
+      referans kapisi aynen (GECTI/KALDI). Baska kart: referans KALDI ise sorun cikmaz ama "bayt uyumu kanitlanmadi" (cikis 7) ve kart-bagimsiz
+      saglik olcumu (NaN/inf yok, sure, seviye/sessizlik, ayni kartta ikinci kosuyla tutarlilik; --tek-kosu ikinci kosuyu atlar).
   python rakkase.py mp3   <klasor>                    -> klasordeki wav'lari 192k mp3 yapar
   python rakkase.py panel <wav|klasor>                -> LED spektrum paneli: <ad>_panel.mp4 (1080x1080, ses + panel; paylasima hazir).
       uret bunu her parca icin otomatik yapar; kapatmak: uret --panel-yok. Panel dusse de muzik teslim edilir (uyari RK-W-PANEL).
 
 Cikis kodlari (uret): 0 tamam, 2 plan denetimi HATA / motor baslamadi ya da yuklenemedi, 3 bir parca basarisiz (bitenler yine
-arsivlenir), 4 RAM bekcisi durdurdu, 5 uretim tamam ama mp3/arsiv basarisiz, 6 ayarlar.json eksik/yanlis. test: 0 GECTI, 1 KALDI. panel: 0 tamam, 5 [RK-E-PANEL] panel uretilemedi.
+arsivlenir), 4 RAM bekcisi durdurdu, 5 uretim tamam ama mp3/arsiv basarisiz, 6 ayarlar.json eksik/yanlis, 8 [RK-E-NAN] uretilen wav NaN/inf (bozuk ses; mp3/panel yapilmaz).
+test: 0 GECTI, 1 KALDI (referans karti ya da kart-bagimsiz saglik), 7 referans-disi kart: bayt uyumu kanitlanmadi ama saglik tamam, 8 NaN; 2/3/4/6 uret ile ayni. panel: 0 tamam, 5 [RK-E-PANEL] panel uretilemedi.
 Kalite sabit (kod icinde): turbo 8 adim, int8 decoder + fp32 hesap, LM kapali, akisli yukleme, decoder yerlesik.
 Her cagri modeli yukler, isi bitirir, kapanir (surekli servis yok). On planda calistir: Claude Code arka plan
 kabugunu bellek sikisinca kapatiyor. Ayrinti: docs/KULLANIM.md, docs/KURULUM_DEFTERI.md.
@@ -30,7 +33,7 @@ KOK = os.path.dirname(os.path.abspath(__file__))
 GIZLI = 0x08000000 if os.name == "nt" else 0  # CREATE_NO_WINDOW (yalniz Windows)
 
 
-# Kodlar (hata() 'HATA: [KOD] ...' basar; cikis kodu docs/hata_imzalari.json): [RK-E-AYAR-YOK] [RK-E-ACE-KOK] [RK-E-KILIT] [RK-E-VENV] [RK-E-MODEL] [RK-E-PLAN] [RK-E-PARCA] [RK-E-RAM-BEKCI] [RK-E-ARSIV] [RK-W-FFMPEG] [RK-E-PANEL] [RK-W-PANEL]
+# Kodlar (hata() 'HATA: [KOD] ...' basar; cikis kodu docs/hata_imzalari.json): [RK-E-AYAR-YOK] [RK-E-ACE-KOK] [RK-E-KILIT] [RK-E-VENV] [RK-E-MODEL] [RK-E-PLAN] [RK-E-PARCA] [RK-E-RAM-BEKCI] [RK-E-ARSIV] [RK-E-NAN] [RK-W-REFERANS-DISI] [RK-W-FFMPEG] [RK-E-PANEL] [RK-W-PANEL]
 def hata(kod, mesaj, cikis):
     """Tek bicim: 'HATA: [RK-E-XXX] mesaj'. Kod -> cikis haritasi: docs/hata_imzalari.json, cozumler: docs/SIK_HATALAR.md."""
     print(f"HATA: [{kod}] {mesaj}", flush=True)
@@ -94,24 +97,48 @@ def uret(plan, cikti, ad, yalniz=""):
     return r.returncode
 
 
-def mp3(klasor):
+def nan_tara(yol):
+    """ACE venv python'u ile wav'larda NaN/inf arar (araclar/saglik_muzik.py --nan-bak); NaN'li wav yollarini dondurur. NaN'li wav ffmpeg'i cokertir (issue #1)."""
+    wavlar = [yol] if os.path.isfile(yol) else sorted(glob.glob(os.path.join(yol, "**", "*.wav"), recursive=True))
+    if not wavlar:
+        return []
+    r = subprocess.run([venv_python(), "-B", os.path.join(KOK, "araclar", "saglik_muzik.py"), *wavlar, "--nan-bak"], creationflags=GIZLI,
+                       capture_output=True, text=True, encoding="utf-8", errors="replace")
+    return [os.path.normpath(s[4:].strip()) for s in r.stdout.splitlines() if s.startswith("NAN ")]
+
+
+def saglik(wav, beklenen=None, ikinci=""):
+    """Kart-bagimsiz saglik olcumu, ciktiyi ekrana basar. Donus: 0 saglam, 3 NaN, 4 baska olcu kaldi, 5 okunamadi."""
+    kom = [venv_python(), "-B", os.path.join(KOK, "araclar", "saglik_muzik.py"), wav]
+    if beklenen:
+        kom += ["--beklenen-sn", str(beklenen)]
+    if ikinci:
+        kom += ["--ikinci", ikinci]
+    return subprocess.run(kom, env=dict(os.environ, PYTHONIOENCODING="utf-8")).returncode
+
+
+def mp3(klasor, atla=()):
+    atla = {os.path.normpath(x) for x in atla}
     if not shutil.which("ffmpeg"):
         print("UYARI: [RK-W-FFMPEG] ffmpeg PATH'te yok: mp3 yapilmadi, wav dosyalari yerinde (ffmpeg kurunca: python rakkase.py mp3 <klasor>) / ffmpeg not found, no mp3", flush=True)
         return
     for w in sorted(glob.glob(os.path.join(klasor, "**", "*.wav"), recursive=True)):
         m = w[:-4] + ".mp3"
+        if os.path.normpath(w) in atla:
+            continue
         if not os.path.exists(m):
             subprocess.run(["ffmpeg", "-loglevel", "error", "-y", "-i", w, "-b:a", "192k", m], creationflags=GIZLI, check=True)
             print("MP3", m, flush=True)
 
 
-def panel(yol):
+def panel(yol, atla=()):
     """LED paneli: <ad>_panel.mp4 (wav'in yaninda). Varsa atlar. Donus: basarisiz sayisi. ACE venv python'u kullanir (numpy, soundfile, Pillow orada)."""
     if not shutil.which("ffmpeg"):
         print("UYARI: [RK-W-FFMPEG] ffmpeg PATH'te yok: panel yapilmadi (ffmpeg kurunca: python rakkase.py panel <klasor>) / ffmpeg not found, no panel", flush=True)
         return 0
     wavlar = [yol] if os.path.isfile(yol) else sorted(glob.glob(os.path.join(yol, "**", "*.wav"), recursive=True))
-    return sum(panel_yap(w) for w in wavlar)
+    atla = {os.path.normpath(x) for x in atla}
+    return sum(panel_yap(w) for w in wavlar if os.path.normpath(w) not in atla)
 
 
 def panel_yap(wav):
@@ -163,6 +190,75 @@ def denetle(plan, yalniz=""):
     return r.returncode
 
 
+def test_temizle(cikti):
+    for eski in sorted(glob.glob(os.path.join(cikti, "test_2*")))[:-3]:  # son 3 test kosusu kalir (cikti/ calisma alani)
+        shutil.rmtree(eski, ignore_errors=True)
+
+
+def test_kos(tek_kosu=False):
+    """test: 15 sn'lik referans plani. Karar agaci (kalite esikleri DEGISMEZ: SNR > 40 dB, korelasyon > 0,999):
+    - wav NaN/inf: RK-E-NAN, cikis 8 (her kartta).
+    - referans kiyasi GECTI: cikis 0 (referans-disi kartta bile).
+    - referans karti (GTX 1050 Ti) ve KALDI: cikis 1 (kurulum/motor kabul edilmez).
+    - baska kart ve referans KALDI: bayt/dalga uyumu KANITLANMADI. Kart-bagimsiz saglik (sure, seviye/sessizlik) + ayni kartta ikinci kosuyla
+      tutarlilik saglamsa cikis 7 ([RK-W-REFERANS-DISI]: 'kurulum bozuk' DEGIL, 'referansla uyum kanitlanmadi'); saglik kalirsa cikis 1."""
+    sys.path.insert(0, os.path.join(KOK, "motor"))
+    import kart_kural  # saf Python (torch yok); yalniz test komutu ister: motor/ klasorsuz gecici kopya koklerde (testler) diger komutlar calisir
+    cikti = os.path.join(KOK, "cikti", "test")
+    ad = time.strftime("test_%Y%m%d_%H%M%S")
+    plan = os.path.join(KOK, "testler", "plan_kiyas_15sn.json")
+    kart_ad, kart_cc = kart_kural.kart_oku(GIZLI)
+    ref_kart = kart_kural.referans_karti(kart_ad)
+    print(f"TEST kart: {kart_ad or '(nvidia-smi okunamadi)'}, compute capability {kart_cc or '?'}; referans karti ({kart_kural.REFERANS_KART}): "
+          f"{'evet' if ref_kart else 'hayir'}", flush=True)
+    kod = uret(plan, cikti, ad)
+    if kod:
+        sys.exit(kod)
+    yeni = glob.glob(os.path.join(cikti, ad, "*.wav"))[0]
+    if nan_tara(yeni):
+        print(f"HATA: [RK-E-NAN] test sesi NaN/inf iceriyor (kart: {kart_ad or '?'}). Kurulum bozuk sayilmaz: kart/surucu sorunu olabilir "
+              "(GTX 16xx: ayarlar.json 'vae_fp32': true). Raporlayin: kart adi ve bu satir / test audio contains NaN/inf", flush=True)
+        return 8
+    ref = os.path.join(KOK, "testler", "referans", "aday1_intro_neseli_15sn.wav")
+    r = subprocess.run([venv_python(), "-B", os.path.join(KOK, "araclar", "kiyas_muzik.py"), ref, yeni])
+    mp3(os.path.join(cikti, ad))
+    if r.returncode == 0:
+        print("TEST GECTI: referansla uyum kanitlandi" + ("" if ref_kart else f" (kart {kart_ad or '?'} referans karti degil, yine de tuttu)"), flush=True)
+        test_temizle(cikti)
+        return 0
+    if ref_kart:
+        print("TEST KALDI: referans kartinda referansla uyum yok: kurulum/motor kabul edilmez (motoru testi gecirmek icin degistirmeyin)", flush=True)
+        test_temizle(cikti)
+        return 1
+    sk = saglik(yeni, beklenen=15)
+    if sk:
+        print(f"TEST KALDI: referans-disi kart ve kart-bagimsiz saglik olcumu de kaldi (saglik cikisi {sk}): yukaridaki SAGLIK satirina bakin", flush=True)
+        test_temizle(cikti)
+        return 1
+    tutarli = "olculmedi (--tek-kosu)"
+    if not tek_kosu:
+        print("TEST: ikinci kosu (ayni kart, ayni tohum): tutarlilik olculecek, ~2-3 dk", flush=True)
+        ad2 = ad + "_b"
+        kod2 = uret(plan, cikti, ad2)
+        if kod2:
+            sys.exit(kod2)
+        yeni2 = glob.glob(os.path.join(cikti, ad2, "*.wav"))[0]
+        if nan_tara(yeni2):
+            print("HATA: [RK-E-NAN] ikinci test sesi NaN/inf iceriyor", flush=True)
+            return 8
+        sk2 = saglik(yeni, beklenen=15, ikinci=yeni2)
+        if sk2:
+            print("TEST KALDI: ayni kartta ayni tohumla iki kosu birbirini tutmadi", flush=True)
+            test_temizle(cikti)
+            return 1
+        tutarli = "evet (SNR > 40 dB, korelasyon > 0,999)"
+    print(f"UYARI: [RK-W-REFERANS-DISI] Kart {kart_ad or '?'} referans karti degil: referansla bayt/dalga uyumu KANITLANMADI. Bu 'kurulum bozuk' demek "
+          f"DEGIL (farkli kartta ayni tohum farkli gurultu verebilir [tahmin]). Kart-bagimsiz saglik: SAGLAM; ayni kartta iki kosu tutarli: {tutarli}. "
+          "Basari demeyin: muzigi insan dinler / reference mismatch on a non-reference card, health checks passed", flush=True)
+    test_temizle(cikti)
+    return 7
+
+
 def main():
     ap = argparse.ArgumentParser(description="Rakkase muzik uretimi")
     alt = ap.add_subparsers(dest="komut", required=True)
@@ -172,7 +268,7 @@ def main():
     u.add_argument("--panel-yok", action="store_true", help="<ad>_panel.mp4 uretme (LED paneli)")
     d = alt.add_parser("denetle"); d.add_argument("--plan", required=True); d.add_argument("--yalniz", default="")
     b = alt.add_parser("bol"); b.add_argument("--plan", required=True)
-    alt.add_parser("test")
+    t = alt.add_parser("test"); t.add_argument("--tek-kosu", action="store_true", help="referans-disi kartta ikinci kosuyla tutarlilik olcumunu atla")
     m = alt.add_parser("mp3"); m.add_argument("klasor")
     pn = alt.add_parser("panel"); pn.add_argument("yol", help="wav dosyasi ya da klasor")
     a = ap.parse_args()
@@ -193,10 +289,16 @@ def main():
         kosu = os.path.join(os.path.abspath(cikti), a.ad)
         if glob.glob(os.path.join(kosu, "*.wav")):  # kod 3'te de biten parcalar arsivlenir (yarida kalan kosu kaybolmaz)
             try:
-                mp3(kosu)
+                nanli = nan_tara(kosu)
+                for w in nanli:
+                    print(f"HATA: [RK-E-NAN] uretilen ses NaN/inf iceriyor (bozuk): {w}. Kurulum bozuk sayilmaz: kart/surucu sorunu olabilir (GTX 16xx: "
+                          "ayarlar.json 'vae_fp32': true). mp3/panel yapilmadi / generated audio contains NaN/inf", flush=True)
+                if nanli and not kod:
+                    kod = 8
+                mp3(kosu, atla=nanli)
                 if not a.panel_yok:
                     try:  # panel yan cikti: dusse muzik teslim, cikis kodu degismez
-                        if panel(kosu):
+                        if panel(kosu, atla=nanli):
                             print(f"UYARI: [RK-W-PANEL] panel uretilemedi, muzik ve mp3 yerinde (elle: python rakkase.py panel {kosu})", flush=True)
                     except Exception as e:
                         print(f"UYARI: [RK-W-PANEL] panel uretilemedi ({e!r}), muzik ve mp3 yerinde", flush=True)
@@ -225,18 +327,7 @@ def main():
             hata("RK-E-PANEL", f"wav bulunamadi: {a.yol} / no wav found", 5)
         sys.exit(5 if panel(a.yol) else 0)
     if a.komut == "test":
-        cikti = os.path.join(KOK, "cikti", "test")
-        ad = time.strftime("test_%Y%m%d_%H%M%S")
-        kod = uret(os.path.join(KOK, "testler", "plan_kiyas_15sn.json"), cikti, ad)
-        if kod:
-            sys.exit(kod)
-        yeni = glob.glob(os.path.join(cikti, ad, "*.wav"))[0]
-        ref = os.path.join(KOK, "testler", "referans", "aday1_intro_neseli_15sn.wav")
-        r = subprocess.run([venv_python(), "-B", os.path.join(KOK, "araclar", "kiyas_muzik.py"), ref, yeni])
-        mp3(os.path.join(cikti, ad))
-        for eski in sorted(glob.glob(os.path.join(cikti, "test_2*")))[:-3]:  # son 3 test kosusu kalir (cikti/ calisma alani)
-            shutil.rmtree(eski, ignore_errors=True)
-        sys.exit(r.returncode)
+        sys.exit(test_kos(a.tek_kosu))
 
 
 if __name__ == "__main__":

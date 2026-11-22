@@ -4,6 +4,7 @@
   "kilit_src": "<yalniz kilit=true ise: kaynak_kilidi modulunu iceren src klasoru>",
   "kilit_bekle_sn": 3600,
   "on_plan_ses_siniri_sn": 300,
+  "vae_fp32": null,
   "int8_onbellek": null,
   "venv": null
 }

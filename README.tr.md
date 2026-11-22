@@ -12,6 +12,13 @@ Rakkase, [ACE-Step 1.5](https://github.com/ace-step/ACE-Step-1.5)'in turbo model
 
 **Neyi nerede ölçtük:** yalnız tek makinede (GTX 1050 Ti 4 GB, 16 GB RAM, Windows 10, 2026-11-05) [yazarlar ölçtü, `docs/OLCUMLER.md`]: model yükleme süreç başına bir kez yaklaşık 2 dk; 15 sn'lik parça yaklaşık 35-48 sn, 100 sn'lik şarkı yaklaşık 63-75 sn, 150 sn'lik düet 121 sn; RAM tepesi yaklaşık 6,4 GB. Sayılar 2026-11-05'te önceki motor metniyle ölçüldü, sonra yeniden ölçülmedi [yeniden ölçülmedi]. Başka kartlar ve 4 GB altı denenmedi; daha güçlü kartta büyük olasılıkla çalışır ama bu tahmindir [tahmin].
 
+**Yapay zeka kodlama ajanıyla (Claude Code, Codex, Gemini CLI, Copilot, Cursor...) kuruyorsanız [`AGENTS.md`](AGENTS.md)'den başlayın** (hızlı kart: [`AGENTS_HIZLI.md`](AGENTS_HIZLI.md)). git, uv ve Python'u bir kez siz kurarsınız; "evet" dedikten sonra gerisini ajan yürütür.
+
+**Başlamadan önce:**
+- Windows 10/11 ve **4 GB ya da üstü NVIDIA kart** (yalnız GTX 1050 Ti'de denendi; NVIDIA kart yoksa, macOS ya da Linux'ta henüz çalışmaz).
+- Yaklaşık **25 GiB boş disk** (modeller 6,4 GB; kurulumun tamamı yaklaşık 23 GB).
+- **git, uv ve Python 3**'ü siz kurarsınız (`winget install --id Git.Git -e`, `winget install --id=astral-sh.uv -e`, `winget install --id Python.Python.3.12 -e`), sonra yeni terminal açın; Microsoft Store "python" takma adı Python değildir.
+
 ## Hızlı başlangıç (Quick start)
 
 1. **Makinenizi kontrol edin:** Windows 10/11 [ölçtüm: Windows 10], 4 GB ya da üstü NVIDIA kart [yalnız GTX 1050 Ti'de denendi], 16 GB RAM, yaklaşık 6,4 GB model (22 dosya) için boş disk [okudum: `scripts/modeller.json`] ve torch'lu Python ortamı; kurulumun tamamı yaklaşık 23 GB (denetim ~25 GiB boş yer ister) [ölçtüm: temiz kurulumda yaklaşık 23 GB, modeller yerel kaynaktan kopyalandı]. Önce **git** ve **uv**'yi kurun (sizin için kurulmaz): `winget install --id Git.Git -e` ve `winget install --id=astral-sh.uv -e`, sonra yeni bir terminal açın. ffmpeg isteğe bağlı (yoksa wav alırsınız, mp3 olmaz): `winget install --id Gyan.FFmpeg -e`.

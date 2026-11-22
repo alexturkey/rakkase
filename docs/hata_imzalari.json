@@ -727,6 +727,48 @@
    "ilk_adim_en": "Nothing is lost: wav and mp3 are in place and the exit code does not change. Run python rakkase.py panel <folder> to try again (ffmpeg is needed: winget install --id Gyan.FFmpeg -e).",
    "ilk_adim_tr": "Bir sey kaybolmadi: wav ve mp3 yerinde, cikis kodu degismez. Yeniden denemek icin python rakkase.py panel <klasor> calistirin (ffmpeg gerekir: winget install --id Gyan.FFmpeg -e).",
    "capa": "docs/SIK_HATALAR.md#rk-w-panel"
+  },
+  {
+   "kod": "RK-E-NAN",
+   "tur": "hata",
+   "cikis": 8,
+   "sik_hatalar": "35",
+   "yayinlayan": [
+    "rakkase.py"
+   ],
+   "baslik_en": "The generated audio contains NaN/inf (corrupt sound)",
+   "baslik_tr": "Uretilen ses NaN/inf iceriyor (bozuk ses)",
+   "imza": [
+    "[RK-E-NAN]",
+    "NaN/inf iceriyor"
+   ],
+   "ornek_log": [
+    "HATA: [RK-E-NAN] uretilen ses NaN/inf iceriyor (bozuk): <klasor>\\parca.wav. Kurulum bozuk sayilmaz: kart/surucu sorunu olabilir (GTX 16xx: ayarlar.json 'vae_fp32': true). mp3/panel yapilmadi / generated audio contains NaN/inf"
+   ],
+   "ilk_adim_en": "The install is not necessarily broken: GTX 16xx cards give NaN with an fp16 VAE and the engine now keeps the VAE in fp32 on them automatically. On another card set \"vae_fp32\": true in ayarlar.json and run again; if it persists, report the card name and this line (no mp3 or panel is made from a NaN wav).",
+   "ilk_adim_tr": "Kurulum bozuk olmak zorunda degil: GTX 16xx kartlar fp16 VAE ile NaN verir, motor bu kartlarda VAE'yi kendiliginden fp32 yapar. Baska kartta ayarlar.json'a \"vae_fp32\": true yazip yeniden calistirin; surerse kart adini ve bu satiri bildirin (NaN'li wav'dan mp3 ya da panel yapilmaz).",
+   "capa": "docs/SIK_HATALAR.md#rk-e-nan"
+  },
+  {
+   "kod": "RK-W-REFERANS-DISI",
+   "tur": "uyari",
+   "cikis": 7,
+   "sik_hatalar": "36",
+   "yayinlayan": [
+    "rakkase.py"
+   ],
+   "baslik_en": "Not the reference card: byte/waveform match with the reference is not proven (test exit 7)",
+   "baslik_tr": "Referans karti degil: referansla bayt/dalga uyumu kanitlanmadi (test cikis 7)",
+   "imza": [
+    "[RK-W-REFERANS-DISI]",
+    "referansla bayt/dalga uyumu KANITLANMADI"
+   ],
+   "ornek_log": [
+    "UYARI: [RK-W-REFERANS-DISI] Kart <ad> referans karti degil: referansla bayt/dalga uyumu KANITLANMADI. Bu 'kurulum bozuk' demek DEGIL ... / reference mismatch on a non-reference card, health checks passed"
+   ],
+   "ilk_adim_en": "This is not a failed install: the reference was made on a GTX 1050 Ti and another card draws different noise for the same seed [guess]. The card-independent health checks passed (no NaN/inf, duration, level, two runs on this card agree). Do not report success; listen to the track yourself (python rakkase.py uret --plan ornekler/sozsuz_fon_ninni.json). If a health check FAILED the test exits 1 instead.",
+   "ilk_adim_tr": "Kurulum basarisiz degil: referans GTX 1050 Ti'de uretildi, baska kart ayni tohumla farkli gurultu cekebilir [tahmin]. Karttan bagimsiz saglik olcumleri gecti (NaN/inf yok, sure, seviye, bu kartta iki kosu tutarli). Basari demeyin; parcayi kendiniz dinleyin (python rakkase.py uret --plan ornekler/sozsuz_fon_ninni.json). Saglik olcumu KALDIYSA test bunun yerine 1 ile cikar.",
+   "capa": "docs/SIK_HATALAR.md#rk-w-referans-disi"
   }
  ]
 }

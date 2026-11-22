@@ -33,12 +33,29 @@ $MinBosGiB = 25      # model ~5,94 GiB + uv ortami ve onbellegi (torch cu128 dah
 $UyariBosGiB = 28
 $uyari = New-Object System.Collections.ArrayList
 $hata = New-Object System.Collections.ArrayList
+$oneri = New-Object System.Collections.ArrayList   # hazir komut satirlari (kopyalanip calistirilir); betik bunlari KENDISI calistirmaz
 $Sahte = @{}
 if ($Kuru -and $env:RK_KURU_SAHTE) { foreach ($kv in ($env:RK_KURU_SAHTE -split ';')) { $pp = $kv -split '=', 2; if ($pp.Count -eq 2) { $Sahte[$pp[0].Trim()] = $pp[1].Trim() } } }
 function Say([string]$m) { Write-Host $m }
 function Sahte-Al([string]$k, $gercek) { if ($Sahte.ContainsKey($k)) { return $Sahte[$k] } else { return $gercek } }
 function Hata-Ekle([string]$m, [bool]$zorlaGecer = $false) { if ($zorlaGecer -and $Zorla) { [void]$uyari.Add("(-Zorla ile gecildi) $m") } else { [void]$hata.Add($m) } }
 function Dur-Kontrol { if (Test-Path -LiteralPath $DurDosya) { Say 'DURDU (DUR dosyasi) / stopped'; exit 4 } }
+function En-Bos-Surucu([double]$gerekGiB, [string]$buSurucu) {
+    # bu surucu disinda, gerek + 3 GiB payi olan en bos sabit disk (Win32_LogicalDisk DriveType=3); -Kuru testi icin RK_KURU_SAHTE 'suruculer=D:100,E:500'
+    $liste = @()
+    if ($Sahte.ContainsKey('suruculer')) { foreach ($kv in ($Sahte['suruculer'] -split ',')) { $pp = $kv -split ':', 2; if ($pp.Count -eq 2) { $liste += [pscustomobject]@{ Ad = $pp[0].Trim().ToUpper(); BosGiB = [double]$pp[1] } } } }
+    else { foreach ($dk in @(Get-CimInstance Win32_LogicalDisk -Filter 'DriveType=3' -ErrorAction SilentlyContinue)) { if ($dk.FreeSpace -ne $null) { $liste += [pscustomobject]@{ Ad = ([string]$dk.DeviceID).TrimEnd(':').ToUpper(); BosGiB = [Math]::Round($dk.FreeSpace / 1GB, 1) } } } }
+    return ($liste | Where-Object { $_.Ad -ne $buSurucu.ToUpper() -and $_.BosGiB -ge ($gerekGiB + 3) } | Sort-Object BosGiB -Descending | Select-Object -First 1)
+}
+function Sonraki-Adimlar {
+    # HAZIR satirinin devami: sistem Python'u GEREKMEZ, kurulu ortamin kendi python.exe tam yolu
+    $pyYol = Join-Path $AceKok '.venv\Scripts\python.exe'
+    Say 'Sonraki adimlar / next steps (repo klasorunde, cmd ya da PowerShell; sistem Python gerekmez, bu yol kurulan ortamin kendi Python dosyasi) / in the repo folder, no system Python needed, this is the environment own python.exe:'
+    Say ('  "{0}" -X utf8 rakkase.py test' -f $pyYol)
+    Say '      GPU, ~2-3 dk. GTX 1050 Ti: referans kapisi; baska kartta referans KALDI = "bayt uyumu kanitlanmadi" (cikis 7, saglik olcumleri tamamsa), kurulum bozuk degil / other cards: exit 7 means byte match not proven, not a broken install'
+    Say ('  "{0}" -X utf8 rakkase.py uret --plan ornekler\sozsuz_fon_ninni.json      (ya da uret.cmd)' -f $pyYol)
+    Say ('  "{0}" -X utf8 rakkase.py denetle --plan ornekler\sozsuz_fon_ninni.json   (CPU, model yuklemez)' -f $pyYol)
+}
 function Cikis-Kodu([string[]]$hatalar) {
     # tek sozlesme: docs\hata_imzalari.json "cikis" alani ile ayni
     $k = 1
@@ -115,10 +132,10 @@ function Adim-Kontrol0 {
     elseif ($ramGB -lt 15.5) { [void]$uyari.Add("[RK-W-RAM] RAM $ramGB GB: 16 GB onerilir; uretimden once diger uygulamalari kapatin") }
     # git ve uv
     $git = $(if ($Sahte.ContainsKey('git')) { $null } else { Komut-Bul 'git.exe' })
-    if (-not $git) { Hata-Ekle '[RK-E-GIT] git yok: ACE-Step kodunu klonlamak icin gerekir. Kurun: winget install --id Git.Git -e (ya da https://git-scm.com) sonra yeniden calistirin / git is missing' }
+    if (-not $git) { Hata-Ekle '[RK-E-GIT] git yok: ACE-Step kodunu klonlamak icin gerekir. Kurun: winget install --id Git.Git -e (ya da https://git-scm.com) sonra yeniden calistirin / git is missing'; [void]$oneri.Add('winget install --id Git.Git -e') }
     else { Say ("  git: {0}" -f $git) }
     $uv = $(if ($Sahte.ContainsKey('uv')) { $null } else { Uv-Bul })
-    if (-not $uv) { Hata-Ekle '[RK-E-UV] uv yok: Python ortamini kurmak icin gerekir. Kurun: winget install --id=astral-sh.uv -e (ya da: python -m pip install uv), sonra yeniden calistirin; ya da uv.exe yolunu RK_UV ortam degiskenine yazin / uv is missing (not installed automatically)' }
+    if (-not $uv) { Hata-Ekle '[RK-E-UV] uv yok: Python ortamini kurmak icin gerekir. Kurun: winget install --id=astral-sh.uv -e (ya da: python -m pip install uv), sonra yeniden calistirin; ya da uv.exe yolunu RK_UV ortam degiskenine yazin / uv is missing (not installed automatically)'; [void]$oneri.Add('winget install --id=astral-sh.uv -e') }
     else { Say ("  uv: {0}" -f $uv) }
     if (-not $Sahte.ContainsKey('ffmpeg') -and -not (Komut-Bul 'ffmpeg.exe')) { [void]$uyari.Add('[RK-W-FFMPEG] ffmpeg PATH''te yok: mp3 yapilamaz (wav uretilir, kurulum engellenmez). Kurun: winget install --id Gyan.FFmpeg -e / ffmpeg not found: no mp3') }
     # yol uyarilari
@@ -150,7 +167,7 @@ function Adim-Kontrol0 {
     if ($drv) {
         $bosGiB = [double](Sahte-Al 'disk' ([Math]::Round($drv.Free / 1GB, 1)))
         Say ("  Disk {0}: bos {1} GiB (gerekli ~{2} GiB)" -f $sh, $bosGiB, $gerek)
-        if ($gerek -gt 0 -and $bosGiB -lt $gerek) { Hata-Ekle ("[RK-E-DISK] {0} surucusunde bos yer {1} GiB; en az {2} GiB gerekir (model + uv ortami). Yer acin ya da -AceKok ile baska surucuyu verin / not enough disk" -f $sh, $bosGiB, $gerek) }
+        if ($gerek -gt 0 -and $bosGiB -lt $gerek) { $alt = En-Bos-Surucu $gerek $sh; if ($alt) { [void]$oneri.Add(("kur.cmd -AceKok {0}:\rk\ace_step   ({0}: bos {1} GiB; bu surucuye kurulur, depo klasoru yerinde kalir / installs onto the emptiest drive)" -f $alt.Ad, $alt.BosGiB)) }; Hata-Ekle ("[RK-E-DISK] {0} surucusunde bos yer {1} GiB; en az {2} GiB gerekir (model + uv ortami). Yer acin ya da -AceKok ile baska surucuyu verin / not enough disk" -f $sh, $bosGiB, $gerek) }
         elseif ($gerek -gt 0 -and $bosGiB -lt $UyariBosGiB) { [void]$uyari.Add(("[RK-W-DISK-PAY] {0} surucusunde bos yer {1} GiB: esik ({2} GiB) gecildi ama pay dar" -f $sh, $bosGiB, $gerek)) }
     }
     $ayarDurum = $(if ($ayar0 -eq 'BOZUK') { 'bozuk' } elseif ($ayar0) { 'var' } else { 'yok' })
@@ -160,12 +177,16 @@ function Adim-Kontrol0 {
 function Rapor-Ve-Cik {
     foreach ($u in $uyari) { Say ("UYARI: " + $u) }
     foreach ($h in $hata) { Say ("HATA: " + $h) }
+    if ($hata.Count -gt 0 -and $oneri.Count -gt 0) {
+        Say 'HAZIR KOMUT / READY COMMAND (kopyalayip calistirin; winget kurulumundan sonra terminali kapatip yeniden acin; betik bunu kendisi calistirmaz) / copy and run; reopen the terminal after a winget install; the script does not run it for you:'
+        foreach ($o in $oneri) { Say ('  ' + $o) }
+    }
     if ($hata.Count -gt 0) { exit (Cikis-Kodu $hata) }
 }
 function Adim-Hafif {
     # kontrol0 secilmediyse yalniz secilen adimlarin on kosulu: donanim/disk kapisi 'yalniz ayar yaz' gibi kisa islerde engel olmaz
-    if ($Adim -contains 'klon' -and -not (Komut-Bul 'git.exe')) { Hata-Ekle '[RK-E-GIT] git yok: ACE-Step kodunu klonlamak icin gerekir. Kurun: winget install --id Git.Git -e / git is missing' }
-    if ($Adim -contains 'uv' -and -not (Uv-Bul)) { Hata-Ekle '[RK-E-UV] uv yok: Python ortamini kurmak icin gerekir. Kurun: winget install --id=astral-sh.uv -e; ya da RK_UV / uv is missing' }
+    if ($Adim -contains 'klon' -and -not (Komut-Bul 'git.exe')) { Hata-Ekle '[RK-E-GIT] git yok: ACE-Step kodunu klonlamak icin gerekir. Kurun: winget install --id Git.Git -e / git is missing'; [void]$oneri.Add('winget install --id Git.Git -e') }
+    if ($Adim -contains 'uv' -and -not (Uv-Bul)) { Hata-Ekle '[RK-E-UV] uv yok: Python ortamini kurmak icin gerekir. Kurun: winget install --id=astral-sh.uv -e; ya da RK_UV / uv is missing'; [void]$oneri.Add('winget install --id=astral-sh.uv -e') }
     if ($Adim -contains 'ayar' -and $ayar0 -eq 'BOZUK') { Hata-Ekle '[RK-E-AYAR] ayarlar.json bozuk (JSON okunamadi): dosyaya dokunulmadi. Duzeltin ya da adini degistirip yeniden calistirin / ayarlar.json is not valid JSON' }
 }
 if ($Adim -contains 'kontrol0') { Adim-Kontrol0 } else { Adim-Hafif }
@@ -178,6 +199,7 @@ if ($Kuru) {
     if ($Adim -contains 'model') { Say ("  model: scripts\modelleri_indir.ps1 -Hedef {0} (sha256 dogrulamali, ~6 GiB)" -f $Checkpoints) }
     if ($Adim -contains 'ayar') { Say ("  ayar : {0} yazilir/birlestirilir (ace_kok = {1}, kilit=false)" -f $tmpAyar, $AceKok) }
     if ($Adim -contains 'kontrol') { Say '  kontrol: rakkase.py denetle --plan ornekler\sozsuz_fon_ninni.json' }
+    if ($Adim -contains 'kontrol') { Say '  HAZIR satiri su komutlari basacak / the READY line will print:'; Sonraki-Adimlar }
     Rapor-Ve-Cik
     Say 'KURU TAMAM: hata yok / dry run OK, no errors'
     exit 0
@@ -251,6 +273,6 @@ if ($Adim -contains 'kontrol') {
     if ($kod -ne 0) { Say "HATA: [RK-E-SYNC] plan denetimi basarisiz (cikis $kod): yukaridaki satirlara bakin; kodlar docs\SIK_HATALAR.md"; exit 1 }
     foreach ($u in $uyari) { Say ("UYARI: " + $u) }
     Say 'HAZIR / READY: kurulum tamam, plan denetimi gecti.'
-    Say 'Sonraki adim / next: python rakkase.py test  (GPU, ~1 dk, referans karsilastirmasi) ya da uret.cmd (ornek plan, parca uretir).'
+    Sonraki-Adimlar
 }
 exit 0

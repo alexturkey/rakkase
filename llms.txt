@@ -8,6 +8,7 @@ Rules that never change: quality is fixed (turbo 8 steps, int8 decoder only, fp3
 - [Seeds rule](https://github.com/alexturkey/Rakkase/blob/main/AGENTS_HIZLI.md): before the first track, explain the seed to the user and offer a 3-seed trial (Rule 0)
 - [AGENTS_HIZLI.md](https://github.com/alexturkey/Rakkase/blob/main/AGENTS_HIZLI.md): 12-step decision tree and exit code to action table (English and Turkish)
 - [AGENTS.md](https://github.com/alexturkey/Rakkase/blob/main/AGENTS.md): setup, hard rules, commands, exit codes, where things are written
+- Other agent files (`CLAUDE.md`, `GEMINI.md`, `.github/copilot-instructions.md`, `.aider.conf.yml`) only point to AGENTS.md; Codex and Cursor read AGENTS.md directly. Prerequisites the human installs: NVIDIA GPU 4 GB+, git, uv, Python 3, about 25 GiB disk.
 - [README.md](https://github.com/alexturkey/Rakkase/blob/main/README.md): overview and quick start (English is authoritative)
 - [KURULUM.md](https://github.com/alexturkey/Rakkase/blob/main/KURULUM.md): install summary (Turkish; details in docs/KURULUM_DEFTERI.md)
 

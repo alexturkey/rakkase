@@ -12,6 +12,13 @@ Rakkase is a thin, careful wrapper around [ACE-Step 1.5](https://github.com/ace-
 
 **What we measured, and where:** one machine only (GTX 1050 Ti 4 GB, 16 GB RAM, Windows 10, 2026-11-05) [measured by the authors, `docs/OLCUMLER.md`]: model load about 2 minutes once per process; a 15 s track about 35-48 s, a 100 s song about 63-75 s, a 150 s duet 121 s; about 6.4 GB RAM peak. The numbers were measured on 2026-11-05 with the earlier engine text and were not re-measured since [not re-measured]. Other cards and less than 4 GB were not tried; a faster card will most likely work but that is a guess [guess].
 
+**Installing with an AI coding agent (Claude Code, Codex, Gemini CLI, Copilot, Cursor...)? Start from [`AGENTS.md`](AGENTS.md)** (quick card: [`AGENTS_HIZLI.md`](AGENTS_HIZLI.md)). You install git, uv and Python once; the agent runs the rest after you say yes.
+
+**Before you start:**
+- Windows 10/11 and an **NVIDIA GPU with 4 GB or more** (tested only on a GTX 1050 Ti; no NVIDIA card, macOS or Linux: this does not run yet).
+- About **25 GiB free disk** (models 6.4 GB; the whole install is about 23 GB).
+- You install **git, uv and Python 3** yourself (`winget install --id Git.Git -e`, `winget install --id=astral-sh.uv -e`, `winget install --id Python.Python.3.12 -e`), then open a new terminal; the Microsoft Store "python" alias is not Python.
+
 ## Quick start (start here)
 
 1. **Check your machine:** Windows 10/11 [measured: Windows 10], an NVIDIA GPU with 4 GB or more [tested only on a GTX 1050 Ti], 16 GB RAM, free disk for about 6.4 GB of models (22 files) [read: `scripts/modeller.json`] plus the Python environment with torch; the whole install may need about 23 GB of disk (the check asks for about 25 GiB free) [measured: one clean install used about 23 GB on a 1050 Ti machine, models copied from a local source, so the download time was not measured]. Install **git** and **uv** first (they are not installed for you): `winget install --id Git.Git -e` and `winget install --id=astral-sh.uv -e`, then open a new terminal. ffmpeg is optional (without it you get wav files but no mp3): `winget install --id Gyan.FFmpeg -e`.

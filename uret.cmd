@@ -2,11 +2,12 @@
 rem Rakkase uret.cmd. EN: drag a plan .json file onto this file (or: uret.cmd plan.json) to generate it. With no argument it generates the safe example ornekler\sozsuz_fon_ninni.json (instrumental, 96 s of music; about 3 to 3.5 minutes in total on a GTX 1050 Ti: model load about 2 min plus about 63-75 s for a 100 s track [measured by the authors, docs\OLCUMLER.md]). The files are written under uretimler\ (see docs\KULLANIM.md).
 rem TR: plan .json dosyasini bu dosyanin ustune surukle (ya da: uret.cmd plan.json): uretir. Arguman yoksa guvenli ornek plani uretir: ornekler\sozsuz_fon_ninni.json (enstrumantal, 96 sn; GTX 1050 Ti'de toplam yaklasik 3-3,5 dk). Dosyalar uretimler\ altina yazilir (docs\KULLANIM.md).
 rem Exit codes / cikis kodlari (python rakkase.py uret): 0 ok, 2 plan error or engine did not start, 3 a track failed, 4 RAM guard stopped, 5 done but mp3/archive failed, 6 ayarlar.json missing or wrong. Codes: docs\SIK_HATALAR.md
-rem Env: RK_PYTHON (python executable, default: python), RK_NO_PAUSE=1, RK_PAUSE=1 (see kur.cmd). No labels and no multi-line blocks on purpose (LF-safe).
+rem Env: RK_PYTHON (python executable, default: the ACE-Step environment python.exe named by ayarlar.json, so no system Python is needed; if that is missing: python), RK_NO_PAUSE=1, RK_PAUSE=1 (see kur.cmd). No labels and no multi-line blocks on purpose (LF-safe).
 setlocal
 for /f "tokens=2 delims=:" %%a in ('chcp') do set "RK_ESKI_CP=%%a"
 chcp 65001 >nul
 cd /d "%~dp0"
+if not defined RK_PYTHON for /f "usebackq delims=" %%p in (`powershell.exe -NoProfile -Command "try { $a = Get-Content -Raw -Encoding UTF8 ayarlar.json | ConvertFrom-Json; $v = if ($a.venv) { $a.venv } else { Join-Path $a.ace_kok '.venv' }; $p = Join-Path $v 'Scripts\python.exe'; if (Test-Path -LiteralPath $p) { $p } } catch {}"`) do set "RK_PYTHON=%%p"
 if not defined RK_PYTHON set "RK_PYTHON=python"
 set "RK_KOD=0"
 set "RK_CIFT="

@@ -131,3 +131,12 @@ Aynı makine (GTX 1050 Ti 4 GB, 16 GB RAM, Windows 10). Kurulum `scripts/kur.ps1
 | RAM (RSS) tepe | 7688 MB | |
 
 Kaynak: ana oturumun kurulum günlüğü ve test çıktı klasörü (yerel iş klasörü, repoda değil). Denenmedi: HuggingFace'ten gerçek indirme, git/uv'siz boş makine, başka GPU.
+
+## 7. vae_fp32 yolu ve varsayılan yol kıyası (2026-11-23, ölçtüm, GTX 1050 Ti, 15 sn referans, tohum 42)
+
+| Koşu | Sonuç | VRAM tepe / ayrılan | Üretim |
+|---|---|---|---|
+| Yeni kod, varsayılan (`vae_fp32` null → false) | TEST GECTI, çıkış 0 | 2653 / 3178 MB | 17,7 sn |
+| Eski kod (4f8e2d0) | GECTI, çıkış 0 | - | 17,3 sn |
+| Eski ↔ yeni kıyası | SNR 56,8 dB, korelasyon 0,999999, uzunluk eşit (SHA256 farklı: GPU'da bayt aynılık garanti değil) | - | - |
+| Yeni kod, `vae_fp32: true` | TEST GECTI, sağlık SAGLAM (RMS -22 dB, sessiz %0) | 3768 / 4976 MB (4096 MB fiziksel kartı aşar; paylaşımlı belleğe taşma olası, ölçülmedi) | 21,2 sn |
