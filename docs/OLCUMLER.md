@@ -141,7 +141,9 @@ Kaynak: ana oturumun kurulum günlüğü ve test çıktı klasörü (yerel iş k
 | Eski ↔ yeni kıyası | SNR 56,8 dB, korelasyon 0,999999, uzunluk eşit (SHA256 farklı: GPU'da bayt aynılık garanti değil) | - | - |
 | Yeni kod, `vae_fp32: true` | TEST GECTI, sağlık SAGLAM (RMS -22 dB, sessiz %0) | 3768 / 4976 MB (4096 MB fiziksel kartı aşar; paylaşımlı belleğe taşma olası, ölçülmedi) | 21,2 sn |
 
-## 8. RTX 3050 Ti Laptop GPU (2026-11-23, ölçtüm, katkı raporu)
+## 8. RTX 3050 Ti Laptop GPU (2026-11-23, katkı raporu, [kullanıcı bildirdi, PR #2])
+
+Sayılar katkıcının kendi makinesindeki ölçümleridir; bakımcılar bu kartta tekrar etmedi.
 
 Makine: NVIDIA GeForce RTX 3050 Ti Laptop GPU 4 GB (Ampere, compute capability 8.6), sürücü 32.0.15.8183, 16 GB RAM, Windows 11 Pro 64 bit. Rakkase commit 3849256; kalite ayarları varsayılan (turbo 8 adım, fp32 hesap, yalnız decoder int8, LM kapalı). Kurulum elle yapıldı: bu kurulumda `nvidia-smi` NVML hatası verdiği için `kur.cmd` GPU denetiminde duruyor; modeller `scripts/modelleri_indir.ps1` ile resmî depodan indirildi (22 dosya, sha256 doğrulandı).
 
