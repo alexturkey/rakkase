@@ -140,3 +140,30 @@ Kaynak: ana oturumun kurulum günlüğü ve test çıktı klasörü (yerel iş k
 | Eski kod (4f8e2d0) | GECTI, çıkış 0 | - | 17,3 sn |
 | Eski ↔ yeni kıyası | SNR 56,8 dB, korelasyon 0,999999, uzunluk eşit (SHA256 farklı: GPU'da bayt aynılık garanti değil) | - | - |
 | Yeni kod, `vae_fp32: true` | TEST GECTI, sağlık SAGLAM (RMS -22 dB, sessiz %0) | 3768 / 4976 MB (4096 MB fiziksel kartı aşar; paylaşımlı belleğe taşma olası, ölçülmedi) | 21,2 sn |
+
+## 8. RTX 3050 Ti Laptop GPU (2026-11-23, ölçtüm, katkı raporu)
+
+Makine: NVIDIA GeForce RTX 3050 Ti Laptop GPU 4 GB (Ampere, compute capability 8.6), sürücü 32.0.15.8183, 16 GB RAM, Windows 11 Pro 64 bit. Rakkase commit 3849256; kalite ayarları varsayılan (turbo 8 adım, fp32 hesap, yalnız decoder int8, LM kapalı). Kurulum elle yapıldı: bu kurulumda `nvidia-smi` NVML hatası verdiği için `kur.cmd` GPU denetiminde duruyor; modeller `scripts/modelleri_indir.ps1` ile resmî depodan indirildi (22 dosya, sha256 doğrulandı).
+
+### Üretim (`python rakkase.py uret`, her koşu ayrı süreç)
+
+| Parça | Süre | Yükleme | Üretim | DiT adım | VRAM tepe / ayrılan | RAM tepe |
+|---|---|---|---|---|---|---|
+| fon_muzigim_90sn (enstr.) | 90 sn | 19-21 sn (sıcak) | 15,8 sn | 773 ms | 2356 / 2892 MB | 8,4 GB |
+| cizgi_film_anlati_fonu (enstr.), 2 koşu | 90 sn | | 14,9 / 14,9 sn | 749 / 756 ms | 2356 / 2892 MB | 8,4 GB |
+| kis_ninnisi_96sn (enstr.), 3 koşu | 96 sn | | 15,3-15,8 sn | 792 ms | 2353 / 2896 MB | 8,4 GB |
+| baba_ogul_arabesk_sarki (tr, erkek vokal, söz zamanı) | 120 sn | 18,7 sn | 18,5 sn | 1045 ms | 4016 / 4320 MB (4096 MB fiziksel kartı aşar; paylaşımlı belleğe taşma olası) | 8,4 GB |
+
+İlk koşuda yükleme 75-168 sn (disk önbelleği soğuk), sonrakiler 19-21 sn (NVMe). 120 sn'lik parçanın koşu toplamı 44,4 sn (yükleme + üretim + mp3/panel/arşiv).
+
+### Test (`python rakkase.py test`, 15 sn referans, tohum 42)
+
+| Ölçü | Değer |
+|---|---|
+| Sonuç | çıkış 7 (`RK-W-REFERANS-DISI`): kart referans kartı değil, AGENTS.md 6. adımdaki beklenen durum |
+| Kart-bağımsız sağlık | SAGLAM (15,00 sn, RMS -22,8 dB, tepe 0,891, sessiz pencere %0) |
+| Aynı kart iki koşu tutarlılığı | SNR 97,2 dB, korelasyon 1,000000 |
+| Referansla kıyas | SNR -2,2 dB, korelasyon 0,08 (1050 Ti referansıyla uyuşmaz) |
+| Yükleme / üretim | 20,5 sn / 7,0-7,3 sn; VRAM tepe 2351 MB; RAM tepe 8,1-8,2 GB |
+
+Kıyas (1050 Ti, bölüm 2 ↔ bu kart): 15 sn parça üretimi 17,4-19,6 sn → 7,0-7,3 sn; 8 adımlık DiT 15 sn'de 4,9-6,3 sn → 1,63-1,66 sn. 120 sn'lik sözlü parça 4 GB kartta VRAM sınırında bitiyor (4016 MB); daha uzun parçalar paylaşımlı belleğe taşabilir.
