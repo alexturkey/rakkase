@@ -1,7 +1,9 @@
 {
   "_not": "Rakkase repo_kapi.json (toplanti 8, 2026-11-21). Kaynak: README, docs/, rakkase.py [okudum]. CHECKOUT_SHA / SETUP_PYTHON_SHA gh api ile okunur.",
-  "kit_surumu": 1,
-  "kurulu_parcalar": {},
+  "kit_surumu": 2,
+  "kurulu_parcalar": {
+    "KL-22": 1
+  },
   "repo": {
     "ad": "Rakkase",
     "sahip": "alexturkey",
