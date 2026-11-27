@@ -12,6 +12,8 @@ Rakkase is a thin, careful wrapper around [ACE-Step 1.5](https://github.com/ace-
 
 **What we measured, and where:** one machine only (GTX 1050 Ti 4 GB, 16 GB RAM, Windows 10, 2026-11-05) [measured by the authors, `docs/OLCUMLER.md`]: model load about 2 minutes once per process; a 15 s track about 35-48 s, a 100 s song about 63-75 s, a 150 s duet 121 s; about 6.4 GB RAM peak. The numbers were measured on 2026-11-05 with the earlier engine text and were not re-measured since [not re-measured]. Other cards and less than 4 GB were not tried; a faster card will most likely work but that is a guess [guess].
 
+> **Using an AI coding agent (Codex, Claude Code, Gemini, Cursor)?** Give it this one sentence: "Read `AGENTS_HIZLI.md` to the end, run `scripts\tani.ps1` first, keep your progress in `DURUM.md`, and ask me before you delete or move anything, change system Python or PATH, or lower a quality setting." The agent will diagnose this PC, write a checklist and ask you at every decision.
+
 **Installing with an AI coding agent (Claude Code, Codex, Gemini CLI, Copilot, Cursor...)? Start from [`AGENTS.md`](AGENTS.md)** (quick card: [`AGENTS_HIZLI.md`](AGENTS_HIZLI.md)). You install git, uv and Python once; the agent runs the rest after you say yes.
 
 **Before you start:**

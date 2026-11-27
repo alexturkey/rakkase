@@ -274,6 +274,26 @@ if ($KartSatiri) {
             [void]$t.Add("    more / ayrinti: $($b.capa)")
         }
     } else { [void]$t.Add("error codes found / bulunan hata kodlari: none / yok (signature file: $imzaDurum)") }
+    # DEVIATIONS / SAPMA (read-only): what differs from the defaults. Environment values are never printed, only names.
+    [void]$t.Add('deviations / sapma (read-only / salt okur):')
+    try {
+        $pc = @(Get-Command python -All -ErrorAction SilentlyContinue | Select-Object -First 3)
+        if ($pc.Count -gt 0) {
+            if ($pc[0].Source -match 'WindowsApps') { [void]$t.Add('  first python on PATH: Microsoft Store shortcut (not a real Python) / PATHte ilk python: Store kisayolu') }
+            else { [void]$t.Add('  first python on PATH: ' + ((& $pc[0].Source --version 2>&1) -join ' ')) }
+        } else { [void]$t.Add('  no python on PATH / PATHte python yok') }
+    } catch { [void]$t.Add('  python order could not be read / python sirasi okunamadi') }
+    try {
+        $gitK = Get-Command git -ErrorAction SilentlyContinue
+        if ($gitK -and (Test-Path -LiteralPath (Join-Path $kok '.git'))) {
+            $gs = @(& $gitK.Source --no-optional-locks -C $kok status --short -uno 2>$null | ForEach-Object { "$_".Trim() } | Where-Object { $_ } | Select-Object -First 40)
+            if ($gs.Count -eq 0) { [void]$t.Add('  git: tracked files unchanged / izlenen dosyalar degismemis') }
+            else { [void]$t.Add("  git: $($gs.Count) tracked file(s) changed (names only) / izlenen dosya degismis (yalniz adlar):"); foreach ($g in $gs) { [void]$t.Add("    $g") } }
+        } else { [void]$t.Add('  git: not a git copy or git missing / kopya degil ya da git yok') }
+    } catch { [void]$t.Add('  git status could not be read / git durumu okunamadi') }
+    $rkEnv = @(Get-ChildItem Env: | Where-Object { $_.Name -like 'RK_*' } | Sort-Object Name | ForEach-Object { "$($_.Name)" })
+    if ($rkEnv.Count) { [void]$t.Add('  RK_* variables set (names only) / RK_* degiskenleri (yalniz adlar): ' + ($rkEnv -join ' ')) } else { [void]$t.Add('  RK_* variables: none / yok') }
+    [void]$t.Add('  ayarlar.json: ' + $(if (Test-Path -LiteralPath (Join-Path $kok 'ayarlar.json')) { 'exists (values are not printed) / var (degerler basilmaz)' } else { 'missing: copy ayarlar.ornek.json / yok: ayarlar.ornek.json kopyalanir' }))
     [void]$t.Add($uyari)
     $son = ((Gizle-Metin ($t -join "`n")))
 }

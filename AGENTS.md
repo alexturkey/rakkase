@@ -6,6 +6,13 @@ Goal: generate music locally with ACE-Step 1.5 turbo on a 4 GB NVIDIA GPU and 16
 
 Evidence labels ([measured], [read], [guess], [not tried]) are used in `docs/`. Write "works" only for something you saw run.
 
+## First, do this (agents)
+- **Run first:** `scripts\tani.ps1` (read-only). It prints the system, the card, the `kur.ps1 -Kuru` report and a DEVIATIONS section (first Python on PATH, locally changed files, `RK_*` variable names, whether `ayarlar.json` exists). Read it to the user in plain words.
+- **Keep a notebook:** `DURUM.md` in the repo root (git-ignored; `<ROOT>` instead of paths). Top three lines: `Now:` / `Next:` / `Question for you:`; below, one line per step with [measured] / [read] / [guess] and the command it came from.
+- **NEVER:** accept a model or license for the user; lower a quality value; use a force or skip flag; run `rakkase.py test` without the user's go-ahead and the GPU lock.
+- **ASK first:** delete, move or re-download anything; install Python, uv or the engine; start a GPU run.
+- **Same error twice:** stop; take the code and the first 20 lines to the user.
+
 ## Hard rules (do not break them)
 - **Quality is fixed:** turbo 8 steps (the model's own value, no CFG), int8 only in the decoder (torchao Int8WeightOnly), fp32 compute (fp16 gives NaN on Pascal cards), language model off (does not fit 4 GB). int4/GGUF, fewer steps and fp16 compute are not allowed, not even to save time. `python rakkase.py denetle` already reports a plan with `adim` other than 8 as an error.
 - **Same seed, same plan, same track:** not bit-exact on GPU, but SNR > 40 dB and correlation > 0.999 against the reference. After any change in `motor/*.py` or the venv, `python rakkase.py test` must pass (exit 0 = PASSED, 1 = FAILED). Do not change the engine to make it pass.

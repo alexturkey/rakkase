@@ -5,6 +5,7 @@
 Rules that never change: quality is fixed (turbo 8 steps, int8 decoder only, fp32 compute because fp16 gives NaN, language model off); `python rakkase.py test` must pass after any engine change; exit codes 4 and 6 of `rakkase.py uret` mean the run did not start properly; no personal paths, e-mail addresses or tokens in anything you commit.
 
 ## Start here
+- [scripts/tani.ps1](https://github.com/alexturkey/Rakkase/blob/main/scripts/tani.ps1): run this first; read-only report (system, card, install dry run, deviations from the defaults); keep your progress in `DURUM.md` (git-ignored notebook in the repo root)
 - [Seeds rule](https://github.com/alexturkey/Rakkase/blob/main/AGENTS_HIZLI.md): before the first track, explain the seed to the user and offer a 3-seed trial (Rule 0)
 - [AGENTS_HIZLI.md](https://github.com/alexturkey/Rakkase/blob/main/AGENTS_HIZLI.md): 12-step decision tree and exit code to action table (English and Turkish)
 - [AGENTS.md](https://github.com/alexturkey/Rakkase/blob/main/AGENTS.md): setup, hard rules, commands, exit codes, where things are written

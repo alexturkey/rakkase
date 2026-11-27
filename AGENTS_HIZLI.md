@@ -7,6 +7,20 @@ English first, Türkçe below. Full rules and evidence: [`AGENTS.md`](AGENTS.md)
 
 **TR.** İLK üretimden önce kullanıcıya tohumu düz sözlerle anlat ve tohum denemesi öner. Tohum (plandaki `tohum`) rastgeleliğin başlangıç sayısıdır: aynı plan ve aynı tohum aynı parçayı verir; aynı tarif farklı tohumla aynı şarkının başka bir yorumunu verir (farklı ezgi, hava, düzenleme). Yakın sayılar (ör. 41 ve 42) benzer parça vermez; birbirinden uzak sayılar seç. Aynı caption ve sözle 3 tohum öner (`ornekler/tohum_denemesi.json`'u kopyala, tohumu her `ad`a yaz), üret, kullanıcı dinleyip seçsin; tohum yaratıcı bir seçimdir, kalite ayarı değildir. Bedeli söyle: her tohum tam üretim süresi kadar sürer (parça süresinin yaklaşık 0,6-0,8 katı, ör. GTX 1050 Ti'de 100 sn'lik parça için yaklaşık 75 sn [yazarlar ölçtü]), model yüklemesi koşu başına bir kez (yaklaşık 2 dk). Çeşit için caption'ı değiştirme: yalnız tohum değişir. Ayrıntı: `docs/KULLANIM.md` "Tohum denemesi" bölümü.
 
+## Do this first (English)
+- **Run first:** `scripts\tani.ps1` (read-only: no network, writes a file only with `-Cikti`). It prints the system, the card, the `kur.ps1 -Kuru` report and a DEVIATIONS section (first Python on PATH, locally changed files, `RK_*` variable names, whether `ayarlar.json` exists). Read it to the user in plain words.
+- **Keep a notebook:** `DURUM.md` in the repo root (git-ignored, `<ROOT>` instead of paths). Top three lines: `Now:` / `Next:` / `Question for you:`. Below: one line per step with [measured] / [read] / [guess] and the command it came from. Update it after every step so a cut-off session can continue.
+- **NEVER:** accept a model or license for the user, lower a quality value (8 steps, fp32, LM off), use a force or skip flag, run `rakkase.py test` without the user's go-ahead and the GPU lock.
+- **ASK first:** delete, move or re-download anything (show path, size, reason); install Python, uv or the engine; start a GPU run. (The seed rule below still comes first for the first track.)
+- **Same error twice:** stop, do not try a third time; take the code and the first 20 lines to the user.
+
+## Önce bunu yap (Türkçe)
+- **Önce çalıştır:** `scripts\tani.ps1` (salt okur: ağ yok, yalnız `-Cikti` ile dosya yazar). Sistemi, kartı, `kur.ps1 -Kuru` raporunu ve SAPMA bölümünü (PATH'te ilk Python, yerelde değişmiş dosyalar, `RK_*` değişken adları, `ayarlar.json` var mı) yazar. Kullanıcıya sade sözle oku.
+- **Defter tut:** repo kökünde `DURUM.md` (git dışı, yol yerine `<ROOT>`). En üstte üç satır: `Şu an:` / `Sırada:` / `Sana soru:`. Altında adım başına bir satır: [ölçtüm] / [okudum] / [tahmin] ve geldiği komut. Her adımdan sonra güncelle ki kesilen oturum kaldığı yerden sürsün.
+- **ASLA:** kullanıcı yerine model ya da lisans kabul etme, kalite değerini düşürme (8 adım, fp32, LM kapalı), zorlama ya da atlama bayrağı kullanma, kullanıcı onayı ve GPU kilidi olmadan `rakkase.py test` çalıştırma.
+- **Önce SOR:** bir şeyi silmeden, taşımadan ya da yeniden indirmeden (yolu, boyutu, nedeni göster); Python, uv ya da motoru kurmadan; GPU işi başlatmadan. (İlk parça için aşağıdaki tohum kuralı yine önce gelir.)
+- **Aynı hata iki kez:** dur, üçüncü kez deneme; kodu ve ilk 20 satırı kullanıcıya götür.
+
 ## English: decision tree (12 steps)
 1. Goal: local music generation with ACE-Step 1.5 turbo on a Windows PC with a 4 GB NVIDIA card. Anything else: tell the user and stop.
 2. Quality is fixed (turbo 8 steps, int8 decoder only, fp32 compute, LM off). Never lower it to save time or memory, and never edit a plan's `adim` to anything but 8.

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Agent onboarding (kit KL-23): a do-this-first block at the top of `AGENTS_HIZLI.md` and `AGENTS.md` (run `scripts\tani.ps1` first, git-ignored `DURUM.md` notebook, NEVER / ASK lists, same error twice stop), a one-sentence "give this to your agent" block in `README.md` and `README.tr.md`, and a read-only DEVIATIONS section in `scripts\tani.ps1`. Quality and run behaviour unchanged.
 - Share-ready panel video: after every `uret`, `<name>_panel.mp4` (1080x1080 LED spectrum with the track's audio) is made next to the track, because X, Instagram and WhatsApp do not accept audio files. One run on a 100 s track: 49 s, 8.5 MB, CPU [measured by the maintainers]. Docs: README, `docs/KULLANIM.md`, `AGENTS_HIZLI.md`.
 - Seed trial: rule for AI agents to explain the seed before the first track and offer 3 seeds, `ornekler/tohum_denemesi.json`, README and `docs/KULLANIM.md` sections.
 
